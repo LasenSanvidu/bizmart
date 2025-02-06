@@ -4,6 +4,7 @@ import 'package:mojo/login.dart';
 //import 'package:firebase_core/firebase_core.dart'; // added for firebase access.
 import 'package:mojo/welcomesecond.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:mojo/profile.dart';
 
 void main() async{ // async added for continous access from project to firebase.
   WidgetsFlutterBinding.ensureInitialized(); 
@@ -28,7 +29,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       //home: WelcomeSecond(),
-      home: Login()
+      home: Profile(),
+      //home: OrderConfirmed(),
+      //home: Login()
     );
   }
 }

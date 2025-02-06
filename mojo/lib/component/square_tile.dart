@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mojo/login.dart';
 
 class SquareTile extends StatelessWidget {
   final String imagePath;
@@ -9,7 +10,13 @@ class SquareTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Login())
+        );
+      },
       child: Image.asset(
         imagePath,
         width: 60,
