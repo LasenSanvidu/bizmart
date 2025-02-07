@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:myapp/login.dart';
+import 'package:myapp/welcomesecond.dart';
 
 void main() {
-  runApp(MyApp());
+   runApp(
+    DevicePreview(
+
+      enabled: true,
+      builder: (context) => MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,6 +21,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomeScreen(),
+      //home: Login(),
+      //home: WelcomeSecond()
     );
   }
 }
