@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/router/router.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -9,9 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: RouterClass().router,
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      // home: const HomeScreen(),
     );
   }
 }
@@ -26,7 +28,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Background image
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
                     'assets/background.jpg'), // Replace with your image path
