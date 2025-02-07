@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/welcomesecond.dart';
 
 void main() {
-   runApp(
-    DevicePreview(
-
-      enabled: true,
-      builder: (context) => MyApp(),
-    )
+  runApp(
+    const MyApp(),
   );
 }
 
@@ -18,11 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      //home: HomeScreen(),
       //home: Login(),
-      //home: WelcomeSecond()
+      home: WelcomeSecond()
     );
   }
 }
@@ -37,7 +32,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Background image
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
                     'assets/background.jpg'), // Replace with your image path

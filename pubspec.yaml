@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  device_preview: ^1.2.0
   google_fonts:
 
 dev_dependencies:

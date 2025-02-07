@@ -14,7 +14,7 @@ class SquareTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Login())
+          MaterialPageRoute(builder: (context) => const Login())
         );
       },
       child: Image.asset(

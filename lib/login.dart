@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/component/square_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/square_tile.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -43,12 +43,12 @@ class _LoginState extends State<Login> {
                   fontSize: 36,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 "By signing in, you are agreeing", 
                 style: GoogleFonts.abel(
                   fontSize: 18,
-                  color: Color(0xFF6B5E5E)
+                  color: const Color(0xFF6B5E5E)
                 )
               ),
               Row(
@@ -58,19 +58,19 @@ class _LoginState extends State<Login> {
                     "our", 
                     style: GoogleFonts.abel(
                       fontSize: 18,
-                      color: Color(0xFF6B5E5E)
+                      color: const Color(0xFF6B5E5E)
                     ) 
                   ),
                   Text(
                     " Terms and Privacy Policy", 
                     style: GoogleFonts.abel(
                       fontSize: 18,
-                      color: Color(0xFF0386D0)
+                      color: const Color(0xFF0386D0)
                     )
                   ),
                 ],
               ),
-              SizedBox(height: 29),
+              const SizedBox(height: 29),
               
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -88,19 +88,19 @@ class _LoginState extends State<Login> {
                           style: GoogleFonts.abel(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: _isLoginSelected ? Color(0xFF0386D0) : Color(0xFFA6A6A6),
+                            color: _isLoginSelected ? const Color(0xFF0386D0) : const Color(0xFFA6A6A6),
                           )
                         ),
-                        SizedBox(height: 0),
+                        const SizedBox(height: 0),
                         Container(
                           height: 2,
                           width: 50,
-                          color: _isLoginSelected ? Color.fromARGB(255, 196, 195, 195) : Colors.transparent,
+                          color: _isLoginSelected ? const Color.fromARGB(255, 196, 195, 195) : Colors.transparent,
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -114,21 +114,21 @@ class _LoginState extends State<Login> {
                           style: GoogleFonts.abel(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: !_isLoginSelected ? Color(0xFF0386D0) : Color(0xFFA6A6A6),
+                            color: !_isLoginSelected ? const Color(0xFF0386D0) : const Color(0xFFA6A6A6),
                           )
                         ),
-                        SizedBox(height: 0),
+                        const SizedBox(height: 0),
                         Container(
                           height: 2,
                           width: 55,
-                          color: !_isLoginSelected ? Color.fromARGB(255, 196, 195, 195) : Colors.transparent,
+                          color: !_isLoginSelected ? const Color.fromARGB(255, 196, 195, 195) : Colors.transparent,
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 47),
+              const SizedBox(height: 47),
               
 
               // E M A I L  T E X T F I E L D
@@ -139,10 +139,10 @@ class _LoginState extends State<Login> {
                     color: const Color.fromARGB(255, 255, 255, 255),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: TextField(
+                  child: const TextField(
                     decoration: InputDecoration(
                       prefixIcon: Padding(  
-                        padding: const EdgeInsets.symmetric(horizontal: 0.0),  
+                        padding: EdgeInsets.symmetric(horizontal: 0.0),  
                         child: Icon(Icons.email_outlined, color: Color(0xFFA6A6A6)),  
                       ),
                       border: UnderlineInputBorder(),
@@ -166,7 +166,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // P A S W O R D   F I E L D
               Padding(
@@ -179,39 +179,39 @@ class _LoginState extends State<Login> {
                   child: TextField(
                     obscureText: true,
                     decoration: InputDecoration(
-                      prefixIcon: Padding(  
-                        padding: const EdgeInsets.symmetric(horizontal: 0.0),  
+                      prefixIcon: const Padding(  
+                        padding: EdgeInsets.symmetric(horizontal: 0.0),  
                         child: Icon(Icons.lock_outline_rounded, color: Color(0xFFA6A6A6)),  
                       ),
                       suffixIcon: IconButton(  
                         icon: Icon(  
                           _obscured ? Icons.visibility_outlined : Icons.visibility_off,
-                          color: Color(0xFFA6A6A6),  
+                          color: const Color(0xFFA6A6A6),  
                         ),  
                         onPressed: _togglePasswordVisibility,  
                       ),  
-                      border: UnderlineInputBorder(),
+                      border: const UnderlineInputBorder(),
                       hintText: 'Password',
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Color(0xFFA6A6A6),
                       ),
-                      enabledBorder: UnderlineInputBorder(
+                      enabledBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(
                           color: Color(0xFFA6A6A6),
                         ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
+                      focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(
                           color: Color(0xFFA6A6A6),
                         ),
                       ),
-                      contentPadding: EdgeInsets.only(top: 14.0, bottom: 0.0)
+                      contentPadding: const EdgeInsets.only(top: 14.0, bottom: 0.0)
                     ),
                     keyboardType: TextInputType.emailAddress,
                   ),
                 ),
               ),
-              SizedBox(height: 35),
+              const SizedBox(height: 35),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -224,13 +224,13 @@ class _LoginState extends State<Login> {
                           scale: 1.3,
                           child: Icon(
                             _rememberPassword ? Icons.check_box_outlined : Icons.check_box_outline_blank, 
-                            color: Color.fromARGB(255, 157, 151, 151),
+                            color: const Color.fromARGB(255, 157, 151, 151),
                           size: 20.0, // Adjust the size to make the outline thinner
                           ),
                         ),
                       ),
-                      SizedBox(width: 5),
-                      Text(
+                      const SizedBox(width: 5),
+                      const Text(
                         "Remember password", 
                         style: TextStyle(
                           fontSize: 15, color: Color(0xFF6B5E5E)
@@ -238,7 +238,7 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
-                  Text(
+                  const Text(
                     "      Forgot password", 
                     style: TextStyle(
                         fontSize: 15, color: Color(0xFF0386D0)
@@ -246,7 +246,7 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               ),
-              SizedBox(height: 38),
+              const SizedBox(height: 38),
 
               // L O G I N   B U T T O N
               Padding(
@@ -255,33 +255,33 @@ class _LoginState extends State<Login> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Login())
+                      MaterialPageRoute(builder: (context) => const Login())
                     );
                   },
                   child: Container(
-                    padding: EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                       color: const Color(0xFF0386D0),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text('Login', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 14),
-              Text(
+              const SizedBox(height: 14),
+              const Text(
                 'or connect with', 
                 style: TextStyle(
                   color: Color(0xFF747070),
                   fontSize: 16,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
               // S O C I A L   M E D I A   B U T T O N S
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // google button

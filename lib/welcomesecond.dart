@@ -4,7 +4,7 @@ import 'package:myapp/component/button.dart';
 import 'package:myapp/login.dart';
 
 class WelcomeSecond extends StatelessWidget {
-  const WelcomeSecond({Key? key}) : super(key: key);
+  const WelcomeSecond({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +27,11 @@ class WelcomeSecond extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                shape: CircleBorder(),
-                padding: EdgeInsets.all(12),
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(12),
                 backgroundColor: const Color.fromARGB(255, 169, 168, 251),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.arrow_back_rounded,
                 color: Colors.white,
               size: 30,
@@ -41,7 +41,7 @@ class WelcomeSecond extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 580.0),
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(40),
                   topRight: Radius.circular(40),
@@ -54,23 +54,23 @@ class WelcomeSecond extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Text(
                       'Get Started',
                       style: GoogleFonts.lato(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
                     
-                    Button(buttonText: 'Business', navigateTo: Login(), backgroundColor: Color(0xFF9C9BFB), color: Colors.white),
+                    const Button(buttonText: 'Business', navigateTo: Login(), backgroundColor: Color(0xFF9C9BFB), color: Colors.white),
                   
-                    SizedBox(height: 19),
+                    const SizedBox(height: 19),
 
-                    Button(buttonText: 'Customer', navigateTo: Login(), backgroundColor: Color(0xFF9C9BFB), color: Colors.white),
+                    const Button(buttonText: 'Customer', navigateTo: Login(), backgroundColor: Color(0xFF9C9BFB), color: Colors.white),
                     
                   ],
                 ),
