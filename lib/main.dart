@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/welcomesecond.dart';
 import 'package:myapp/order_confirmed.dart';
+import 'package:myapp/profile.dart';
 
 void main() {
   runApp(
@@ -16,10 +17,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      //home: HomeScreen(),
       //home: Login(),
       //home: WelcomeSecond(),
       //home:OrderConfirmed(),
+      home: Profile(),
     );
   }
 }
