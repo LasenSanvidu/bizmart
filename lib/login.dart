@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/square_tile.dart';
 
@@ -38,40 +39,28 @@ class _LoginState extends State<Login> {
 
               // G R E E T I N G S
               Text(
-                "Login", 
+                "Login",
                 style: GoogleFonts.abel(
                   fontSize: 36,
                 ),
               ),
               const SizedBox(height: 10),
-              Text(
-                "By signing in, you are agreeing", 
-                style: GoogleFonts.abel(
-                  fontSize: 18,
-                  color: const Color(0xFF6B5E5E)
-                )
-              ),
+              Text("By signing in, you are agreeing",
+                  style: GoogleFonts.abel(
+                      fontSize: 18, color: const Color(0xFF6B5E5E))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "our", 
-                    style: GoogleFonts.abel(
-                      fontSize: 18,
-                      color: const Color(0xFF6B5E5E)
-                    ) 
-                  ),
-                  Text(
-                    " Terms and Privacy Policy", 
-                    style: GoogleFonts.abel(
-                      fontSize: 18,
-                      color: const Color(0xFF0386D0)
-                    )
-                  ),
+                  Text("our",
+                      style: GoogleFonts.abel(
+                          fontSize: 18, color: const Color(0xFF6B5E5E))),
+                  Text(" Terms and Privacy Policy",
+                      style: GoogleFonts.abel(
+                          fontSize: 18, color: const Color(0xFF0386D0))),
                 ],
               ),
               const SizedBox(height: 29),
-              
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -83,19 +72,21 @@ class _LoginState extends State<Login> {
                     },
                     child: Column(
                       children: [
-                        Text(
-                          "Login",
-                          style: GoogleFonts.abel(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: _isLoginSelected ? const Color(0xFF0386D0) : const Color(0xFFA6A6A6),
-                          )
-                        ),
+                        Text("Login",
+                            style: GoogleFonts.abel(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: _isLoginSelected
+                                  ? const Color(0xFF0386D0)
+                                  : const Color(0xFFA6A6A6),
+                            )),
                         const SizedBox(height: 0),
                         Container(
                           height: 2,
                           width: 50,
-                          color: _isLoginSelected ? const Color.fromARGB(255, 196, 195, 195) : Colors.transparent,
+                          color: _isLoginSelected
+                              ? const Color.fromARGB(255, 196, 195, 195)
+                              : Colors.transparent,
                         ),
                       ],
                     ),
@@ -109,19 +100,21 @@ class _LoginState extends State<Login> {
                     },
                     child: Column(
                       children: [
-                        Text(
-                          "Register",
-                          style: GoogleFonts.abel(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: !_isLoginSelected ? const Color(0xFF0386D0) : const Color(0xFFA6A6A6),
-                          )
-                        ),
+                        Text("Register",
+                            style: GoogleFonts.abel(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: !_isLoginSelected
+                                  ? const Color(0xFF0386D0)
+                                  : const Color(0xFFA6A6A6),
+                            )),
                         const SizedBox(height: 0),
                         Container(
                           height: 2,
                           width: 55,
-                          color: !_isLoginSelected ? const Color.fromARGB(255, 196, 195, 195) : Colors.transparent,
+                          color: !_isLoginSelected
+                              ? const Color.fromARGB(255, 196, 195, 195)
+                              : Colors.transparent,
                         ),
                       ],
                     ),
@@ -129,7 +122,6 @@ class _LoginState extends State<Login> {
                 ],
               ),
               const SizedBox(height: 47),
-              
 
               // E M A I L  T E X T F I E L D
               Padding(
@@ -141,27 +133,28 @@ class _LoginState extends State<Login> {
                   ),
                   child: const TextField(
                     decoration: InputDecoration(
-                      prefixIcon: Padding(  
-                        padding: EdgeInsets.symmetric(horizontal: 0.0),  
-                        child: Icon(Icons.email_outlined, color: Color(0xFFA6A6A6)),  
-                      ),
-                      border: UnderlineInputBorder(),
-                      hintText: 'Email Address',
-                      hintStyle: TextStyle(
-                        color: Color(0xFFA6A6A6),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 0.0),
+                          child: Icon(Icons.email_outlined,
+                              color: Color(0xFFA6A6A6)),
+                        ),
+                        border: UnderlineInputBorder(),
+                        hintText: 'Email Address',
+                        hintStyle: TextStyle(
                           color: Color(0xFFA6A6A6),
                         ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xFFA6A6A6),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xFFA6A6A6),
+                          ),
                         ),
-                      ),
-                      contentPadding: EdgeInsets.only(top: 14.0, bottom: 0.0)
-                    ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xFFA6A6A6),
+                          ),
+                        ),
+                        contentPadding:
+                            EdgeInsets.only(top: 14.0, bottom: 0.0)),
                     keyboardType: TextInputType.emailAddress,
                   ),
                 ),
@@ -179,34 +172,37 @@ class _LoginState extends State<Login> {
                   child: TextField(
                     obscureText: true,
                     decoration: InputDecoration(
-                      prefixIcon: const Padding(  
-                        padding: EdgeInsets.symmetric(horizontal: 0.0),  
-                        child: Icon(Icons.lock_outline_rounded, color: Color(0xFFA6A6A6)),  
-                      ),
-                      suffixIcon: IconButton(  
-                        icon: Icon(  
-                          _obscured ? Icons.visibility_outlined : Icons.visibility_off,
-                          color: const Color(0xFFA6A6A6),  
-                        ),  
-                        onPressed: _togglePasswordVisibility,  
-                      ),  
-                      border: const UnderlineInputBorder(),
-                      hintText: 'Password',
-                      hintStyle: const TextStyle(
-                        color: Color(0xFFA6A6A6),
-                      ),
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 0.0),
+                          child: Icon(Icons.lock_outline_rounded,
+                              color: Color(0xFFA6A6A6)),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscured
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off,
+                            color: const Color(0xFFA6A6A6),
+                          ),
+                          onPressed: _togglePasswordVisibility,
+                        ),
+                        border: const UnderlineInputBorder(),
+                        hintText: 'Password',
+                        hintStyle: const TextStyle(
                           color: Color(0xFFA6A6A6),
                         ),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xFFA6A6A6),
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xFFA6A6A6),
+                          ),
                         ),
-                      ),
-                      contentPadding: const EdgeInsets.only(top: 14.0, bottom: 0.0)
-                    ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xFFA6A6A6),
+                          ),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.only(top: 14.0, bottom: 0.0)),
                     keyboardType: TextInputType.emailAddress,
                   ),
                 ),
@@ -223,26 +219,26 @@ class _LoginState extends State<Login> {
                         child: Transform.scale(
                           scale: 1.3,
                           child: Icon(
-                            _rememberPassword ? Icons.check_box_outlined : Icons.check_box_outline_blank, 
+                            _rememberPassword
+                                ? Icons.check_box_outlined
+                                : Icons.check_box_outline_blank,
                             color: const Color.fromARGB(255, 157, 151, 151),
-                          size: 20.0, // Adjust the size to make the outline thinner
+                            size:
+                                20.0, // Adjust the size to make the outline thinner
                           ),
                         ),
                       ),
                       const SizedBox(width: 5),
                       const Text(
-                        "Remember password", 
-                        style: TextStyle(
-                          fontSize: 15, color: Color(0xFF6B5E5E)
-                        ),
+                        "Remember password",
+                        style:
+                            TextStyle(fontSize: 15, color: Color(0xFF6B5E5E)),
                       ),
                     ],
                   ),
                   const Text(
-                    "      Forgot password", 
-                    style: TextStyle(
-                        fontSize: 15, color: Color(0xFF0386D0)
-                    ),
+                    "      Forgot password",
+                    style: TextStyle(fontSize: 15, color: Color(0xFF0386D0)),
                   ),
                 ],
               ),
@@ -253,10 +249,11 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Login())
-                    );
+                    context.go("/main");
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => const Login())
+                    // );
                   },
                   child: Container(
                     padding: const EdgeInsets.all(15),
@@ -265,14 +262,18 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Center(
-                      child: Text('Login', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                      child: Text('Login',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18)),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 14),
               const Text(
-                'or connect with', 
+                'or connect with',
                 style: TextStyle(
                   color: Color(0xFF747070),
                   fontSize: 16,
@@ -290,9 +291,9 @@ class _LoginState extends State<Login> {
               ),
               Expanded(
                 child: Image.asset(
-                    'assets/login_Image.png',
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
+                  'assets/login_Image.png',
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
                 ),
               ),
             ],
