@@ -21,13 +21,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: RouterClass().router,
       debugShowCheckedModeBanner: false,
-      
       //home: HomeScreen(),
       // key: const HomeScreen(),
       //home: Login(),
       //home: WelcomeSecond(),
       //home:OrderConfirmed(),
-      home: Profile(),
+      // home: Profile(),
     );
   }
 }
