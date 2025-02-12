@@ -3,6 +3,9 @@ import 'package:myapp/login.dart';
 import 'package:myapp/welcomesecond.dart';
 import 'package:myapp/order_confirmed.dart';
 import 'package:myapp/profile.dart';
+import 'package:go_router/go_router.dart';
+import 'package:myapp/routes/router.dart';
+
 
 void main() {
   runApp(
@@ -11,13 +14,16 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
+      routerConfig: RouterClass().router,
       debugShowCheckedModeBanner: false,
+      
       //home: HomeScreen(),
+      // key: const HomeScreen(),
       //home: Login(),
       //home: WelcomeSecond(),
       //home:OrderConfirmed(),
@@ -56,6 +62,7 @@ class HomeScreen extends StatelessWidget {
                       height: 100,
                       width: 100,
                       decoration: BoxDecoration(
+                        // ignore: deprecated_member_use
                         color: Colors.white.withOpacity(0.6),
                         shape: BoxShape.circle,
                       ),
@@ -73,7 +80,9 @@ class HomeScreen extends StatelessWidget {
                       height: 400,
                     ),
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.go("/login");
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: Colors.purple,
