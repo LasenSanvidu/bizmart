@@ -29,4 +29,5 @@ flutter:
   assets:
     - assets/
     - assets/ring_o.png
-    - lib/Icons/  # Store images inside assets/images/ folder
+    - assets/BUser.jpg
+    - lib/Icons/

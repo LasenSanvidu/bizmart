@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/login.dart';
+import 'package:myapp/welcomesecond.dart';
+import 'package:myapp/order_confirmed.dart';
+import 'package:myapp/profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/routes/router.dart';
+
 
 void main() {
   runApp(
@@ -16,10 +21,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: RouterClass().router,
       debugShowCheckedModeBanner: false,
+      
+      //home: HomeScreen(),
       // key: const HomeScreen(),
       //home: Login(),
       //home: WelcomeSecond(),
       //home:OrderConfirmed(),
+      home: Profile(),
     );
   }
 }
