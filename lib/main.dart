@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
       //home: Login(),
       //home: WelcomeSecond(),
       //home:OrderConfirmed(),
+      //home:SignUp(),
     );
   }
 }
