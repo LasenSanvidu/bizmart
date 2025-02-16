@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:go_router/go_router.dart';
+import 'package:myapp/routes/router.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/welcomesecond.dart';
 import 'package:myapp/order_confirmed.dart';
 import 'package:myapp/profile.dart';
-import 'package:go_router/go_router.dart';
-import 'package:myapp/routes/router.dart';
 
-
-void main() {
-  runApp(
-    const MyApp(),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,12 +21,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: RouterClass().router,
       debugShowCheckedModeBanner: false,
-      //home: HomeScreen(),
-      // key: const HomeScreen(),
-      //home: Login(),
-      //home: WelcomeSecond(),
-      //home:OrderConfirmed(),
-      // home: Profile(),
     );
   }
 }
@@ -61,13 +55,11 @@ class HomeScreen extends StatelessWidget {
                       height: 100,
                       width: 100,
                       decoration: BoxDecoration(
-                        // ignore: deprecated_member_use
                         color: Colors.white.withOpacity(0.6),
                         shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(
-                        height: 10), // Space between the circle and text
+                    const SizedBox(height: 10), // Space between the circle and text
                     const Text(
                       'Find your Style',
                       style: TextStyle(
@@ -75,9 +67,7 @@ class HomeScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
-                    const SizedBox(
-                      height: 400,
-                    ),
+                    const SizedBox(height: 400),
                     ElevatedButton(
                         onPressed: () {
                           context.go("/login");
