@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "112914408962",
+    "project_id": "bizmart-7c29d",
+    "storage_bucket": "bizmart-7c29d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112914408962:android:7314c6f8df3492bf2da91b",
+        "android_client_info": {
+          "package_name": "com.bizmart.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1XlFYpkPp7LiQq4byeEpPSBpI8b86qNQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
