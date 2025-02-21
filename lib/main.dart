@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/login.dart';
-import 'package:myapp/welcomesecond.dart';
-import 'package:myapp/order_confirmed.dart';
-import 'package:myapp/profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/routes/router.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -86,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          context.go("/login");
+                          context.go("/user_type_selection");
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
