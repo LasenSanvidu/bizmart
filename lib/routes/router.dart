@@ -2,7 +2,10 @@ import 'package:go_router/go_router.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
+import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
+import '../otp_code.dart';
+import '../otp_confirmation.dart';
 
 class RouterClass {
   final router = GoRouter(
@@ -11,7 +14,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return const HomeScreen();
+          return const OtpCode();
         },
       ),
       GoRoute(

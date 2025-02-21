@@ -15,6 +15,7 @@ dependencies:
   google_fonts:
   go_router: ^12.1.1
   firebase_core: ^2.32.0
+  lottie:
 
 
 dev_dependencies:
@@ -34,3 +35,4 @@ flutter:
     - assets/ring_o.png
     - assets/BUser.jpg
     - lib/Icons/
+    - lib/animations/
