@@ -16,6 +16,7 @@ dependencies:
   go_router: ^12.1.1
   firebase_core: ^2.32.0
   lottie:
+  smooth_page_indicator: ^1.2.0+3
 
 
 dev_dependencies:

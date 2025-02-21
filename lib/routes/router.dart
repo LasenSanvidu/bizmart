@@ -4,6 +4,7 @@ import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
+import '../onboarding.dart';
 import '../otp_code.dart';
 import '../otp_confirmation.dart';
 
@@ -14,7 +15,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return const OtpCode();
+          return const OnboardingScreen();
         },
       ),
       GoRoute(
