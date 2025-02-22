@@ -17,7 +17,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return const OtpCode();
+          return const HomeScreen();
         },
       ),
       GoRoute(

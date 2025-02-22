@@ -37,43 +37,30 @@ class UserTypeSelection extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 70),
               // Buttons
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 50), // Add space above buttons
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: UserTypeButton(
-                        label: "Business",
-                        onPressed: () {
-                          context.go("/login");
-                          print("Business button pressed");
-                        },
-                      ),
+                    UserTypeButton(
+                      label: "Business",
+                      onPressed: () {
+                        context.go("/login");
+                        print("Business button pressed");
+                      },
                     ),
-                    const SizedBox(
-                      height: 60,
-                      // width: 100,
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: UserTypeButton(
-                        label: "Consumer",
-                        onPressed: () {
-                          context.go("/login");
-                          print("Consumer button pressed");
-                        },
-                      ),
+                    const SizedBox(height: 50),
+                    UserTypeButton(
+                      label: "Consumer",
+                      onPressed: () {
+                        context.go("/login");
+                        print("Consumer button pressed");
+                      },
                     ),
                   ],
                 ),
               ),
-
-              // Spacer to push the image to the bottom
-              const Spacer(),
 
               // Bottom illustration
               Container(
