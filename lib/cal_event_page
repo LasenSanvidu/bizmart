@@ -60,7 +60,7 @@ class _EventFormPageState extends State<EventFormPage> {
                 Text(
                   selectedDate == null
                       ? "Select Date"
-                      : "📅 ${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}",
+                      : " ${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}",
                 ),
                 IconButton(
                   icon: const Icon(Icons.calendar_today),
