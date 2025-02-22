@@ -8,9 +8,13 @@ class WelcomeSecond extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen height
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
+          // Background image
           Container(
             child: Image.asset(
               'assets/welcome.png',
@@ -19,6 +23,8 @@ class WelcomeSecond extends StatelessWidget {
               height: double.infinity,
             ),
           ),
+
+          // Back button
           Positioned(
             top: 40,
             left: 22,
@@ -34,25 +40,29 @@ class WelcomeSecond extends StatelessWidget {
               child: const Icon(
                 Icons.arrow_back_rounded,
                 color: Colors.white,
-              size: 30,
+                size: 30,
               ),
             ),
-            ),
-          Padding(
-            padding: const EdgeInsets.only(top: 580.0),
+          ),
+
+          // Bottom container
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Container(
+              height: screenHeight * 0.4, // Use 40% of the screen height
+              width: MediaQuery.of(context).size.width *
+                  0.9, // Use 90% of the screen width
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(40),
                   topRight: Radius.circular(40),
-                ),  
+                ),
                 color: Colors.white,
               ),
-              height: double.infinity,
-              width: double.infinity,
-
-              child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const SizedBox(height: 30),
                     Text(
@@ -65,18 +75,28 @@ class WelcomeSecond extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    
-                    const Button(buttonText: 'Business', navigateTo: Login(), backgroundColor: Color(0xFF9C9BFB), color: Colors.white),
-                  
+
+                    // Business Button
+                    const Button(
+                      buttonText: 'Business',
+                      navigateTo: Login(),
+                      backgroundColor: Color(0xFF9C9BFB),
+                      color: Colors.white,
+                    ),
                     const SizedBox(height: 19),
 
-                    const Button(buttonText: 'Customer', navigateTo: Login(), backgroundColor: Color(0xFF9C9BFB), color: Colors.white),
-                    
+                    // Customer Button
+                    const Button(
+                      buttonText: 'Customer',
+                      navigateTo: Login(),
+                      backgroundColor: Color(0xFF9C9BFB),
+                      color: Colors.white,
+                    ),
                   ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

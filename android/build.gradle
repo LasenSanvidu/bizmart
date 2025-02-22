@@ -13,6 +13,15 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+tasks.register("stopGradleDaemon") {
+    doLast {
+        exec {
+            commandLine "gradlew", "--stop"
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
+    dependsOn "stopGradleDaemon"
     delete rootProject.buildDir
 }

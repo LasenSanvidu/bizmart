@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class CompaniesScreen extends StatelessWidget {
-  final String defaultImage = 'assets/default.png'; // Ensure you have this in your assets folder
+  final String defaultImage = 'assets/default.png';
+
+  const CompaniesScreen({super.key}); // Ensure you have this in your assets folder
 
   @override
   Widget build(BuildContext context) {
