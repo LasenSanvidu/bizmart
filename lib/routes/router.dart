@@ -1,4 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'package:myapp/cal_event_page';
+import 'package:myapp/calender.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
@@ -17,7 +19,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return const HomeScreen();
+          return const CalendarPage();
         },
       ),
       GoRoute(
@@ -42,6 +44,12 @@ class RouterClass {
         path: "/user_type_selection",
         builder: (context, state) {
           return const UserTypeSelection();
+        },
+      ),
+       GoRoute(
+        path: "/eventForm",
+        builder: (context, state) {
+          return const EventFormPage();
         },
       ),
     ],
