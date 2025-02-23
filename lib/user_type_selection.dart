@@ -9,16 +9,26 @@ class UserTypeSelection extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF7F67E0), // Purple gradient color
-                  Color(0xFFABA5F3), // Light purple gradient color
-                ],
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/userType.jpg', // Make sure this asset exists in pubspec.yaml
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Gradient overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.purple.withOpacity(0.5),
+                    Colors.pink.withOpacity(0.5),
+                  ],
+                ),
               ),
             ),
           ),
@@ -29,7 +39,7 @@ class UserTypeSelection extends StatelessWidget {
               const SizedBox(height: 80),
               // Top text
               const Text(
-                "Please select your user type ?",
+                "Please select your user type?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 26,
@@ -37,43 +47,30 @@ class UserTypeSelection extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 70),
               // Buttons
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 50), // Add space above buttons
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: UserTypeButton(
-                        label: "Business",
-                        onPressed: () {
-                          context.go("/login");
-                          print("Business button pressed");
-                        },
-                      ),
+                    UserTypeButton(
+                      label: "Business",
+                      onPressed: () {
+                        context.go("/login");
+                        debugPrint("Business button pressed");
+                      },
                     ),
-                    const SizedBox(
-                      height: 60,
-                      // width: 100,
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: UserTypeButton(
-                        label: "Consumer",
-                        onPressed: () {
-                          context.go("/login");
-                          print("Consumer button pressed");
-                        },
-                      ),
+                    const SizedBox(height: 50),
+                    UserTypeButton(
+                      label: "Consumer",
+                      onPressed: () {
+                        context.go("/login");
+                        debugPrint("Consumer button pressed");
+                      },
                     ),
                   ],
                 ),
               ),
-
-              // Spacer to push the image to the bottom
-              const Spacer(),
 
               // Bottom illustration
               Container(
@@ -82,7 +79,7 @@ class UserTypeSelection extends StatelessWidget {
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(
-                        'assets/login_Image.png'), // Replace with your asset path
+                        'assets/login_Image.png'), // Ensure this image is available in assets
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -100,10 +97,10 @@ class UserTypeButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const UserTypeButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

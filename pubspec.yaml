@@ -33,6 +33,7 @@ flutter:
   assets:
     - assets/
     - assets/ring_o.png
+    - assets/userType.jpg
     - assets/BUser.jpg
     - lib/Icons/
     - lib/animations/
