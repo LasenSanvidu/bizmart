@@ -7,6 +7,7 @@ import 'package:myapp/calender.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
+import 'package:myapp/onboarding.dart';
 import 'package:myapp/order_confirmed.dart';
 import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
@@ -17,15 +18,15 @@ import '../otp_confirmation.dart';
 
 class RouterClass {
   final router = GoRouter(
-    initialLocation: "/main",
+    initialLocation: "/",
     routes: [
       GoRoute(
-        path: "/calendar",
+        path: "/",
         builder: (context, state) {
-          return const CalendarPage();
+          return const OnboardingScreen();
         },
       ),
-       GoRoute(
+      GoRoute(
         path: "/chat",
         builder: (context, state) {
           return const ChatHomeScreen();
@@ -59,9 +60,9 @@ class RouterClass {
         path: "/register",
         builder: (context, state) {
           return const Register();
-          },
+        },
       ),
-       GoRoute(
+      GoRoute(
         path: "/eventForm",
         builder: (context, state) {
           return const EventFormPage();

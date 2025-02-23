@@ -94,7 +94,7 @@ class CustomDrawer extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton.icon(
               onPressed: () {
-                context.go("/");
+                context.go("/login");
               },
               icon: Icon(Icons.power_settings_new, color: Colors.purple),
               label: Text("Log Out"),
