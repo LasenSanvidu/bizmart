@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:myapp/Register.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
@@ -42,6 +43,12 @@ class RouterClass {
         path: "/user_type_selection",
         builder: (context, state) {
           return const UserTypeSelection();
+        },
+      ),
+      GoRoute(
+        path: "/",
+        builder: (context, state) {
+          return const Register();
         },
       ),
     ],
