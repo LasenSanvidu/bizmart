@@ -1,4 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'package:myapp/chat.dart';
+import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
@@ -17,7 +19,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return const OtpCode();
+          return const ChatHomeScreen();
         },
       ),
       GoRoute(
