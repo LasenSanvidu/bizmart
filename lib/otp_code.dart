@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'main.dart';
 import 'otp_confirmation.dart';
@@ -136,9 +137,7 @@ class OtpCode extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => OtpCode()),
+                    context.go("/otp_confirmation"
                     );
                   },
                   child: Container( 

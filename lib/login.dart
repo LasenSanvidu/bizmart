@@ -95,6 +95,7 @@ class _LoginState extends State<Login> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
+                        context.go("/register");
                         _isLoginSelected = false;
                       });
                     },

@@ -7,6 +7,8 @@ import 'package:myapp/calender.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
+import 'package:myapp/otp_code.dart';
+import 'package:myapp/otp_confirmation.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/user_type_selection.dart';
 
@@ -20,7 +22,7 @@ class RouterClass {
           return const HomeScreen();
         },
       ),
-       GoRoute(
+      GoRoute(
         path: "/chat",
         builder: (context, state) {
           return const ChatHomeScreen();
@@ -54,12 +56,24 @@ class RouterClass {
         path: "/register",
         builder: (context, state) {
           return const Register();
-          },
+        },
       ),
-       GoRoute(
+      GoRoute(
         path: "/chat",
         builder: (context, state) {
           return const ChatHomeScreen();
+        },
+      ),
+      GoRoute(
+        path: "/otp_code",
+        builder: (context, state) {
+          return const OtpCode();
+        },
+      ),
+      GoRoute(
+        path: "/otp_confirmation",
+        builder: (context, state) {
+          return const OtpConfirmation();
         },
       ),
     ],
