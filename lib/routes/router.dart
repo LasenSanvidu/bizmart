@@ -1,4 +1,6 @@
 import 'package:go_router/go_router.dart';
+import 'package:myapp/chat.dart';
+import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/Register.dart';
 import 'package:myapp/cal_event_page';
 import 'package:myapp/calender.dart';
@@ -21,6 +23,12 @@ class RouterClass {
         path: "/calendar",
         builder: (context, state) {
           return const CalendarPage();
+        },
+      ),
+       GoRoute(
+        path: "/chat",
+        builder: (context, state) {
+          return const ChatHomeScreen();
         },
       ),
       GoRoute(
