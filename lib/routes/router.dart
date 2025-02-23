@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:myapp/Register.dart';
+import 'package:myapp/cal_event_page';
+import 'package:myapp/calender.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
@@ -13,12 +15,12 @@ import '../otp_confirmation.dart';
 
 class RouterClass {
   final router = GoRouter(
-    initialLocation: "/",
+    initialLocation: "/main",
     routes: [
       GoRoute(
-        path: "/",
+        path: "/calendar",
         builder: (context, state) {
-          return const OtpCode();
+          return const CalendarPage();
         },
       ),
       GoRoute(
@@ -46,9 +48,15 @@ class RouterClass {
         },
       ),
       GoRoute(
-        path: "/",
+        path: "/register",
         builder: (context, state) {
           return const Register();
+          },
+      ),
+       GoRoute(
+        path: "/eventForm",
+        builder: (context, state) {
+          return const EventFormPage();
         },
       ),
     ],
