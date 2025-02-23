@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myapp/cal_event_page';
+import 'package:myapp/cal_event_page.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
