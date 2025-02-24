@@ -7,6 +7,9 @@ import 'package:myapp/calender.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
+import 'package:myapp/onboarding.dart';
+import 'package:myapp/order_confirmed.dart';
+import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/user_type_selection.dart';
 
@@ -18,9 +21,10 @@ class RouterClass {
         path: "/",
         builder: (context, state) {
           return const HomeScreen();
+
         },
       ),
-       GoRoute(
+      GoRoute(
         path: "/chat",
         builder: (context, state) {
           return const ChatHomeScreen();
@@ -54,12 +58,17 @@ class RouterClass {
         path: "/register",
         builder: (context, state) {
           return const Register();
-          },
+        },
       ),
-       GoRoute(
+      GoRoute(
         path: "/chat",
-        builder: (context, state) {
-          return const ChatHomeScreen();
+        builder: (context, state) => const ChatHomeScreen(),
+      ),
+      GoRoute(
+        path: "/eventForm",
+        builder: (context, state) => const CalEventPage(),
+      ),
+
         },
       ),
     ],
