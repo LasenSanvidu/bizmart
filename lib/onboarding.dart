@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/intro_screens/intro_screen1.dart';
 import 'package:myapp/intro_screens/intro_screen2.dart';
@@ -16,7 +17,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   // page controller
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
 
   bool onLastPage = false;
 
@@ -75,10 +76,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onLastPage
                     ? GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return HomeScreen();
-                          }));
+                          context.go('/home');
                         },
                         child: Text(
                           'done',

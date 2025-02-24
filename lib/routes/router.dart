@@ -3,6 +3,7 @@ import 'package:myapp/cal_event_page.dart';
 import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/Register.dart';
 import 'package:myapp/calender.dart';
+import 'package:myapp/delivery_address.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
@@ -15,13 +16,18 @@ import 'package:myapp/user_type_selection.dart';
 
 class RouterClass {
   final router = GoRouter(
-    initialLocation: "/",
+    initialLocation: "/onboarding",
     routes: [
       GoRoute(
-        path: "/",
+        path: "/onboarding",
+        builder: (context, state) {
+          return const OnboardingScreen();
+        },
+      ),
+      GoRoute(
+        path: "/home",
         builder: (context, state) {
           return const HomeScreen();
-
         },
       ),
       GoRoute(
@@ -66,10 +72,7 @@ class RouterClass {
       ),
       GoRoute(
         path: "/eventForm",
-        builder: (context, state) => const CalEventPage(),
-      ),
-
-        },
+        builder: (context, state) => const EventFormPage(),
       ),
       GoRoute(
         path: "/otp_code",
@@ -81,6 +84,18 @@ class RouterClass {
         path: "/otp_confirmation",
         builder: (context, state) {
           return const OtpConfirmation();
+        },
+      ),
+      GoRoute(
+        path: "/my_profile",
+        builder: (context, state) {
+          return const Profile();
+        },
+      ),
+      GoRoute(
+        path: "/delivery_address",
+        builder: (context, state) {
+          return const DeliveryAddressPage();
         },
       ),
     ],
