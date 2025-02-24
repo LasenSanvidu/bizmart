@@ -60,7 +60,7 @@ class CustomDrawer extends StatelessWidget {
           DrawerMenuItem(
             icon: Icons.chat,
             title: "Chats",
-            route: "/",
+            route: "/chat",
           ),
           DrawerMenuItem(
             icon: Icons.local_shipping,
