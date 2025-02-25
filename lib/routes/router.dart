@@ -12,6 +12,7 @@ import 'package:myapp/onboarding.dart';
 import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/user_type_selection.dart';
+import 'package:myapp/business_dashboard.dart';
 
 class RouterClass {
   final router = GoRouter(
