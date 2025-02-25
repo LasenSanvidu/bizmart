@@ -21,7 +21,6 @@ class RouterClass {
         path: "/",
         builder: (context, state) {
           return const HomeScreen();
-
         },
       ),
       GoRoute(
@@ -33,7 +32,7 @@ class RouterClass {
       GoRoute(
         path: "/main",
         builder: (context, state) {
-          return const MainSettings();
+          return MainSettings();  // Removed 'const' to fix the error
         },
       ),
       GoRoute(
@@ -58,17 +57,6 @@ class RouterClass {
         path: "/register",
         builder: (context, state) {
           return const Register();
-        },
-      ),
-      GoRoute(
-        path: "/chat",
-        builder: (context, state) => const ChatHomeScreen(),
-      ),
-      GoRoute(
-        path: "/eventForm",
-        builder: (context, state) => const CalEventPage(),
-      ),
-
         },
       ),
       GoRoute(
