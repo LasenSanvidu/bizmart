@@ -65,7 +65,7 @@ class CustomDrawer extends StatelessWidget {
           DrawerMenuItem(
             icon: Icons.local_shipping,
             title: "Delivery Address",
-            route: "/",
+            route: "/delivery_address",
           ),
           DrawerMenuItem(
             icon: Icons.payment,
