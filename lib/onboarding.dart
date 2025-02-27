@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/intro_screens/intro_screen1.dart';
 import 'package:myapp/intro_screens/intro_screen2.dart';
 import 'package:myapp/intro_screens/intro_screen3.dart';
-import 'package:myapp/login.dart';
+import 'package:myapp/login_and_register/login.dart';
 import 'package:myapp/main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -83,7 +83,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: Text(
                           'done',
                           style: GoogleFonts.poppins(
-                              fontSize: 19, fontWeight: FontWeight.w600),
+                            fontSize: 19,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       )
                     : GestureDetector(

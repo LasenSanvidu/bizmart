@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainSettings extends StatelessWidget {
   MainSettings({super.key});
@@ -23,7 +24,11 @@ class MainSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Dashboard")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Dashboard"),
+        backgroundColor: Colors.white,
+      ),
       drawer: CustomDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -41,8 +46,20 @@ class MainSettings extends StatelessWidget {
               items: adImages.map((imageUrl) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(imageUrl,
-                      fit: BoxFit.cover, width: double.infinity),
+                  //child: Image.network(imageUrl, fit: BoxFit.cover, width: double.infinity),
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        width: double.infinity,
+                        child: Icon(Icons.broken_image,
+                            size: 50, color: Colors.grey),
+                      );
+                    },
+                  ),
                 );
               }).toList(),
             ),
@@ -73,8 +90,19 @@ class MainSettings extends StatelessWidget {
               itemBuilder: (context, index) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child:
-                      Image.network(trendingImages[index], fit: BoxFit.cover),
+                  //child:
+                  //Image.network(trendingImages[index], fit: BoxFit.cover),
+                  child: Image.network(
+                    trendingImages[index],
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: Icon(Icons.broken_image,
+                            size: 50, color: Colors.grey),
+                      );
+                    },
+                  ),
                 );
               },
             ),
@@ -92,6 +120,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -131,13 +160,21 @@ class CustomDrawer extends StatelessWidget {
             padding: EdgeInsets.all(16.0),
             child: ElevatedButton.icon(
               onPressed: () {
-                context.push("/login");
+                context.go("/login");
               },
-              icon: Icon(Icons.power_settings_new, color: Colors.purple),
-              label: Text("Log Out"),
+              icon: Icon(
+                Icons.power_settings_new,
+                color: Colors.deepPurpleAccent,
+                size: 25,
+              ),
+              label: Text(
+                "Log Out",
+                style: GoogleFonts.poppins(
+                    fontSize: 20, fontWeight: FontWeight.w600),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 236, 213, 240),
-                foregroundColor: Colors.black,
+                backgroundColor: Color.fromARGB(255, 186, 163, 251),
+                foregroundColor: Colors.white,
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -169,7 +206,7 @@ class DrawerMenuItem extends StatelessWidget {
       leading: Icon(icon, color: Colors.black),
       title: Text(title, style: TextStyle(fontSize: 16)),
       onTap: () {
-        context.push(route);
+        context.go(route);
       },
     );
   }

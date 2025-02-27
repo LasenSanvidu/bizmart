@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/profile_tiles.dart';
-import 'package:myapp/component/bottom_nav.dart';
-
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -20,11 +18,12 @@ class _ProfileState extends State<Profile> {
         children: [
           // CUSTOM APP BAR
           Padding(
-            padding: const EdgeInsets.only(left: 30.0, right: 18.0, top: 25, bottom: 25),
+            padding: const EdgeInsets.only(
+                left: 30.0, right: 18.0, top: 25, bottom: 25),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              /*Image.asset(
+                /*Image.asset(
                 'lib/Icons/arrow.png',
                 height: 25,
                 color: const Color.fromARGB(255, 157, 157, 157),
@@ -33,26 +32,26 @@ class _ProfileState extends State<Profile> {
                   shape: BoxShape.circle,
                 ),
               ),*/
-                GestureDetector(
+                /*GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Profile()),
                     );
                   },
-                  child: Container(  
+                  child: Container(
                     padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(  
-                      color: Colors.grey[300],    
-                      shape: BoxShape.circle,   
-                    ),  
-                    child: Image.asset(  
-                      'lib/Icons/arrow.png',  
-                      height: 20,  // image height  
-                      //color: const Color.fromARGB(255, 39, 39, 39),  
-                    ),  
-                  ), 
-                ),   
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.asset(
+                      'lib/Icons/arrow.png',
+                      height: 20, // image height
+                      //color: const Color.fromARGB(255, 39, 39, 39),
+                    ),
+                  ),
+                ),*/
                 Text(
                   'Account',
                   style: GoogleFonts.abel(
@@ -60,7 +59,7 @@ class _ProfileState extends State<Profile> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                GestureDetector(
+                /*GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -71,7 +70,7 @@ class _ProfileState extends State<Profile> {
                     Icons.more_vert_rounded,
                     size: 30,
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -79,7 +78,7 @@ class _ProfileState extends State<Profile> {
           // purple BOX
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: Container( 
+            child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 gradient: LinearGradient(
@@ -94,20 +93,24 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: ClipOval(  
-                        child: Image.asset(  
-                          'assets/BUser.jpg',  
-                          height: 102,  
-                          width: 102,  
-                          fit: BoxFit.cover,
-                        ),  
-                      )
+                        padding: const EdgeInsets.only(left: 30),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/BUser.jpg',
+                            height: 102,
+                            width: 102,
+                            fit: BoxFit.cover,
+                          ),
+                        )),
+                    SizedBox(
+                      width: 35,
                     ),
-                    SizedBox(width: 35,),
                     Column(
                       children: [
-                        Text('Ingredia Nutrisha', style: TextStyle(fontSize: 17),),
+                        Text(
+                          'Ingredia Nutrisha',
+                          style: TextStyle(fontSize: 17),
+                        ),
                         Text('A/N: 0987654321'),
                         SizedBox(height: 20),
                         Padding(
@@ -116,7 +119,8 @@ class _ProfileState extends State<Profile> {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => Profile()),
+                                MaterialPageRoute(
+                                    builder: (context) => Profile()),
                               );
                             },
                             child: Container(
@@ -128,10 +132,10 @@ class _ProfileState extends State<Profile> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'EDIT PROFILE', 
+                                  'EDIT PROFILE',
                                   style: GoogleFonts.aBeeZee(
-                                    color: Color(0xFF456FE8), 
-                                    fontWeight: FontWeight.bold, 
+                                    color: Color(0xFF456FE8),
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -152,22 +156,50 @@ class _ProfileState extends State<Profile> {
           Expanded(
             child: ListView(
               children: [
-                ProfileTiles(iconImgUrl: 'lib/Icons/notification.png', title: 'Notifications', subtitle: 'Change Notification Settings', navigateTo: Profile(),),
+                ProfileTiles(
+                  iconImgUrl: 'lib/Icons/notification.png',
+                  title: 'Notifications',
+                  subtitle: 'Change Notification Settings',
+                  pageIndex: 5,
+                ),
                 SizedBox(height: 15),
-                ProfileTiles(iconImgUrl: 'lib/Icons/password.png', title: 'Password', subtitle: 'Change Password Settings', navigateTo: Profile()),
+                ProfileTiles(
+                  iconImgUrl: 'lib/Icons/password.png',
+                  title: 'Password',
+                  subtitle: 'Change Password Settings',
+                  pageIndex: 5,
+                ),
                 SizedBox(height: 15),
-                ProfileTiles(iconImgUrl: 'lib/Icons/clock.png', title: 'Time', subtitle: 'Change Time Settings', navigateTo: Profile()),
+                ProfileTiles(
+                  iconImgUrl: 'lib/Icons/clock.png',
+                  title: 'Time',
+                  subtitle: 'Change Time Settings',
+                  pageIndex: 5,
+                ),
                 SizedBox(height: 15),
-                ProfileTiles(iconImgUrl: 'lib/Icons/diagram.png', title: 'Statistics', subtitle: 'Change Statistics Settings', navigateTo: Profile()),
+                ProfileTiles(
+                  iconImgUrl: 'lib/Icons/diagram.png',
+                  title: 'Statistics',
+                  subtitle: 'Change Statistics Settings',
+                  pageIndex: 5,
+                ),
                 SizedBox(height: 15),
-                ProfileTiles(iconImgUrl: 'lib/Icons/credit-card.png', title: 'Payment', subtitle: 'Change Payment Settings', navigateTo: Profile()),
+                ProfileTiles(
+                  iconImgUrl: 'lib/Icons/credit-card.png',
+                  title: 'Payment',
+                  subtitle: 'Change Payment Settings',
+                  pageIndex: 5,
+                ),
                 SizedBox(height: 15),
-                ProfileTiles(iconImgUrl: 'lib/Icons/calendar.png', title: 'Date', subtitle: 'Change Date Settings', navigateTo: Profile()),
+                ProfileTiles(
+                  iconImgUrl: 'lib/Icons/calendar.png',
+                  title: 'Date',
+                  subtitle: 'Change Date Settings',
+                  pageIndex: 5,
+                ),
               ],
             ),
           ),
-
-          BottomNav(),
         ],
       ),
     );

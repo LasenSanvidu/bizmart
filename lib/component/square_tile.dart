@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/login.dart';
+import 'package:myapp/login_and_register/login.dart';
 
 class SquareTile extends StatelessWidget {
   final String imagePath;
@@ -13,15 +13,9 @@ class SquareTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Login())
-        );
+            context, MaterialPageRoute(builder: (context) => const Login()));
       },
-      child: Image.asset(
-        imagePath,
-        width: 60,
-        height: 60
-      ),
+      child: Image.asset(imagePath, width: 60, height: 60),
     );
   }
 }

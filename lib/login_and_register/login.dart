@@ -250,7 +250,7 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GestureDetector(
                   onTap: () {
-                    context.push("/main");
+                    context.push("/flow_screen");
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(builder: (context) => const Login())

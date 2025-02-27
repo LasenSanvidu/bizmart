@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/button.dart';
-import 'package:myapp/login.dart';
+import 'package:myapp/login_and_register/login.dart';
 
 class WelcomeSecond extends StatelessWidget {
   const WelcomeSecond({super.key});
