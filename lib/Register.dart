@@ -9,6 +9,10 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+
+  final TextEditingController firstNameController = TextEditingController();
+  // final TextEditingController firstNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +67,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 40),
 
                   // Input Fields
-                  buildTextField('First Name'),
+                  buildTextField('First Name',firstNameController),
                   buildTextField('Last Name'),
                   buildTextField('Email'),
                   buildTextField('Phone Number'),
@@ -136,10 +140,11 @@ class _RegisterState extends State<Register> {
   }
 
   // Reusable TextField Widget
-  Widget buildTextField(String label, {bool obscureText = false}) {
+  Widget buildTextField(String label, TextEditingController controller, {bool obscureText = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextField(
+        controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
           labelText: label,
