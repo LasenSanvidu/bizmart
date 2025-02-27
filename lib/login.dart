@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        context.go("/register");
+                        context.push("/register");
                         _isLoginSelected = false;
                       });
                     },
@@ -250,7 +250,7 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/main");
+                    context.push("/main");
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(builder: (context) => const Login())

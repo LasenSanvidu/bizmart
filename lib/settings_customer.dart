@@ -33,7 +33,7 @@ class SettingsPage extends StatelessWidget {
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
-                    context.go("/main"); // Allows going back
+                    context.push("/main"); // Allows going back
                   },
                 ),
               ),

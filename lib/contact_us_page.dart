@@ -20,7 +20,11 @@ class _ProductShowcaseScreenState extends State<ProductShowcaseScreen> {
   }
 
   void fetchData() async {
-    FirebaseFirestore.instance.collection('shoeBrand').doc('BrandID').get().then((doc) {
+    FirebaseFirestore.instance
+        .collection('shoeBrand')
+        .doc('BrandID')
+        .get()
+        .then((doc) {
       if (doc.exists) {
         setState(() {
           brand = doc['name'] ?? "Product Showcase";
@@ -32,7 +36,8 @@ class _ProductShowcaseScreenState extends State<ProductShowcaseScreen> {
                   "image": (category as Map<String, dynamic>)["image"] ?? "",
                   "name": category["name"] ?? "Unnamed Category",
                 };
-              }).toList() ?? [];
+              }).toList() ??
+              [];
         });
       }
     });
@@ -103,7 +108,9 @@ class _ProductShowcaseScreenState extends State<ProductShowcaseScreen> {
                               padding: EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black, width: 1), // ✅ Outline Added
+                                border: Border.all(
+                                    color: Colors.black,
+                                    width: 1), // ✅ Outline Added
                               ),
                               child: Row(
                                 children: [
@@ -122,7 +129,9 @@ class _ProductShowcaseScreenState extends State<ProductShowcaseScreen> {
                                   /// **Category Name**
                                   Text(
                                     categories[index]["name"],
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500),
                                   ),
                                 ],
                               ),
@@ -132,7 +141,8 @@ class _ProductShowcaseScreenState extends State<ProductShowcaseScreen> {
                       : Center(
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Text("No categories available", style: TextStyle(color: Colors.black54)),
+                            child: Text("No categories available",
+                                style: TextStyle(color: Colors.black54)),
                           ),
                         ),
                 ],
@@ -150,14 +160,16 @@ class _ProductShowcaseScreenState extends State<ProductShowcaseScreen> {
             ),
             child: ElevatedButton(
               onPressed: () {
-                context.go("/contact_us"); // ✅ Navigate to Contact Us Page
+                context.push("/contact_us"); // ✅ Navigate to Contact Us Page
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.purple,
                 padding: EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
-              child: Text("Contact Us", style: TextStyle(color: Colors.white, fontSize: 16)),
+              child: Text("Contact Us",
+                  style: TextStyle(color: Colors.white, fontSize: 16)),
             ),
           ),
         ],
