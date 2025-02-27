@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,9 +11,51 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-
   final TextEditingController firstNameController = TextEditingController();
-  // final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  bool isLoading = false;
+
+  String getValueFromInput(TextEditingController controller) {
+    return controller.text.trim();
+  }
+
+  Future<void> register() async {
+    try {
+      var userRef = _firestore.collection('users');
+
+      var mobileCheck = await userRef
+          .where('mobile', isEqualTo: getValueFromInput(mobileController))
+          .get();
+      if (mobileCheck.docs.isNotEmpty) {
+        throw Exception("Mobile Already Exists!");
+      }
+
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+              email: getValueFromInput(emailController),
+              password: getValueFromInput(passwordController));
+
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        "first_name": getValueFromInput(firstNameController),
+        "last_name": getValueFromInput(lastNameController),
+        "mobile": getValueFromInput(mobileController),
+        "username": getValueFromInput(userNameController),
+      });
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message ?? "Something went")));
+    } on Exception catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString().replaceFirst("Exception: ", "") )));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +111,13 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 40),
 
                   // Input Fields
-                  buildTextField('First Name',firstNameController),
-                  buildTextField('Last Name'),
-                  buildTextField('Email'),
-                  buildTextField('Phone Number'),
-                  buildTextField('Username'),
-                  buildTextField('Password', obscureText: true),
+                  buildTextField('First Name', firstNameController),
+                  buildTextField('Last Name', lastNameController),
+                  buildTextField('Email', emailController),
+                  buildTextField('Phone Number', mobileController),
+                  buildTextField('Username', userNameController),
+                  buildTextField('Password', passwordController,
+                      obscureText: true),
 
                   SizedBox(height: 30),
 
@@ -109,11 +154,7 @@ class _RegisterState extends State<Register> {
 
                   // Sign Up Button
                   ElevatedButton(
-                    onPressed: () {
-                      print("Sign Up Clicked!");
-                      context.go("/otp_code");
-                      // Sign-up action
-                    },
+                    onPressed: register,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
@@ -140,7 +181,8 @@ class _RegisterState extends State<Register> {
   }
 
   // Reusable TextField Widget
-  Widget buildTextField(String label, TextEditingController controller, {bool obscureText = false}) {
+  Widget buildTextField(String label, TextEditingController controller,
+      {bool obscureText = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextField(
