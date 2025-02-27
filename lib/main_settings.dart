@@ -126,7 +126,7 @@ class CustomDrawer extends StatelessWidget {
             padding: EdgeInsets.all(16.0),
             child: ElevatedButton.icon(
               onPressed: () async {
-                await _authService.signOut();
+               await _authService.signOut();
                 context.push("/login");
               },
               icon: Icon(Icons.power_settings_new, color: Colors.purple),
