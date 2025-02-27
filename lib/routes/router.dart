@@ -1,18 +1,13 @@
 import 'package:go_router/go_router.dart';
-import 'package:myapp/cal_event_page.dart';
 import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/Register.dart';
-import 'package:myapp/calender.dart';
+import 'package:myapp/contact_us.dart';
 import 'package:myapp/login.dart';
-import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/otp_code.dart';
 import 'package:myapp/otp_confirmation.dart';
-import 'package:myapp/onboarding.dart';
-import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/user_type_selection.dart';
-import 'package:myapp/business_dashboard.dart';
 
 class RouterClass {
   final router = GoRouter(
@@ -21,7 +16,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return const HomeScreen();
+          return ContactUsPage();
         },
       ),
       GoRoute(
@@ -33,7 +28,7 @@ class RouterClass {
       GoRoute(
         path: "/main",
         builder: (context, state) {
-          return MainSettings();  // Removed 'const' to fix the error
+          return MainSettings(); // Removed 'const' to fix the error
         },
       ),
       GoRoute(
@@ -72,6 +67,13 @@ class RouterClass {
           return const OtpConfirmation();
         },
       ),
+      //  GoRoute(
+      //   path: "",
+      //   builder: (context, state) {
+      //     return const ();
+      //   },
+
+      // ),
     ],
   );
 }

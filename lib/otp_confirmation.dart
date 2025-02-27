@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'main_settings.dart';
 
 class OtpConfirmation extends StatefulWidget {
   const OtpConfirmation({super.key});

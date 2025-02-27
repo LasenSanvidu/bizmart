@@ -41,7 +41,8 @@ class MainSettings extends StatelessWidget {
               items: adImages.map((imageUrl) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(imageUrl, fit: BoxFit.cover, width: double.infinity),
+                  child: Image.network(imageUrl,
+                      fit: BoxFit.cover, width: double.infinity),
                 );
               }).toList(),
             ),
@@ -72,7 +73,8 @@ class MainSettings extends StatelessWidget {
               itemBuilder: (context, index) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(trendingImages[index], fit: BoxFit.cover),
+                  child:
+                      Image.network(trendingImages[index], fit: BoxFit.cover),
                 );
               },
             ),
@@ -96,27 +98,38 @@ class CustomDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             accountName: Text(
               "Austin Miller",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
-            accountEmail: Text("austinM@gmail.com", style: TextStyle(color: Colors.black)),
+            accountEmail: Text("austinM@gmail.com",
+                style: TextStyle(color: Colors.black)),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Color.fromARGB(255, 207, 207, 207),
-              child: Icon(Icons.person, size: 50, color: Color.fromARGB(255, 159, 159, 159)),
+              child: Icon(Icons.person,
+                  size: 50, color: Color.fromARGB(255, 159, 159, 159)),
             ),
             decoration: BoxDecoration(color: Colors.white),
           ),
-
-          DrawerMenuItem(icon: Icons.shopping_bag, title: "My order", route: "/"),
-          DrawerMenuItem(icon: Icons.person, title: "My Profile", route: "/"),
+          DrawerMenuItem(
+              icon: Icons.shopping_bag, title: "My order", route: "/main"),
+          DrawerMenuItem(
+              icon: Icons.person, title: "My Profile", route: "/main"),
           DrawerMenuItem(icon: Icons.chat, title: "Chats", route: "/chat"),
-          DrawerMenuItem(icon: Icons.local_shipping, title: "Delivery Address", route: "/"),
-          DrawerMenuItem(icon: Icons.payment, title: "Payment Methods", route: "/"),
-          DrawerMenuItem(icon: Icons.mail, title: "Contact Us", route: "/"),
-          DrawerMenuItem(icon: Icons.settings, title: "Settings", route: "/settings"),
-          DrawerMenuItem(icon: Icons.help, title: "Helps Us FAQs", route: "/"),
-
+          // DrawerMenuItem(
+          //     icon: Icons.local_shipping,
+          //     title: "Delivery Address",
+          //     route: "/main"),
+          DrawerMenuItem(
+              icon: Icons.payment, title: "Payment Methods", route: "/"),
+          DrawerMenuItem(icon: Icons.mail, title: "Contact Us", route: "/main"),
+          DrawerMenuItem(
+              icon: Icons.settings, title: "Settings", route: "/settings"),
+          DrawerMenuItem(
+              icon: Icons.help, title: "Helps Us FAQs", route: "/main"),
+          
           Spacer(),
-
           Padding(
             padding: EdgeInsets.all(16.0),
             child: ElevatedButton.icon(
@@ -147,7 +160,11 @@ class DrawerMenuItem extends StatelessWidget {
   final String title;
   final String route;
 
-  const DrawerMenuItem({super.key, required this.icon, required this.title, required this.route});
+  const DrawerMenuItem(
+      {super.key,
+      required this.icon,
+      required this.title,
+      required this.route});
 
   @override
   Widget build(BuildContext context) {
