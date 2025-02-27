@@ -4,6 +4,7 @@ import 'package:myapp/Register.dart';
 import 'package:myapp/contact_us.dart';
 import 'package:myapp/login.dart';
 import 'package:myapp/main_settings.dart';
+import 'package:myapp/onboarding.dart';
 import 'package:myapp/otp_code.dart';
 import 'package:myapp/otp_confirmation.dart';
 import 'package:myapp/settings_customer.dart';
@@ -16,7 +17,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return ContactUsPage();
+          return OnboardingScreen();
         },
       ),
       GoRoute(
@@ -67,13 +68,12 @@ class RouterClass {
           return const OtpConfirmation();
         },
       ),
-      //  GoRoute(
-      //   path: "",
-      //   builder: (context, state) {
-      //     return const ();
-      //   },
-
-      // ),
+      GoRoute(
+        path: "/contact",
+        builder: (context, state) {
+          return const ContactUsPage();
+        },
+      ),
     ],
   );
 }
