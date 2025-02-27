@@ -53,7 +53,12 @@ class Chat extends StatelessWidget {
     String fileName = Uuid().v1();
     int status = 1;
     if (imageFile != null) {
-      await _firestore.collection('chat').doc(chatId).collection('chats').doc(fileName).set({
+      await _firestore
+          .collection('chat')
+          .doc(chatId)
+          .collection('chats')
+          .doc(fileName)
+          .set({
         "sendBy": _auth.currentUser?.displayName,
         "message": "",
         "type": "img",
@@ -61,18 +66,27 @@ class Chat extends StatelessWidget {
       });
     }
 
-    var ref = FirebaseStorage.instance.ref().child('Images').child("$fileName.jpg");
+    var ref =
+        FirebaseStorage.instance.ref().child('Images').child("$fileName.jpg");
 
     var uploadTask = await ref.putFile(imageFile!).catchError((error) async {
-      await _firestore.collection('chat').doc(chatId).collection('chats').doc(fileName).delete();
+      await _firestore
+          .collection('chat')
+          .doc(chatId)
+          .collection('chats')
+          .doc(fileName)
+          .delete();
       status = 0;
     });
 
     if (status == 1) {
       String imageUrl = await ref.getDownloadURL();
-      await _firestore.collection('chat').doc(chatId).collection('chats').doc(fileName).update({
-        "message": imageUrl
-      });
+      await _firestore
+          .collection('chat')
+          .doc(chatId)
+          .collection('chats')
+          .doc(fileName)
+          .update({"message": imageUrl});
       print(imageUrl);
     }
   }
@@ -85,7 +99,11 @@ class Chat extends StatelessWidget {
         "type": "text",
         "time": FieldValue.serverTimestamp(),
       };
-      await _firestore.collection('chat').doc(chatId).collection('chats').add(messages);
+      await _firestore
+          .collection('chat')
+          .doc(chatId)
+          .collection('chats')
+          .add(messages);
       _message.clear();
     } else {
       print("Enter some text to send");
@@ -98,10 +116,9 @@ class Chat extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        
-        
         title: StreamBuilder<DocumentSnapshot>(
-          stream: _firestore.collection('users').doc(userMap['uid']).snapshots(),
+          stream:
+              _firestore.collection('users').doc(userMap['uid']).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.data != null) {
               return Column(
@@ -127,13 +144,19 @@ class Chat extends StatelessWidget {
               height: size.height / 1.25,
               width: size.width,
               child: StreamBuilder<QuerySnapshot>(
-                stream: _firestore.collection('chat').doc(chatId).collection('chats').orderBy("time", descending: false).snapshots(),
+                stream: _firestore
+                    .collection('chat')
+                    .doc(chatId)
+                    .collection('chats')
+                    .orderBy("time", descending: false)
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.data != null) {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                        Map<String, dynamic> map = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                        Map<String, dynamic> map = snapshot.data!.docs[index]
+                            .data() as Map<String, dynamic>;
                         return messages(size, map, context);
                       },
                     );
@@ -196,7 +219,10 @@ class Chat extends StatelessWidget {
               ),
               child: Text(
                 map['message'],
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
               ),
             ),
           )

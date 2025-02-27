@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/component/flow_screen.dart';
 
 class ProfileTiles extends StatefulWidget {
   final String iconImgUrl;
   final String title;
   final String subtitle;
-  final Widget navigateTo;
+  final int pageIndex;
 
   const ProfileTiles({
     super.key,
     required this.iconImgUrl,
     required this.title,
     required this.subtitle,
-    required this.navigateTo,
+    required this.pageIndex,
   });
 
   @override
@@ -27,10 +28,13 @@ class _ProfileTilesState extends State<ProfileTiles> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(
+          /*Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => widget.navigateTo),
-          );
+          );*/
+
+          MainScreen.of(context)
+              ?.updateIndex(widget.pageIndex); // Navigates to NotificationPage
         },
         child: MouseRegion(
           onEnter: (_) => setState(() => _isHovered = true),
@@ -42,8 +46,13 @@ class _ProfileTilesState extends State<ProfileTiles> {
               color: _isHovered ? Colors.grey[300] : Colors.white,
               borderRadius: BorderRadius.circular(10),
               boxShadow: _isHovered
-                ? [BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 1)]
-                : [],
+                  ? [
+                      BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          spreadRadius: 1)
+                    ]
+                  : [],
             ),
             child: Row(
               children: [

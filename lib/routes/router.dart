@@ -1,13 +1,14 @@
 import 'package:go_router/go_router.dart';
 import 'package:myapp/cal_event_page.dart';
 import 'package:myapp/chat_homeScreen.dart';
-import 'package:myapp/Register.dart';
+import 'package:myapp/login_and_register/Register.dart';
 import 'package:myapp/calender.dart';
-import 'package:myapp/login.dart';
+import 'package:myapp/component/flow_screen.dart';
+import 'package:myapp/login_and_register/login.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/main_settings.dart';
-import 'package:myapp/otp_code.dart';
-import 'package:myapp/otp_confirmation.dart';
+import 'package:myapp/otp/otp_code.dart';
+import 'package:myapp/otp/otp_confirmation.dart';
 import 'package:myapp/onboarding.dart';
 import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
@@ -22,7 +23,7 @@ class RouterClass {
       GoRoute(
         path: "/",
         builder: (context, state) {
-          return  HomeScreen();
+          return OnboardingScreen();
         },
       ),
       GoRoute(
@@ -34,7 +35,7 @@ class RouterClass {
       GoRoute(
         path: "/main",
         builder: (context, state) {
-          return MainSettings();  // Removed 'const' to fix the error
+          return MainSettings(); // Removed 'const' to fix the error
         },
       ),
       GoRoute(
@@ -71,6 +72,12 @@ class RouterClass {
         path: "/otp_confirmation",
         builder: (context, state) {
           return const OtpConfirmation();
+        },
+      ),
+      GoRoute(
+        path: "/flow_screen",
+        builder: (context, state) {
+          return const MainScreen();
         },
       ),
     ],
