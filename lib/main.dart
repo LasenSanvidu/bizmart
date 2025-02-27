@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
       //home:OrderConfirmed(),
       // home: Profile(),
       //home: ChatHomeScreen(),
-      
     );
   }
 }
@@ -83,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          context.go("/login");
+                          context.push("/login");
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,

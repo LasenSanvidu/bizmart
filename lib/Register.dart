@@ -113,7 +113,7 @@ class _RegisterState extends State<Register> {
             left: 20,
             child: ElevatedButton(
               onPressed: () {
-                context.go("/login");
+                context.push("/login");
               },
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),

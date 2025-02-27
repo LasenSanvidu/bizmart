@@ -33,7 +33,7 @@ class _OtpConfirmationState extends State<OtpConfirmation> {
                 });
                 // navigate to another page when the animation finishes
                 Future.delayed(composition.duration, () {
-                  context.go("/main");
+                  context.push("/main");
                 });
               },
               repeat: false, // disable looping
