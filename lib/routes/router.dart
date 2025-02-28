@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/cal_event_page.dart';
 import 'package:myapp/chat_homeScreen.dart';
@@ -16,62 +17,48 @@ import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/contact_us_page.dart';
 
 class RouterClass {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
   final router = GoRouter(
+    navigatorKey:
+        GlobalKey<NavigatorState>(), // ✅ Added to handle back navigation
     initialLocation: "/",
     routes: [
       GoRoute(
         path: "/",
-        builder: (context, state) {
-          return  HomeScreen();
-        },
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: "/chat",
-        builder: (context, state) {
-          return const ChatHomeScreen();
-        },
+        builder: (context, state) => const ChatHomeScreen(),
       ),
       GoRoute(
         path: "/main",
-        builder: (context, state) {
-          return MainSettings();  // Removed 'const' to fix the error
-        },
+        builder: (context, state) => MainSettings(),
       ),
       GoRoute(
         path: "/settings",
-        builder: (context, state) {
-          return const SettingsPage();
-        },
+        builder: (context, state) => const SettingsPage(),
       ),
       GoRoute(
         path: "/login",
-        builder: (context, state) {
-          return const Login();
-        },
+        builder: (context, state) => const Login(),
       ),
       GoRoute(
         path: "/user_type_selection",
-        builder: (context, state) {
-          return const UserTypeSelection();
-        },
+        builder: (context, state) => const UserTypeSelection(),
       ),
       GoRoute(
         path: "/register",
-        builder: (context, state) {
-          return const Register();
-        },
+        builder: (context, state) => const Register(),
       ),
       GoRoute(
         path: "/otp_code",
-        builder: (context, state) {
-          return const OtpCode();
-        },
+        builder: (context, state) => const OtpCode(),
       ),
       GoRoute(
         path: "/otp_confirmation",
-        builder: (context, state) {
-          return const OtpConfirmation();
-        },
+        builder: (context, state) => const OtpConfirmation(),
       ),
     ],
   );
