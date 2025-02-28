@@ -12,6 +12,7 @@ import 'package:myapp/otp/otp_confirmation.dart';
 import 'package:myapp/onboarding.dart';
 import 'package:myapp/profile.dart';
 import 'package:myapp/settings_customer.dart';
+import 'package:myapp/store_ui.dart';
 import 'package:myapp/user_type_selection.dart';
 import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/contact_us_page.dart';
@@ -24,6 +25,7 @@ class RouterClass {
         path: "/",
         builder: (context, state) {
           return OnboardingScreen();
+          //return StoreUi();
         },
       ),
       GoRoute(
@@ -78,6 +80,12 @@ class RouterClass {
         path: "/flow_screen",
         builder: (context, state) {
           return const MainScreen();
+        },
+      ),
+      GoRoute(
+        path: "/products",
+        builder: (context, state) {
+          return StoreUi();
         },
       ),
     ],
