@@ -4,6 +4,7 @@ import 'package:myapp/main_settings.dart';
 import 'package:myapp/notification_page.dart';
 import 'package:myapp/order_confirmed.dart';
 import 'package:myapp/profile.dart';
+import 'package:myapp/stripe/payment.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -22,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     MainSettings(),
     OrderConfirmed(),
     OrderConfirmed(),
-    OrderConfirmed(),
+    Payment(),
     Profile(),
     NotificationPage(),
   ];
