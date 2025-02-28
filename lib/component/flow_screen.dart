@@ -1,9 +1,11 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/notification_page.dart';
 import 'package:myapp/order_confirmed.dart';
 import 'package:myapp/profile.dart';
+import 'package:myapp/store_ui.dart';
 import 'package:myapp/stripe/payment.dart';
 
 class MainScreen extends StatefulWidget {
@@ -22,10 +24,11 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     MainSettings(),
     OrderConfirmed(),
-    OrderConfirmed(),
+    BusinessDashboardScreen(),
     Payment(),
     Profile(),
     NotificationPage(),
+    StoreUi(),
   ];
 
   void updateIndex(int index) {

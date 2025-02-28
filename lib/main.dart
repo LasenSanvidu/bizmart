@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/provider/store_provider.dart';
 import 'package:myapp/routes/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:myapp/stripe/consts.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -12,8 +14,14 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await _setup();
-  runApp(
+  /*runApp(
     const MyApp(),
+  );*/
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => StoreProvider(),
+      child: MyApp(),
+    ),
   );
 }
 
