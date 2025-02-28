@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';  // Import Firebase Auth
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:myapp/component/square_tile.dart';
 
 class Login extends StatefulWidget {
@@ -11,9 +13,13 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _obscured = true;
   bool _rememberPassword = true;
   bool _isLoginSelected = true;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -27,6 +33,38 @@ class _LoginState extends State<Login> {
     });
   }
 
+  // Login function using Firebase Authentication
+  Future<void> _login() async {
+    try {
+      // Authenticate user with Firebase Authentication
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // After authentication, fetch user data from Firestore (optional)
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentSnapshot userDoc = await firestore.collection('users').doc(userCredential.user!.uid).get();
+
+      if (userDoc.exists) {
+        // Access user data (e.g., name, profile picture, etc.)
+        var userData = userDoc.data();
+        print('User data from Firestore: $userData');
+      } else {
+        print('No additional user data found in Firestore');
+      }
+
+      // Navigate to the next screen (e.g., main page)
+      context.go("/main");
+
+    } catch (e) {
+      print('Login failed: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed. Please try again.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +73,6 @@ class _LoginState extends State<Login> {
         child: Center(
           child: Column(
             children: [
-              //SizedBox(height: 9),
-
               // G R E E T I N G S
               Text(
                 "Login",
@@ -132,7 +168,8 @@ class _LoginState extends State<Login> {
                     color: const Color.fromARGB(255, 255, 255, 255),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const TextField(
+                  child: TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 0.0),
@@ -171,7 +208,8 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
-                    obscureText: true,
+                    controller: _passwordController,
+                    obscureText: _obscured,
                     decoration: InputDecoration(
                         prefixIcon: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 0.0),
@@ -224,8 +262,7 @@ class _LoginState extends State<Login> {
                                 ? Icons.check_box_outlined
                                 : Icons.check_box_outline_blank,
                             color: const Color.fromARGB(255, 157, 151, 151),
-                            size:
-                                20.0, // Adjust the size to make the outline thinner
+                            size: 20.0,
                           ),
                         ),
                       ),
@@ -249,13 +286,7 @@ class _LoginState extends State<Login> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GestureDetector(
-                  onTap: () {
-                    context.go("/main");
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => const Login())
-                    // );
-                  },
+                  onTap: _login,
                   child: Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
