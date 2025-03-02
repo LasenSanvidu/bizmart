@@ -91,7 +91,7 @@ class _RegisterState extends State<Register> {
           SnackBar(content: Text(e.message ?? "Authentication Error")));
     } on FirebaseException catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? "Database Error")));
+          .showSnackBar(SnackBar(content: Text(e.message ?? "Something went wrong!")));
     } on Exception catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(error.toString().replaceFirst("Exception: ", ""))));
