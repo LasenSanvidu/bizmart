@@ -31,7 +31,6 @@ class SoleCraftDashboard extends StatefulWidget {
 }
 
 class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
-  // These values would eventually come from a database
   final orderStats = {
     'totalOrders': 476,
     'completedOrders': 186,
@@ -41,18 +40,17 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
     'awaitingConfirmation': 47,
   };
 
-  // Define colors directly with RGB values for better visibility
-  final completedColor = const Color(0xFF4CAF50); // Green
-  final awaitingColor = const Color(0xFF2196F3); // Blue
-  final overdueColor = const Color(0xFFF44336); // Red
-  final pendingColor = const Color(0xFFFF9800); // Orange
-  final cancelledColor = const Color(0xFF9C27B0); // Purple
+  final completedColor = const Color(0xFF4CAF50);
+  final awaitingColor = const Color(0xFF2196F3);
+  final overdueColor = const Color(0xFFF44336);
+  final pendingColor = const Color(0xFFFF9800);
+  final cancelledColor = const Color(0xFF9C27B0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFE6E6FA), // Light purple
+        backgroundColor: const Color(0xFFE6E6FA),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -72,9 +70,8 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
         builder: (context, constraints) {
           return SingleChildScrollView(
             child: Container(
-              height:
-                  constraints.maxHeight, // Set height to max available height
-              color: const Color(0xFFE6E6FA), // Light purple
+              height: constraints.maxHeight,
+              color: const Color(0xFFE6E6FA),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -256,7 +253,6 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // Legend removed from here
                         const Divider(),
                         const SizedBox(height: 8),
                         _buildOrderStatusItem('Completed Tasks',
