@@ -138,6 +138,116 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
     );
   }
 
+  Widget _buildSummaryCards(bool isTablet) {
+    return GridView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: isTablet ? 3 : 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: isTablet ? 2 : 1.5,
+      ),
+      children: [
+        _buildSummaryCard(
+          'Total Orders',
+          orderStats['totalOrders']!,
+          Icons.shopping_bag_outlined,
+          const Color(0xFF6A1B9A),
+        ),
+        _buildSummaryCard(
+          'Completed',
+          orderStats['completedOrders']!,
+          Icons.check_circle_outline,
+          completedColor,
+        ),
+        _buildSummaryCard(
+          'Overdue',
+          orderStats['overdueOrders']!,
+          Icons.timer_off_outlined,
+          overdueColor,
+        ),
+        _buildSummaryCard(
+          'Pending',
+          orderStats['pendingOrders']!,
+          Icons.pending_outlined,
+          pendingColor,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSummaryCard(
+      String title, int count, IconData icon, Color color) {
+    return FadeTransition(
+      opacity: _animation,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: color,
+                      size: 20,
+                    ),
+                  ),
+                  Icon(
+                    Icons.more_horiz,
+                    color: Colors.grey[400],
+                    size: 20,
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Text(
+                '$count',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: color,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildLegendItem(String label, Color color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
