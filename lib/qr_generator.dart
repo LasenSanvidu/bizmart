@@ -84,40 +84,99 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(color: Colors.deepPurple))
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Your Referral Code",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Share Your Referral Code",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "When friends scan your code, you both get rewards!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        QrImageView(
+                          data: "$baseUrl$referralCode",
+                          size: 200.0,
+                          embeddedImageStyle: const QrEmbeddedImageStyle(
+                            size: Size(40, 40),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SelectableText(
+                          "Your Code: $referralCode",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  QrImageView(
-                    data: "$baseUrl$referralCode",
-                    size: 200.0,
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple.shade50,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  const SizedBox(height: 20),
-                  SelectableText(
-                    "Code: $referralCode",
-                    style: const TextStyle(
-                      fontSize: 16,
+                  child: Text(
+                    "$referralCount ${referralCount == 1 ? 'friend' : 'friends'} have used your code",
+                    style: TextStyle(
+                      color: Colors.deepPurple.shade800,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "$referralCount ${referralCount == 1 ? 'person has' : 'people have'} used your code",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
+                ),
+                const SizedBox(height: 40),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.redeem),
+                  label: const Text("View My Rewards"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                ],
-              ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RewardsScreen()));
+                  },
+                ),
+              ],
             ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -130,6 +189,26 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
         ],
+      ),
+    );
+  }
+}
+
+class RewardsScreen extends StatelessWidget {
+  const RewardsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Rewards'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: const Center(
+        child: Text('Rewards coming soon...'),
       ),
     );
   }
