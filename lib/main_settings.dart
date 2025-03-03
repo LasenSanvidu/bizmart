@@ -1,19 +1,50 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/services/auth_service.dart';
 
-class MainSettings extends StatelessWidget {
-  MainSettings({super.key});
+class MainSettings extends StatefulWidget {
+  const MainSettings({super.key});
 
+  @override
+  State<MainSettings> createState() => _MainSettingsState();
+}
+
+class _MainSettingsState extends State<MainSettings> {
   final List<String> adImages = [
     "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg",
   ];
 
-  final List<String> trendingImages = [
-    "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg",
-  ];
+  List<String> trendingImages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch images from Firestore
+    fetchTrendingImages();
+  }
+
+// Method to fetch images from Firestore
+  Future<void> fetchTrendingImages() async {
+    try {
+      // Fetch data from Firestore collection (assuming collection name is 'trending_images')
+      final snapshot =
+          await FirebaseFirestore.instance.collection('trending_images').get();
+      List<String> imageUrls = [];
+      snapshot.docs.forEach((doc) {
+        imageUrls.add(
+            doc['url']); // Assuming the field containing the image URL is 'url'
+      });
+
+      setState(() {
+        trendingImages = imageUrls; // Set the state with fetched URLs
+      });
+    } catch (e) {
+      print("Error fetching images: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
