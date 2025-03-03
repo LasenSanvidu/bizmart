@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/login.dart';
+import 'package:myapp/login_and_register/login.dart';
 import 'chat.dart';
-
 
 class ChatHomeScreen extends StatefulWidget {
   const ChatHomeScreen({super.key});
@@ -12,7 +11,8 @@ class ChatHomeScreen extends StatefulWidget {
   State<ChatHomeScreen> createState() => _ChatHomeScreenState();
 }
 
-class _ChatHomeScreenState extends State<ChatHomeScreen> with WidgetsBindingObserver {
+class _ChatHomeScreenState extends State<ChatHomeScreen>
+    with WidgetsBindingObserver {
   Map<String, dynamic> userMap = {};
   bool isLoading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -26,7 +26,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with WidgetsBindingObse
     setStatus("Online");
   }
 
-  void setStatus(String status) async{
+  void setStatus(String status) async {
     await _firestore.collection("users").doc(_auth.currentUser?.uid).update({
       "status": status,
     });
@@ -99,10 +99,13 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with WidgetsBindingObse
         leading: Icon(Icons.menu),
         title: Align(
           alignment: Alignment.center,
-          child: Text('Chat',style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),),
+          child: Text(
+            'Chat',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         actions: [
           IconButton(

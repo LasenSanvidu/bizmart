@@ -31,11 +31,16 @@ class BusinessDashboardScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Buttons for different sections
-            _buildDashboardButton(context, Icons.pie_chart, "Summary", "/summary"),
-            _buildDashboardButton(context, Icons.bar_chart, "Transactions", "/transactions"),
-            _buildDashboardButton(context, Icons.insert_chart, "Statistics", "/statistics"),
-            _buildDashboardButton(context, Icons.inventory, "Products", "/products"),
-            _buildDashboardButton(context, Icons.category, "Categories", "/categories"),
+            _buildDashboardButton(
+                context, Icons.pie_chart, "Summary", "/summary"),
+            _buildDashboardButton(
+                context, Icons.bar_chart, "Transactions", "/transactions"),
+            _buildDashboardButton(
+                context, Icons.insert_chart, "Statistics", "/statistics"),
+            _buildDashboardButton(
+                context, Icons.inventory, "Products", "/products"),
+            _buildDashboardButton(
+                context, Icons.category, "Categories", "/categories"),
           ],
         ),
       ),
@@ -43,7 +48,8 @@ class BusinessDashboardScreen extends StatelessWidget {
   }
 
   // Helper method to create buttons
-  Widget _buildDashboardButton(BuildContext context, IconData icon, String title, String route) {
+  Widget _buildDashboardButton(
+      BuildContext context, IconData icon, String title, String route) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ElevatedButton(
@@ -53,7 +59,8 @@ class BusinessDashboardScreen extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.purple[100],
           padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         child: Row(
           children: [
@@ -61,7 +68,10 @@ class BusinessDashboardScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black),
             ),
           ],
         ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'main_settings.dart';
+//import 'main_settings.dart';
 
 class OtpConfirmation extends StatefulWidget {
   const OtpConfirmation({super.key});
@@ -33,7 +33,7 @@ class _OtpConfirmationState extends State<OtpConfirmation> {
                 });
                 // navigate to another page when the animation finishes
                 Future.delayed(composition.duration, () {
-                  context.push("/main");
+                  context.push("/flow_screen");
                 });
               },
               repeat: false, // disable looping

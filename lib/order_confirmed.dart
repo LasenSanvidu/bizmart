@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:myapp/component/bottom_nav.dart';
+import 'package:myapp/component/flow_screen.dart';
 import 'package:myapp/component/button.dart';
 
 class OrderConfirmed extends StatefulWidget {
@@ -29,7 +29,9 @@ class _OrderConfirmedState extends State<OrderConfirmed> {
               ),
             ),
           ),
-          SizedBox(height: 40,), // early 30
+          SizedBox(
+            height: 40,
+          ), // early 30
           Image.asset(
             'assets/ring_o.png',
           ),
@@ -41,8 +43,10 @@ class _OrderConfirmedState extends State<OrderConfirmed> {
               fontSize: 28,
             ),
           ),
-          SizedBox(height: 4,),
-            Column(
+          SizedBox(
+            height: 4,
+          ),
+          Column(
             children: [
               Text(
                 'Your order has been confirmed, we will send',
@@ -54,12 +58,29 @@ class _OrderConfirmedState extends State<OrderConfirmed> {
               ),
             ],
           ),
-          SizedBox(height: 105),// early 115
-          Button(buttonText: '     Go to Orders     ', navigateTo: OrderConfirmed(), backgroundColor: Color(0xFFF5F5F5), color: Colors.black,),
+          SizedBox(height: 130), // early 115
+          Button(
+            buttonText: '     Go to Orders     ',
+            //navigateTo: OtpConfirmation(),
+            onPressed: () {
+              MainScreen.of(context)
+                  ?.updateIndex(1); // Updates the current index
+            },
+            backgroundColor: Color(0xFFF5F5F5),
+            color: Colors.black,
+          ),
           SizedBox(height: 14),
-          Button(buttonText: 'Continue Shopping', navigateTo: OrderConfirmed(), backgroundColor: Color(0xFF9C9BFB), color: Colors.white,),
-          SizedBox(height: 34),
-          BottomNav(),
+          Button(
+            buttonText: 'Continue Shopping',
+            //navigateTo: OrderConfirmed(),
+            onPressed: () {
+              MainScreen.of(context)
+                  ?.updateIndex(0); // Updates the current index
+            },
+            backgroundColor: Color(0xFF9C9BFB),
+            color: Colors.white,
+          ),
+          //
         ],
       ),
     );
