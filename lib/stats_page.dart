@@ -90,6 +90,54 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth > 600;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('SoleCraft'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {},
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Container(
+            color: const Color(0xFFF8F9FA),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 24),
+                    _buildSummaryCards(isTablet),
+                    const SizedBox(height: 24),
+                    _buildStatisticsCard(isTablet),
+                    const SizedBox(height: 24),
+                    _buildOrderStatusList(),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildLegendItem(String label, Color color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
