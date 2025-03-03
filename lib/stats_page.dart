@@ -248,62 +248,176 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
     );
   }
 
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+  Widget _buildStatisticsCard(bool isTablet) {
+    return FadeTransition(
+      opacity: _animation,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.all(24.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+              spreadRadius: 1,
+            ),
+          ],
         ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w500,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Order Distribution',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color(0xFF333333),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F5F5),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 16,
+                        color: Color(0xFF6A1B9A),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'This Month',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              height: isTablet ? 300 : 250,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  PieChart(
+                    PieChartData(
+                      sectionsSpace: 2,
+                      centerSpaceRadius: 70,
+                      borderData: FlBorderData(show: false),
+                      sections: [
+                        _buildPieChartSection(
+                          orderStats['completedOrders']!,
+                          completedColor,
+                          Icons.check_circle,
+                        ),
+                        _buildPieChartSection(
+                          orderStats['awaitingConfirmation']!,
+                          awaitingColor,
+                          Icons.hourglass_empty,
+                        ),
+                        _buildPieChartSection(
+                          orderStats['overdueOrders']!,
+                          overdueColor,
+                          Icons.timer_off,
+                        ),
+                        _buildPieChartSection(
+                          orderStats['pendingOrders']!,
+                          pendingColor,
+                          Icons.pending,
+                        ),
+                        _buildPieChartSection(
+                          orderStats['cancelledOrders']!,
+                          cancelledColor,
+                          Icons.cancel,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Completed',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${(orderStats['completedOrders']! / orderStats['totalOrders']! * 100).toStringAsFixed(0)}%',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: completedColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Wrap(
+              spacing: 16,
+              runSpacing: 12,
+              children: [
+                _buildLegendItem('Completed', completedColor),
+                _buildLegendItem('Awaiting', awaitingColor),
+                _buildLegendItem('Overdue', overdueColor),
+                _buildLegendItem('Pending', pendingColor),
+                _buildLegendItem('Cancelled', cancelledColor),
+              ],
+            ),
+          ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildOrderStatusItem(String title, int count, Color dotColor) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Container(
-            width: 12,
-            height: 12,
-            decoration: BoxDecoration(
-              color: dotColor,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.grey[700],
-              fontSize: 14,
-            ),
-          ),
-          const Spacer(),
-          Text(
-            '$count',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-        ],
       ),
     );
   }
-}
+
+  PieChartSectionData _buildPieChartSection(int count, Color color, IconData icon) {
+    final percentage = (count / orderStats['totalOrders']! * 100);
+    return PieChartSectionData(
+      value: count.toDouble(),
+      color: color,
+      radius: 40,
+      title: '${percentage.toStringAsFixed(0)}%',
+      titleStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        shadows: [Shadow(color: Colors.black26, blurRadius: 2)],
+      ),
+      badgeWidget: _getCustomBadge(icon, color),
+      badgePositionPercentageOffset: 1.3,
+    );
+  }
