@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/login.dart';
 import 'chat.dart';
 
-
 class ChatHomeScreen2 extends StatefulWidget {
   const ChatHomeScreen2({super.key});
 
@@ -18,6 +17,9 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _search = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // New state variable to toggle search bar visibility
+  bool isSearchMode = false;
 
   @override
   void initState() {
@@ -35,10 +37,8 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      //Online
       setStatus("Online");
     } else {
-      //Offline
       setStatus("Offline");
     }
   }
@@ -62,7 +62,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
       QuerySnapshot querySnapshot = await firestore
           .collection("users")
           .where("email", isEqualTo: _search.text)
-          .orderBy("name", descending: false) // Sorting alphabetically
+          .orderBy("name", descending: false)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -94,86 +94,96 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        leading: Icon(Icons.menu),
-        title: Align(
-          alignment: Alignment.center,
-          child: Text('Chat',style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => logOut(context),
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
-      body: isLoading
-          ? Center(
-              child: SizedBox(
-                height: size.height / 20,
-                width: size.height / 20,
-                child: const CircularProgressIndicator(),
-              ),
-            )
-          : Column(
-              children: [
-                SizedBox(height: size.height / 20),
-                SizedBox(
-                  height: size.height / 14,
-                  width: size.width / 1.2,
-                  child: TextField(
-                    controller: _search,
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: Icon(Icons.menu),
+          title: isSearchMode
+              ? TextField(
+                  controller: _search,
+                  decoration: InputDecoration(
+                    hintText: 'Search by email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: onSearch,
+                    ),
+                  ),
+                )
+              : Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Chat',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ),
-                SizedBox(height: size.height / 30),
-                ElevatedButton(
-                    onPressed: onSearch, child: const Text('Search')),
-                SizedBox(height: size.height / 30),
-                userMap.isNotEmpty
-                    ? ListTile(
-                        onTap: () {
-                          String roomId = chatId(
-                            _auth.currentUser?.displayName ?? 'Unknown',
-                            userMap['name'] ??
-                                'Unknown', // Handle null values here
-                          );
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => Chat(
-                                chatId: roomId,
-                                userMap: userMap,
-                              ),
-                            ),
-                          );
-                        },
-                        leading: userMap['image'] != null &&
-                                userMap['image'].isNotEmpty
-                            ? Image.network(userMap['image'])
-                            : const Icon(Icons.person, color: Colors.black),
-                        title: Text(
-                          userMap['name'] ?? 'No Name', // Default to 'No Name'
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        subtitle: Text(userMap['email'] ??
-                            'No Email'), // Default to 'No Email'
-                        trailing: const Icon(Icons.chat, color: Colors.black),
-                      )
-                    : Container(),
-              ],
+          actions: [
+            IconButton(
+              icon: Icon(isSearchMode ? Icons.close : Icons.search),
+              onPressed: () {
+                setState(() {
+                  isSearchMode = !isSearchMode;
+                  // Reset the search text if the user toggles off the search bar
+                  if (!isSearchMode) {
+                    _search.clear();
+                    userMap = {};
+                  }
+                });
+              },
             ),
+          ],
+        ),
+        body: isLoading
+            ? Center(
+                child: SizedBox(
+                  height: size.height / 20,
+                  width: size.height / 20,
+                  child: const CircularProgressIndicator(),
+                ),
+              )
+            : Column(
+                children: [
+                  // Removed the search TextField from here
+                  SizedBox(height: size.height / 30),
+                  userMap.isNotEmpty
+                      ? ListTile(
+                          onTap: () {
+                            String roomId = chatId(
+                              _auth.currentUser?.displayName ?? 'Unknown',
+                              userMap['name'] ?? 'Unknown',
+                            );
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Chat(
+                                  chatId: roomId,
+                                  userMap: userMap,
+                                ),
+                              ),
+                            );
+                          },
+                          leading: userMap['image'] != null &&
+                                  userMap['image'].isNotEmpty
+                              ? Image.network(userMap['image'])
+                              : const Icon(Icons.person, color: Colors.black),
+                          title: Text(
+                            userMap['name'] ?? 'No Name',
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          subtitle: Text(userMap['email'] ?? 'No Email'),
+                          trailing: const Icon(Icons.chat, color: Colors.black),
+                        )
+                      : Container(),
+                ],
+              ),
+      ),
     );
   }
 }
