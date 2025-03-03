@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/cal_event_page.dart';
@@ -23,6 +24,18 @@ class RouterClass {
     navigatorKey:
         GlobalKey<NavigatorState>(), // ✅ Added to handle back navigation
     initialLocation: "/",
+    redirect: (context, state) {
+      final user = FirebaseAuth.instance.currentUser;
+      final isLoggingIn = state.matchedLocation == "/login";
+
+      if (user == null && !isLoggingIn) {
+        return "/login"; // Redirect to login if not authenticated
+      }
+      if (user != null && isLoggingIn) {
+        return "/main"; // Redirect to home if already logged in
+      }
+      return null; // Allow normal navigation
+    },
     routes: [
       GoRoute(
         path: "/",
