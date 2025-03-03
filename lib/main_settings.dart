@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/services/auth_service.dart';
 
 class MainSettings extends StatelessWidget {
   MainSettings({super.key});
 
   final List<String> adImages = [
     "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg",
-    "https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg",
-    "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
-    "https://source.unsplash.com/600x400/?fries",
-    "https://source.unsplash.com/600x400/?snacks",
   ];
 
   final List<String> trendingImages = [
     "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg",
-    "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg",
-    "https://source.unsplash.com/600x600/?businessman",
-    "https://source.unsplash.com/600x600/?technology",
   ];
 
   @override
@@ -87,7 +81,8 @@ class MainSettings extends StatelessWidget {
 
 // Drawer Menu
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+   CustomDrawer({super.key});
+   final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +125,8 @@ class CustomDrawer extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: ElevatedButton.icon(
-              onPressed: () {
+              onPressed: () async {
+                await _authService.signOut();
                 context.push("/login");
               },
               icon: Icon(Icons.power_settings_new, color: Colors.purple),
