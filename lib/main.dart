@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          context.go("/user_type_selection");
+                          context.go("/login");
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
