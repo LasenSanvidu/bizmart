@@ -44,7 +44,7 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
   final awaitingColor = const Color(0xFF2196F3);
   final overdueColor = const Color(0xFFF44336);
   final pendingColor = const Color(0xFFFF9800);
-  final cancelledColor = const Color(0xFF9C27B0);
+  final cancelledColor = const Color(0xFF9C37B0);
 
   @override
   Widget build(BuildContext context) {
