@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:animations/animations.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class StatsPage extends StatelessWidget {
+  const StatsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +11,28 @@ class MyApp extends StatelessWidget {
       title: 'SoleCraft',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.purple,
-        scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'Roboto',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF6A1B9A),
+          brightness: Brightness.light,
+        ),
+        fontFamily: 'Poppins',
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+        cardTheme: CardTheme(
+          elevation: 2,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: Color(0xFF6A1B9A),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: Color(0xFF6A1B9A)),
+        ),
       ),
       home: const SoleCraftDashboard(),
     );
@@ -44,7 +60,7 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
   final awaitingColor = const Color(0xFF2196F3);
   final overdueColor = const Color(0xFFF44336);
   final pendingColor = const Color(0xFFFF9800);
-  final cancelledColor = const Color(0xFF9C37B0);
+  final cancelledColor = const Color(0xFF9C27B0);
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +119,7 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
+                          // ignore: deprecated_member_use
                           color: Colors.black.withOpacity(0.05),
                           blurRadius: 10,
                           offset: const Offset(0, 5),
@@ -220,6 +237,7 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
+                                      // ignore: deprecated_member_use
                                       color: Colors.black.withOpacity(0.05),
                                       blurRadius: 5,
                                       spreadRadius: 1,
