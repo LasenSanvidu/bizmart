@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
-  final Widget navigateTo;
+  final Widget? navigateTo;
   final String? buttonText;
   final Color backgroundColor;
   final Color color;
+  final VoidCallback? onPressed;
 
-  const Button({super.key, this.buttonText, required this.navigateTo, required this.backgroundColor, required this.color});
+  const Button(
+      {super.key,
+      this.buttonText,
+      this.navigateTo,
+      required this.backgroundColor,
+      required this.color,
+      this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +26,14 @@ class Button extends StatelessWidget {
         ),
       ),
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => navigateTo),
-        );
+        if (onPressed != null) {
+          onPressed!(); // Execute custom function
+        } else if (navigateTo != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => navigateTo!),
+          );
+        }
       },
       child: Text(
         buttonText!,

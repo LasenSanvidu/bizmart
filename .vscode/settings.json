@@ -1,3 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.sourceDirectory": "C:/Users/lasen/OneDrive/Documents/IIT/2nd yr/Sem 01/SDGP/Test/linux"
 }

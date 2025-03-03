@@ -56,7 +56,7 @@ class UserTypeSelection extends StatelessWidget {
                     UserTypeButton(
                       label: "Business",
                       onPressed: () {
-                        context.go("/login");
+                        context.push("/login");
                         debugPrint("Business button pressed");
                       },
                     ),
@@ -64,7 +64,7 @@ class UserTypeSelection extends StatelessWidget {
                     UserTypeButton(
                       label: "Consumer",
                       onPressed: () {
-                        context.go("/login");
+                        context.push("/login");
                         debugPrint("Consumer button pressed");
                       },
                     ),

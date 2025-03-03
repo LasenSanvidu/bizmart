@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myapp/login.dart';
+import 'package:myapp/login_and_register/login.dart';
 import 'chat.dart';
 
 class ChatHomeScreen extends StatefulWidget {

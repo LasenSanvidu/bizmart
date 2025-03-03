@@ -82,7 +82,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: Text(
                           'done',
                           style: GoogleFonts.poppins(
-                              fontSize: 19, fontWeight: FontWeight.w600),
+                            fontSize: 19,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       )
                     : GestureDetector(

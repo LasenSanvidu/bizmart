@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'main.dart';
+import '../main.dart';
 import 'otp_confirmation.dart';
 
 class OtpCode extends StatelessWidget {
@@ -25,18 +25,20 @@ class OtpCode extends StatelessWidget {
                 );
               },
               child: Image.asset('lib/Icons/left_arrow.png',
-                height: 20, width: 20
-              ),
+                  height: 20, width: 20),
             ),
           ),
-          
-          SizedBox(height: 15,),
+
+          SizedBox(
+            height: 15,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'Verification',
-                style: GoogleFonts.poppins(fontSize: 25, fontWeight: FontWeight.w600),
+                style: GoogleFonts.poppins(
+                    fontSize: 25, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 12),
               Text(
@@ -68,8 +70,9 @@ class OtpCode extends StatelessWidget {
             child: Form(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(5, (index) =>
-                  SizedBox(
+                children: List.generate(
+                  5,
+                  (index) => SizedBox(
                     height: 68,
                     width: 64,
                     child: TextField(
@@ -85,10 +88,10 @@ class OtpCode extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        focusedBorder: OutlineInputBorder(  
-                          borderRadius: BorderRadius.circular(30),  
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide(color: Colors.green),
-                        ),  
+                        ),
                       ),
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(1),
@@ -114,10 +117,7 @@ class OtpCode extends StatelessWidget {
               ),
               Text(
                 ' again',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w500
-                ),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
               ),
               Text(
                 '  00:20',
@@ -128,7 +128,7 @@ class OtpCode extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height:50),
+          SizedBox(height: 50),
 
           Padding(
             padding: const EdgeInsets.only(left: 25, right: 25),
@@ -137,44 +137,45 @@ class OtpCode extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    context.go("/otp_confirmation"
-                    );
+                    context.push("/otp_confirmation");
                   },
-                  child: Container( 
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),   
-                    child: Text(  
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 14),
+                    child: Text(
                       'resend',
-                      style: GoogleFonts.poppins(  
-                        color: const Color.fromARGB(255, 160, 126, 255),  
-                        fontWeight: FontWeight.w500,  
-                        fontSize: 18,  
-                      ),  
-                    ),  
+                      style: GoogleFonts.poppins(
+                        color: const Color.fromARGB(255, 160, 126, 255),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                 ),
-                SizedBox(height:10),
-                
+                SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => OtpConfirmation()),
+                      MaterialPageRoute(
+                          builder: (context) => OtpConfirmation()),
                     );
                   },
-                  child: Container(  
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),  
-                    decoration: BoxDecoration(  
-                      color: const Color.fromARGB(255, 160, 126, 255),  
-                      borderRadius: BorderRadius.circular(5),  
-                    ),  
-                    child: Text(  
-                      'Confirm',  
-                      style: GoogleFonts.poppins(  
-                        color: Colors.white,  
-                        fontWeight: FontWeight.w500,  
-                        fontSize: 18,  
-                      ),  
-                    ),  
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 160, 126, 255),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      'Confirm',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                 ),
               ],

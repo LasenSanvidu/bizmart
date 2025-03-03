@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/square_tile.dart';
+import 'package:myapp/services/auth_service.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -15,6 +16,10 @@ class _LoginState extends State<Login> {
   bool _rememberPassword = true;
   bool _isLoginSelected = true;
 
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
   void _togglePasswordVisibility() {
     setState(() {
       _obscured = !_obscured;
@@ -25,6 +30,22 @@ class _LoginState extends State<Login> {
     setState(() {
       _rememberPassword = !_rememberPassword;
     });
+  }
+
+  void _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    var user = await _authService.signIn(email, password);
+
+    if (!mounted) return;
+
+    if (user != null) {
+      context.push('/main');
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Login Failed!')));
+    }
   }
 
   @override
@@ -95,7 +116,7 @@ class _LoginState extends State<Login> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        context.go("/register");
+                        context.push("/register");
                         _isLoginSelected = false;
                       });
                     },
@@ -132,7 +153,8 @@ class _LoginState extends State<Login> {
                     color: const Color.fromARGB(255, 255, 255, 255),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const TextField(
+                  child: TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 0.0),
@@ -171,6 +193,7 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                         prefixIcon: const Padding(
@@ -249,13 +272,7 @@ class _LoginState extends State<Login> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GestureDetector(
-                  onTap: () {
-                    context.go("/main");
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => const Login())
-                    // );
-                  },
+                  onTap: _login,
                   child: Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
