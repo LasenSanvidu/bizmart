@@ -39,7 +39,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
       setState(() {
         notifications.add('${message.notification?.title}: ${message.notification?.body}');
       });
-      
+      _showNotification(message);
     }
   });
 
@@ -52,7 +52,14 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
   });
 
   
+
+  
 }
+
+  void _showNotification(RemoteMessage message) {
+    // Implement your notification display logic here
+    print("Notification received: ${message.notification?.title} - ${message.notification?.body}");
+  }
 
   void setStatus(String status) async {
     if (_auth.currentUser != null) {
