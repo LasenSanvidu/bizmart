@@ -17,6 +17,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
   Map<String, dynamic> userMap = {};
   bool isLoading = false;
   List<String> notifications = [];
+  List<Map<String, dynamic>> recentChats = [];
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _search = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -51,10 +52,49 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
     }
   });
 
-  
+  _fetchLastChattedUsers()
 
   
 }
+Future<void> _fetchLastChattedUsers() async {
+  if (_auth.currentUser == null) return;
+
+  try {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("chats")
+        .where("users", arrayContains: _auth.currentUser!.uid)
+        .orderBy("lastMessageTime", descending: true)
+        .limit(5) // Get the last 5 chatted users
+        .get();
+
+    List<Map<String, dynamic>> chats = [];
+
+    for (var doc in querySnapshot.docs) {
+      Map<String, dynamic> chatData = doc.data() as Map<String, dynamic>;
+
+      // Get the other user
+      List<dynamic> users = chatData["users"];
+      String otherUserId = users.firstWhere((id) => id != _auth.currentUser!.uid);
+
+      // Fetch user details
+      DocumentSnapshot userDoc = await _firestore.collection("users").doc(otherUserId).get();
+
+      if (userDoc.exists) {
+        chats.add({
+          "name": userDoc["name"],
+          "lastMessage": chatData["lastMessage"],
+        });
+      }
+    }
+
+    setState(() {
+      recentChats = chats;
+    });
+  } catch (e) {
+    debugPrint("Error fetching last chats: $e");
+  }
+}
+
 
   void _showNotification(RemoteMessage message) {
     // Implement your notification display logic here
