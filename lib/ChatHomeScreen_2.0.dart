@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/login.dart';
 import 'chat.dart';
@@ -15,6 +16,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
     with WidgetsBindingObserver {
   Map<String, dynamic> userMap = {};
   bool isLoading = false;
+  List<String> notifications = [];
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _search = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -24,10 +26,33 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
 
   @override
   void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    setStatus("Online");
-  }
+  super.initState();
+
+  FirebaseMessaging.instance.requestPermission();
+
+  FirebaseMessaging.instance.getToken().then((token) {
+    print("Firebase Messaging Token: $token");
+  });
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (message.notification != null) {
+      setState(() {
+        notifications.add('${message.notification?.title}: ${message.notification?.body}');
+      });
+      
+    }
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    if (message.notification != null) {
+      setState(() {
+        notifications.add('${message.notification?.title}: ${message.notification?.body}');
+      });
+    }
+  });
+
+  
+}
 
   void setStatus(String status) async {
     if (_auth.currentUser != null) {
