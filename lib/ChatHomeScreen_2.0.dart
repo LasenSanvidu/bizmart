@@ -11,7 +11,8 @@ class ChatHomeScreen2 extends StatefulWidget {
   State<ChatHomeScreen2> createState() => _ChatHomeScreen2State();
 }
 
-class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingObserver {
+class _ChatHomeScreen2State extends State<ChatHomeScreen2>
+    with WidgetsBindingObserver {
   Map<String, dynamic> userMap = {};
   bool isLoading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,10 +29,12 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
     setStatus("Online");
   }
 
-  void setStatus(String status) async{
-    await _firestore.collection("users").doc(_auth.currentUser?.uid).update({
-      "status": status,
-    });
+  void setStatus(String status) async {
+    if (_auth.currentUser != null) {
+      await _firestore.collection("users").doc(_auth.currentUser!.uid).update({
+        "status": status,
+      });
+    }
   }
 
   @override
@@ -44,30 +47,23 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
   }
 
   String chatId(String user1, String user2) {
-    if (user1[0].toLowerCase().codeUnits[0] >
-        user2.toLowerCase().codeUnits[0]) {
-      return "$user1$user2";
-    } else {
-      return "$user2$user1";
-    }
+    return user1.compareTo(user2) > 0 ? "$user1$user2" : "$user2$user1";
   }
 
   void onSearch() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
     setState(() {
       isLoading = true;
     });
 
     try {
-      QuerySnapshot querySnapshot = await firestore
+      QuerySnapshot querySnapshot = await _firestore
           .collection("users")
           .where("email", isEqualTo: _search.text)
-          .orderBy("name", descending: false)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         setState(() {
-          userMap = querySnapshot.docs[0].data() as Map<String, dynamic>;
+          userMap = querySnapshot.docs.first.data() as Map<String, dynamic>;
           isLoading = false;
         });
       } else {
@@ -97,7 +93,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.menu),
+          leading: const Icon(Icons.menu),
           title: isSearchMode
               ? TextField(
                   controller: _search,
@@ -112,7 +108,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
                     ),
                   ),
                 )
-              : Align(
+              : const Align(
                   alignment: Alignment.center,
                   child: Text(
                     'Chat',
@@ -128,7 +124,6 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
               onPressed: () {
                 setState(() {
                   isSearchMode = !isSearchMode;
-                  // Reset the search text if the user toggles off the search bar
                   if (!isSearchMode) {
                     _search.clear();
                     userMap = {};
@@ -156,72 +151,89 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
                       ],
                     ),
                     if (userMap.isNotEmpty)
-                      ListTile(
-                        onTap: () {
-                          String currentUserName =
-                              _auth.currentUser?.displayName ?? 'Unknown';
-                          String otherUserName = userMap['name'] ?? 'Unknown';
-
-                          String roomId = chatId(currentUserName, otherUserName);
-
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => Chat(
-                                chatId: roomId,
-                                userMap: userMap,
-                              ),
-                            ),
-                          );
-                        },
-                        leading:
-                            userMap['image'] != null && userMap['image'].isNotEmpty
-                                ? CircleAvatar(
-                                    backgroundImage: NetworkImage(userMap['image']),
-                                  )
-                                : const Icon(Icons.person, color: Colors.black),
-                        title: Text(
-                          userMap['name'] ?? 'No Name',
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        subtitle: Text(userMap['email'] ?? 'No Email'),
-                        trailing: const Icon(Icons.chat, color: Colors.black),
+                        child: ListTile(
+                          onTap: () {
+                            String currentUserName =
+                                _auth.currentUser?.displayName ?? 'Unknown';
+                            String otherUserName = userMap['name'] ?? 'Unknown';
+
+                            String roomId =
+                                chatId(currentUserName, otherUserName);
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Chat(
+                                  chatId: roomId,
+                                  userMap: userMap,
+                                ),
+                              ),
+                            );
+                          },
+                          tileColor: Colors.black,
+                          leading: userMap['image'] != null &&
+                                  userMap['image'].isNotEmpty
+                              ? CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(userMap['image']),
+                                )
+                              : const Icon(Icons.person, color: Colors.white),
+                          title: Text(
+                            userMap['name'] ?? 'No Name',
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          trailing: const Icon(Icons.chat, color: Colors.white),
+                        ),
                       ),
                     const SizedBox(height: 20),
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance.collection("notifications").snapshots(),
+                        stream:
+                            _firestore.collection("notifications").snapshots(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Center(child: CircularProgressIndicator());
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
-                          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          if (!snapshot.hasData ||
+                              snapshot.data!.docs.isEmpty) {
                             return const Center(
                               child: Text("No notifications available"),
                             );
                           }
 
-                          List<DocumentSnapshot> notificationDocs = snapshot.data!.docs;
+                          List<DocumentSnapshot> notificationDocs =
+                              snapshot.data!.docs;
 
                           return ListView.builder(
                             itemCount: notificationDocs.length,
                             itemBuilder: (context, index) {
-                              var notificationData = notificationDocs[index].data() as Map<String, dynamic>;
+                              var notificationData = notificationDocs[index]
+                                  .data() as Map<String, dynamic>;
 
                               return Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: ListTile(
-                                  leading: const Icon(Icons.notifications, color: Colors.blue),
+                                  leading: const Icon(Icons.notifications,
+                                      color: Colors.blue),
                                   title: Text(
                                     notificationData['title'] ?? 'No Title',
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   subtitle: Text(
-                                    notificationData['body'] ?? 'No content available',
+                                    notificationData['body'] ??
+                                        'No content available',
                                   ),
                                 ),
                               );
@@ -237,11 +249,12 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
     );
   }
 }
+
 Widget _buildFilterButton(String label) {
   return ElevatedButton(
     onPressed: () {},
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: const Color.fromARGB(255, 175, 108, 187),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
