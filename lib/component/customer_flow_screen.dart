@@ -3,32 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/notification_page.dart';
-import 'package:myapp/order_confirmed.dart';
-import 'package:myapp/profile.dart';
-import 'package:myapp/store_ui.dart';
+import 'package:myapp/settings_customer.dart';
+import 'package:myapp/shop/my_store_ui.dart';
+import 'package:myapp/shop/shop.dart';
 import 'package:myapp/stripe/payment.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class CustomerFlowScreen extends StatefulWidget {
+  const CustomerFlowScreen({super.key});
 
-  static _MainScreenState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MainScreenState>();
+  static _CustomerFlowScreenState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_CustomerFlowScreenState>();
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<CustomerFlowScreen> createState() => _CustomerFlowScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
     MainSettings(),
-    OrderConfirmed(),
+    ShopPage(),
     BusinessDashboardScreen(),
     Payment(),
-    Profile(),
+    SettingsPage(),
     NotificationPage(),
-    StoreUi(),
+    //MyStoreUi(),
   ];
 
   void updateIndex(int index) {

@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/chat_homeScreen.dart';
+import 'package:myapp/component/business_flow_screens.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/login_and_register/Register.dart';
 import 'package:myapp/login_and_register/login.dart';
@@ -55,7 +57,7 @@ class RouterClass {
                 // Based on the result of _getInitialRoute, navigate to the right screen
                 return snapshot.data == "/login"
                     ? const Login()
-                    : MainSettings();
+                    : BusinessFlowScreens();
               },
             );
           },
@@ -66,7 +68,7 @@ class RouterClass {
         ),
         GoRoute(
           path: "/main",
-          builder: (context, state) => MainSettings(),
+          builder: (context, state) => BusinessFlowScreens(),
         ),
         GoRoute(
           path: "/settings",

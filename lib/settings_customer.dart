@@ -111,7 +111,7 @@ class SettingsPage extends StatelessWidget {
           )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      /*bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
         selectedItemColor: Colors.purple,
         unselectedItemColor: Colors.grey,
@@ -121,7 +121,7 @@ class SettingsPage extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
         ],
-      ),
+      ),*/
     );
   }
 }

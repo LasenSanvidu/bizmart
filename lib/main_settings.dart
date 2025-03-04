@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/Inquiry_page.dart';
 import 'package:myapp/services/auth_service.dart';
 
 class MainSettings extends StatelessWidget {
@@ -21,6 +22,17 @@ class MainSettings extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Dashboard"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.question_answer_rounded, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => InquiryPage()),
+              );
+            },
+          ),
+        ],
         backgroundColor: Colors.white,
       ),
       drawer: CustomDrawer(),
