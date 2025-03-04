@@ -191,9 +191,45 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
                       ),
                     const SizedBox(height: 20),
                     Expanded(
-                    child: Center(
-                        child: Text('Your chat list will be displayed here.')),
-                  ),
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance.collection("notifications").snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                            return const Center(
+                              child: Text("No notifications available"),
+                            );
+                          }
+
+                          List<DocumentSnapshot> notificationDocs = snapshot.data!.docs;
+
+                          return ListView.builder(
+                            itemCount: notificationDocs.length,
+                            itemBuilder: (context, index) {
+                              var notificationData = notificationDocs[index].data() as Map<String, dynamic>;
+
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ListTile(
+                                  leading: const Icon(Icons.notifications, color: Colors.blue),
+                                  title: Text(
+                                    notificationData['title'] ?? 'No Title',
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text(
+                                    notificationData['body'] ?? 'No content available',
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
