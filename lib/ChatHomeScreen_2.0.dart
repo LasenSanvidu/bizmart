@@ -139,51 +139,81 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2> with WidgetsBindingOb
           ],
         ),
         body: isLoading
-            ? Center(
-                child: SizedBox(
-                  height: size.height / 20,
-                  width: size.height / 20,
-                  child: const CircularProgressIndicator(),
-                ),
-              )
-            : Column(
-                children: [
-                  // Removed the search TextField from here
-                  SizedBox(height: size.height / 30),
-                  userMap.isNotEmpty
-                      ? ListTile(
-                          onTap: () {
-                            String roomId = chatId(
-                              _auth.currentUser?.displayName ?? 'Unknown',
-                              userMap['name'] ?? 'Unknown',
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => Chat(
-                                  chatId: roomId,
-                                  userMap: userMap,
-                                ),
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 5.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildFilterButton("All"),
+                        const SizedBox(width: 10),
+                        _buildFilterButton("Unread"),
+                        const SizedBox(width: 10),
+                        _buildFilterButton("Favourites"),
+                      ],
+                    ),
+                    if (userMap.isNotEmpty)
+                      ListTile(
+                        onTap: () {
+                          String currentUserName =
+                              _auth.currentUser?.displayName ?? 'Unknown';
+                          String otherUserName = userMap['name'] ?? 'Unknown';
+
+                          String roomId = chatId(currentUserName, otherUserName);
+
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Chat(
+                                chatId: roomId,
+                                userMap: userMap,
                               ),
-                            );
-                          },
-                          leading: userMap['image'] != null &&
-                                  userMap['image'].isNotEmpty
-                              ? Image.network(userMap['image'])
-                              : const Icon(Icons.person, color: Colors.black),
-                          title: Text(
-                            userMap['name'] ?? 'No Name',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500),
+                            ),
+                          );
+                        },
+                        leading:
+                            userMap['image'] != null && userMap['image'].isNotEmpty
+                                ? CircleAvatar(
+                                    backgroundImage: NetworkImage(userMap['image']),
+                                  )
+                                : const Icon(Icons.person, color: Colors.black),
+                        title: Text(
+                          userMap['name'] ?? 'No Name',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
                           ),
-                          subtitle: Text(userMap['email'] ?? 'No Email'),
-                          trailing: const Icon(Icons.chat, color: Colors.black),
-                        )
-                      : Container(),
-                ],
+                        ),
+                        subtitle: Text(userMap['email'] ?? 'No Email'),
+                        trailing: const Icon(Icons.chat, color: Colors.black),
+                      ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                    child: Center(
+                        child: Text('Your chat list will be displayed here.')),
+                  ),
+                  ],
+                ),
               ),
       ),
     );
   }
+}
+Widget _buildFilterButton(String label) {
+  return ElevatedButton(
+    onPressed: () {},
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.blueAccent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    ),
+    child: Text(
+      label,
+      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    ),
+  );
 }
