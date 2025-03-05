@@ -121,13 +121,13 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeader(),
+                    //_buildHeader(),
                     const SizedBox(height: 24),
                     _buildSummaryCards(isTablet),
                     const SizedBox(height: 24),
                     _buildStatisticsCard(isTablet),
                     const SizedBox(height: 24),
-                    _buildOrderStatusList(),
+                    //_buildOrderStatusList(),
                   ],
                 ),
               ),
@@ -282,7 +282,8 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF5F5F5),
                     borderRadius: BorderRadius.circular(20),
@@ -404,7 +405,8 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
     );
   }
 
-  PieChartSectionData _buildPieChartSection(int count, Color color, IconData icon) {
+  PieChartSectionData _buildPieChartSection(
+      int count, Color color, IconData icon) {
     final percentage = (count / orderStats['totalOrders']! * 100);
     return PieChartSectionData(
       value: count.toDouble(),
@@ -471,3 +473,4 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
       ],
     );
   }
+}

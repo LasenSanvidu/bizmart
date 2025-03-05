@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/component/flow_screen.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 
 class ProfileTiles extends StatefulWidget {
   final String iconImgUrl;
@@ -33,7 +33,7 @@ class _ProfileTilesState extends State<ProfileTiles> {
             MaterialPageRoute(builder: (context) => widget.navigateTo),
           );*/
 
-          MainScreen.of(context)
+          CustomerFlowScreen.of(context)
               ?.updateIndex(widget.pageIndex); // Navigates to NotificationPage
         },
         child: MouseRegion(
