@@ -10,6 +10,7 @@ import 'package:myapp/login_and_register/Register.dart';
 import 'package:myapp/login_and_register/login.dart';
 import 'package:myapp/otp/otp_code.dart';
 import 'package:myapp/otp/otp_confirmation.dart';
+import 'package:myapp/revieew.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/user_type_selection.dart';
 
@@ -49,15 +50,16 @@ class RouterClass {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Scaffold(
-                      body: Center(
-                          child:
-                              CircularProgressIndicator())); // Show loading screen
+                    body: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ); // Show loading screen
                 }
 
                 // Based on the result of _getInitialRoute, navigate to the right screen
                 return snapshot.data == "/login"
                     ? const Login()
-                    : BusinessFlowScreens();
+                    : CustomerFlowScreen();
               },
             );
           },
@@ -68,7 +70,7 @@ class RouterClass {
         ),
         GoRoute(
           path: "/main",
-          builder: (context, state) => BusinessFlowScreens(),
+          builder: (context, state) => CustomerFlowScreen(),
         ),
         GoRoute(
           path: "/settings",

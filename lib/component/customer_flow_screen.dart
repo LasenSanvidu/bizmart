@@ -20,6 +20,7 @@ class CustomerFlowScreen extends StatefulWidget {
 
 class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
   int _currentIndex = 0;
+  Widget? _activeScreen; // This will store the current screen being displayed
 
   final List<Widget> _pages = [
     MainSettings(),
@@ -33,7 +34,14 @@ class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
 
   void updateIndex(int index) {
     setState(() {
+      _activeScreen = null;
       _currentIndex = index;
+    });
+  }
+
+  void setNewScreen(Widget screen) {
+    setState(() {
+      _activeScreen = screen;
     });
   }
 
@@ -41,10 +49,11 @@ class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
+      body: _activeScreen ??
+          IndexedStack(
+            index: _currentIndex,
+            children: _pages,
+          ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 55,
         backgroundColor: Colors.black,
@@ -59,7 +68,7 @@ class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
         animationDuration: const Duration(milliseconds: 300),
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            updateIndex(index);
           });
         },
       ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/shop/product_details_users.dart';
 import 'package:myapp/shop/product_details_businessman.dart';
@@ -34,12 +35,15 @@ class ShopPage extends StatelessWidget {
                 final product = allProducts[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetailsUserPage(product: product),
-                        ));
+                    /*Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailsUserPage(product: product),
+                      ),
+                    );*/
+                    CustomerFlowScreen.of(context)?.setNewScreen(
+                        ProductDetailsUserPage(product: product));
                   },
                   child: Card(
                     color: Colors.white,
