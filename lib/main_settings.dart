@@ -155,7 +155,8 @@ class CustomDrawer extends StatelessWidget {
               route: "/"),
           DrawerMenuItem(
               icon: Icons.payment, title: "Payment Methods", route: "/"),
-          DrawerMenuItem(icon: Icons.mail, title: "Contact Us", route: "/"),
+          DrawerMenuItem(
+              icon: Icons.mail, title: "Contact Us", route: "/contact"),
           DrawerMenuItem(
               icon: Icons.settings, title: "Settings", route: "/settings"),
           DrawerMenuItem(icon: Icons.help, title: "Helps Us FAQs", route: "/"),

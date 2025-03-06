@@ -9,6 +9,8 @@ import 'package:myapp/provider/store_provider.dart';
 import 'package:provider/provider.dart';
 
 class ShopPage extends StatelessWidget {
+  const ShopPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final storeProvider = Provider.of<StoreProvider>(context);
@@ -91,7 +93,7 @@ class ShopPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            '\Rs ${product.prodprice.toStringAsFixed(2)}',
+                            'Rs ${product.prodprice.toStringAsFixed(2)}',
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 126, 126, 126),
                                 fontSize: 15),

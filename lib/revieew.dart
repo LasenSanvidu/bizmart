@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 class AddReviewScreen extends StatefulWidget {
   final String productId;
 
-  const AddReviewScreen({Key? key, required this.productId}) : super(key: key);
+  const AddReviewScreen({super.key, required this.productId});
 
   @override
   State<AddReviewScreen> createState() => _AddReviewScreenState();

@@ -63,14 +63,13 @@ class ContactUsPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            _buildSocialButton(Icons.camera_alt, "Instagram", "4.6K Followers",
-                _openInstagram),
+            _buildSocialButton(Icons.camera_alt, "Instagram", "Follow us", _openInstagram),
             _buildSocialButton(
-                Icons.message, "Telegram", "1.3K Followers", _openTelegram),
+                Icons.message, "Telegram", "", _openTelegram),
             _buildSocialButton(
-                Icons.facebook, "Facebook", "3.8K Followers", _openFacebook),
+                Icons.facebook, "Facebook", "Follow us", _openFacebook),
             _buildSocialButton(FontAwesomeIcons.whatsapp, "WhatsApp",
-                "Available 9-17", _openWhatsApp),
+                "", _openWhatsApp),
           ],
         ),
       ),

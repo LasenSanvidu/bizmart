@@ -12,7 +12,7 @@ class MyStoreUi extends StatelessWidget {
 
   void _showRenameDialog(
       BuildContext context, StoreProvider storeProvider, Store store) {
-    TextEditingController _renameController =
+    TextEditingController renameController =
         TextEditingController(text: store.storeName);
 
     showDialog(
@@ -21,7 +21,7 @@ class MyStoreUi extends StatelessWidget {
         return AlertDialog(
           title: Text("Rename Store"),
           content: TextField(
-            controller: _renameController,
+            controller: renameController,
             decoration: InputDecoration(labelText: "New Store Name"),
           ),
           actions: [
@@ -31,8 +31,8 @@ class MyStoreUi extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_renameController.text.isNotEmpty) {
-                  storeProvider.renameStore(store.id, _renameController.text);
+                if (renameController.text.isNotEmpty) {
+                  storeProvider.renameStore(store.id, renameController.text);
                   Navigator.pop(context);
                 }
               },

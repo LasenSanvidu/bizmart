@@ -4,7 +4,6 @@ import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/notification_page.dart';
 import 'package:myapp/settings_customer.dart';
-import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/shop/shop.dart';
 import 'package:myapp/stripe/payment.dart';
 

@@ -6,9 +6,7 @@ import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
 import 'package:myapp/provider/review_provider.dart';
-import 'package:myapp/provider/store_provider.dart';
 import 'package:myapp/revieew.dart';
-import 'package:myapp/shop/shop.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsUserPage extends StatefulWidget {
