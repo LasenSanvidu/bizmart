@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -42,6 +43,15 @@ class ContactUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            context.push("/main");
+          },
+        ),
+        title: Text('Contact Us'),
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -63,13 +73,13 @@ class ContactUsPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-            _buildSocialButton(Icons.camera_alt, "Instagram", "Follow us", _openInstagram),
             _buildSocialButton(
-                Icons.message, "Telegram", "", _openTelegram),
+                Icons.camera_alt, "Instagram", "Follow us", _openInstagram),
+            _buildSocialButton(Icons.message, "Telegram", "", _openTelegram),
             _buildSocialButton(
                 Icons.facebook, "Facebook", "Follow us", _openFacebook),
-            _buildSocialButton(FontAwesomeIcons.whatsapp, "WhatsApp",
-                "", _openWhatsApp),
+            _buildSocialButton(
+                FontAwesomeIcons.whatsapp, "WhatsApp", "", _openWhatsApp),
           ],
         ),
       ),
