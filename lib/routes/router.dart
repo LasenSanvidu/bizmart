@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/calender.dart';
 import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/contact_us.dart';
@@ -98,6 +99,10 @@ class RouterClass {
         GoRoute(
           path: "/contact",
           builder: (context, state) => const ContactUsPage(),
+        ),
+         GoRoute(
+          path: "/calendar",
+          builder: (context, state) => const CalendarPage(),
         ),
       ],
     );
