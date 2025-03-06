@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/store_provider.dart';
-import 'package:myapp/shop/shop.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsPage extends StatefulWidget {

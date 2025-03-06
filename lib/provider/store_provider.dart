@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/models/product_and_store_model.dart';
-import 'package:myapp/shop/store_page.dart';
 import 'package:uuid/uuid.dart';
 
 class StoreProvider with ChangeNotifier {

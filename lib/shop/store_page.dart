@@ -13,7 +13,7 @@ import 'package:uuid/uuid.dart';
 class StorePage extends StatelessWidget {
   final String storeId;
 
-  StorePage({required this.storeId});
+  const StorePage({super.key, required this.storeId});
 
   @override
   Widget build(BuildContext context) {
@@ -285,26 +285,26 @@ class StorePage extends StatelessWidget {
 
   void _showAddProductDialog(
       BuildContext context, StoreProvider storeProvider) {
-    final TextEditingController _productNameController =
+    final TextEditingController productNameController =
         TextEditingController();
-    final TextEditingController _productPriceController =
+    final TextEditingController productPriceController =
         TextEditingController();
 
     //final TextEditingController _productImageController =
     //  TextEditingController();
 
-    final TextEditingController _productDescripController =
+    final TextEditingController productDescripController =
         TextEditingController();
-    File? _selectedImage;
-    final ImagePicker _picker = ImagePicker();
+    File? selectedImage;
+    final ImagePicker picker = ImagePicker();
 
-    final TextEditingController _productQuantityController =
+    final TextEditingController productQuantityController =
         TextEditingController();
 
-    Future<void> _pickImage() async {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    Future<void> pickImage() async {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        _selectedImage = File(pickedFile.path);
+        selectedImage = File(pickedFile.path);
       }
     }
 
@@ -316,18 +316,18 @@ class StorePage extends StatelessWidget {
             return AlertDialog(
               backgroundColor: Colors.white,
               title: Text("Add Product"),
-              content: Container(
+              content: SizedBox(
                 width: 300,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextField(
-                          controller: _productNameController,
+                          controller: productNameController,
                           decoration:
                               InputDecoration(labelText: "Product Name")),
                       TextField(
-                        controller: _productPriceController,
+                        controller: productPriceController,
                         decoration: InputDecoration(labelText: "Price"),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
@@ -339,9 +339,9 @@ class StorePage extends StatelessWidget {
                       SizedBox(height: 10),
 
                       // Image Picker Button
-                      _selectedImage != null
+                      selectedImage != null
                           ? Image.file(
-                              _selectedImage!,
+                              selectedImage!,
                               height: 100,
                               width: 100,
                               fit: BoxFit.cover,
@@ -352,7 +352,7 @@ class StorePage extends StatelessWidget {
                           backgroundColor: Colors.white, // Background color
                         ),
                         onPressed: () async {
-                          await _pickImage();
+                          await pickImage();
                           setState(() {}); // Update UI after picking image
                         },
                         icon: Icon(Icons.image),
@@ -360,12 +360,12 @@ class StorePage extends StatelessWidget {
                       ),
 
                       TextField(
-                          controller: _productDescripController,
+                          controller: productDescripController,
                           decoration:
                               InputDecoration(labelText: "Description")),
 
                       TextField(
-                          controller: _productQuantityController,
+                          controller: productQuantityController,
                           decoration: InputDecoration(labelText: "Quantity"),
                           keyboardType: TextInputType.number),
                     ],
@@ -375,17 +375,17 @@ class StorePage extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () {
-                    if (_productNameController.text.isNotEmpty &&
-                        _productPriceController.text.isNotEmpty) {
+                    if (productNameController.text.isNotEmpty &&
+                        productPriceController.text.isNotEmpty) {
                       final product = Product(
                         id: Uuid().v4(),
-                        prodname: _productNameController.text,
-                        prodprice: double.parse(_productPriceController.text),
-                        image: _selectedImage != null
-                            ? _selectedImage!.path // Use local image path
+                        prodname: productNameController.text,
+                        prodprice: double.parse(productPriceController.text),
+                        image: selectedImage != null
+                            ? selectedImage!.path // Use local image path
                             : "https://via.placeholder.com/150", // Fallback
-                        description: _productDescripController.text.isNotEmpty
-                            ? _productDescripController.text
+                        description: productDescripController.text.isNotEmpty
+                            ? productDescripController.text
                             : "No Description",
                       );
                       storeProvider.addProductToStore(storeId, product);
