@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -7,20 +8,22 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize:
             const Size.fromHeight(200.0), // Adjust the height of the app bar
         child: Container(
-          color: Colors.purple.shade100,
+          color: const Color.fromARGB(255, 184, 161, 249),
           child: Column(
             children: [
               AppBar(
                 automaticallyImplyLeading:
                     false, // Remove the default leading widget
-                backgroundColor: Colors.purple.shade100,
-                title: const Text(
+                backgroundColor: Colors.transparent,
+                title: Text(
                   "Settings",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(
+                      fontSize: 25, fontWeight: FontWeight.w400),
                 ),
                 actions: [
                   IconButton(
@@ -40,7 +43,7 @@ class SettingsPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.purple.shade100,
+                  color: const Color.fromARGB(255, 184, 161, 249),
                   borderRadius: BorderRadius.circular(1),
                 ),
                 child: Row(

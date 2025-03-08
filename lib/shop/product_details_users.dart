@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,9 +7,7 @@ import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
 import 'package:myapp/provider/review_provider.dart';
-import 'package:myapp/provider/store_provider.dart';
-import 'package:myapp/revieew.dart';
-import 'package:myapp/shop/shop.dart';
+import 'package:myapp/review.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsUserPage extends StatefulWidget {
@@ -24,28 +23,56 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () {
+      Provider.of<ReviewProvider>(context, listen: false).fetchReviews();
+    });
+  }
+
+  Widget _buildProductImage(String imagePath) {
+    if (imagePath.startsWith('data:image')) {
+      // This is a base64 image
+      return Image.memory(
+        base64Decode(imagePath.split(',')[1]),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else if (imagePath.startsWith('http')) {
+      // This is a network image
+      return Image.network(
+        imagePath,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else {
+      // This is a local file path
+      return Image.file(
+        File(imagePath),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    //final storeProvider = Provider.of<StoreProvider>(context, listen: false);
-    //final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final reviewProvider = Provider.of<ReviewProvider>(context);
     final productReviews =
         reviewProvider.getReviewsForProduct(widget.product.id);
 
     return Scaffold(
       backgroundColor: Colors.white,
-      /*appBar: AppBar(
-        title: Text(
-          widget.product.prodname,
-          style: GoogleFonts.poppins(
-            fontSize: 26,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),*/
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -70,7 +97,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
-                  child: widget.product.image.startsWith('http')
+                  child: /*widget.product.image.startsWith('http')
                       ? Image.network(
                           widget.product.image,
                           height: 250,
@@ -84,7 +111,8 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               const Icon(Icons.broken_image, size: 50),
-                        ),
+                        ),*/
+                      _buildProductImage(widget.product.image),
                 ),
               ),
               const SizedBox(height: 16),
@@ -109,7 +137,8 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                   width: 200,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 172, 144, 251),
+                      //backgroundColor: const Color.fromARGB(255, 172, 144, 251),
+                      backgroundColor: Colors.black,
                       padding: EdgeInsets.symmetric(vertical: 12),
                       textStyle: GoogleFonts.poppins(
                           fontSize: 20,
@@ -133,7 +162,14 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 45),
+              const SizedBox(height: 18),
+              Center(
+                child: SizedBox(
+                  width: 320, // Set length here
+                  child: Divider(),
+                ),
+              ),
+              const SizedBox(height: 10),
               Center(
                 child: Text(
                   "Give Your Opinion Here",
@@ -157,13 +193,15 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
+                      /*Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
                               AddReviewScreen(productId: widget.product.id),
                         ),
-                      );
+                      );*/
+                      CustomerFlowScreen.of(context)?.setNewScreen(
+                          AddReviewScreen(productId: widget.product.id));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -178,7 +216,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                 ],
               ),
               SizedBox(
-                height: 500,
+                height: 300,
                 child: productReviews.isEmpty
                     ? Center(
                         child: Text(
@@ -216,9 +254,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                                       color: Colors.black87,
                                     ),
                                   ),
-                                  SizedBox(
-                                      height:
-                                          6), // Adds space between name and review
+                                  SizedBox(height: 6),
                                   Text(
                                     review.reviewText,
                                     style: GoogleFonts.poppins(
@@ -226,9 +262,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                                       color: Colors.black54,
                                     ),
                                   ),
-                                  SizedBox(
-                                      height:
-                                          6), // Adds space before the rating
+                                  SizedBox(height: 6),
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(

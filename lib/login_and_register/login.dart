@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/square_tile.dart';
 import 'package:myapp/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -26,25 +27,76 @@ class _LoginState extends State<Login> {
     });
   }
 
-  void _toggleRememberPassword() {
+  void _toggleRememberPassword() async {
     setState(() {
       _rememberPassword = !_rememberPassword;
     });
+
+    // Save remember password setting in SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('rememberPassword', _rememberPassword);
+
+    if (_rememberPassword) {
+      // Save email and password if "Remember Password" is enabled
+      prefs.setString('email', _emailController.text.trim());
+      prefs.setString('password', _passwordController.text.trim());
+    } else {
+      // Clear saved credentials if "Remember Password" is disabled
+      prefs.remove('email');
+      prefs.remove('password');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadSavedCredentials();
+  }
+
+  void _loadSavedCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    bool? rememberPassword = prefs.getBool('rememberPassword') ?? false;
+    setState(() {
+      _rememberPassword = rememberPassword;
+    });
+
+    if (_rememberPassword) {
+      String? savedEmail = prefs.getString('email');
+      String? savedPassword = prefs.getString('password');
+
+      if (savedEmail != null && savedPassword != null) {
+        _emailController.text = savedEmail;
+        _passwordController.text = savedPassword;
+      }
+    }
   }
 
   void _login() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    var user = await _authService.signIn(email, password);
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill in all fields')));
+      return;
+    }
 
-    if (!mounted) return;
+    try {
+      var user = await _authService.signIn(email, password);
 
-    if (user != null) {
-      context.push('/main');
-    } else {
+      if (!mounted) return;
+
+      if (user != null) {
+        context.push('/main');
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Login Failed!')));
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Login Failed!')));
+          .showSnackBar(const SnackBar(content: Text('Error during login')));
     }
   }
 
@@ -116,7 +168,7 @@ class _LoginState extends State<Login> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        context.push("/register");
+                        context.go("/register");
                         _isLoginSelected = false;
                       });
                     },
@@ -194,7 +246,7 @@ class _LoginState extends State<Login> {
                   ),
                   child: TextField(
                     controller: _passwordController,
-                    obscureText: true,
+                    obscureText: _obscured,
                     decoration: InputDecoration(
                         prefixIcon: const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 0.0),

@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/business_flow_screens.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/store_provider.dart';
 import 'package:myapp/shop/store_page.dart';
 import 'package:provider/provider.dart';
 
-class MyStoreUi extends StatelessWidget {
+class MyStoreUi extends StatefulWidget {
   MyStoreUi({super.key});
 
+  @override
+  State<MyStoreUi> createState() => _MyStoreUiState();
+}
+
+class _MyStoreUiState extends State<MyStoreUi> {
   final TextEditingController _storeNameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      Provider.of<StoreProvider>(context, listen: false).fetchStores();
+    });
+  }
 
   void _showRenameDialog(
       BuildContext context, StoreProvider storeProvider, Store store) {
@@ -56,8 +71,16 @@ class MyStoreUi extends StatelessWidget {
           style: GoogleFonts.poppins(fontSize: 28),
         ),
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            CustomerFlowScreen.of(context)
+                ?.updateIndex(6); // Go back to Business Dashboard screen
+          },
+        ),
       ),
-      body: Container(
+      body // Show loading
+          : Container(
         constraints: BoxConstraints(
           maxWidth: 400, // Maximum width
           minWidth: 300, // Minimum width
@@ -97,14 +120,14 @@ class MyStoreUi extends StatelessWidget {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 184, 161, 249),
+                    //backgroundColor: const Color.fromARGB(255, 184, 161, 249),
+                    backgroundColor: Colors.black,
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   onPressed: () {
                     if (_storeNameController.text.isNotEmpty) {
                       if (storeProvider.stores.isEmpty) {
-                        storeProvider.addNewStore(
-                            _storeNameController.text, context);
+                        storeProvider.addNewStore(_storeNameController.text);
                         _storeNameController.clear();
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -132,23 +155,30 @@ class MyStoreUi extends StatelessWidget {
                   final store = storeProvider.stores[index];
                   return ListTile(
                     title: Text(store.storeName),
-                    subtitle: Text("${store.products.length} products"),
+                    subtitle: Text(
+                      "${store.products.length} products",
+                      style: TextStyle(fontSize: 15),
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           icon: Icon(Icons.store),
                           onPressed: () {
-                            Navigator.push(
+                            /*Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
                                     StorePage(storeId: store.id),
                               ),
-                            );
+                            );*/
+                            CustomerFlowScreen.of(context)
+                                ?.setNewScreen(StorePage(storeId: store.id));
                           },
                         ),
                         PopupMenuButton<String>(
+                          //color: const Color.fromARGB(255, 233, 233, 233),
+                          color: Colors.black,
                           icon: Icon(Icons.more_vert_rounded),
                           onSelected: (value) {
                             if (value == 'rename') {
@@ -160,11 +190,19 @@ class MyStoreUi extends StatelessWidget {
                           itemBuilder: (context) => [
                             PopupMenuItem(
                               value: 'rename',
-                              child: Text('Rename Store'),
+                              child: Text(
+                                'Rename Store',
+                                style: GoogleFonts.poppins(
+                                    color: Colors.white, fontSize: 16),
+                              ),
                             ),
                             PopupMenuItem(
                               value: 'delete',
-                              child: Text('Delete Store'),
+                              child: Text(
+                                'Delete Store',
+                                style: GoogleFonts.poppins(
+                                    color: Colors.white, fontSize: 16),
+                              ),
                             ),
                           ],
                         )

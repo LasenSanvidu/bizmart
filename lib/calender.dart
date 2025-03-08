@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/cal_event_page.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -21,21 +22,17 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.push("/");
-          },
-        ),
-        title: const Text(
+        backgroundColor: Colors.white,
+        title: Text(
           " Calendar",
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             color: Colors.black,
-            fontSize: 29.0,
-            fontWeight: FontWeight.bold,
+            fontSize: 24.0,
           ),
         ),
+        centerTitle: true,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
@@ -55,8 +52,8 @@ class _CalendarPageState extends State<CalendarPage> {
         ],
       ),
       body: Container(
-        color: const Color.fromARGB(
-            255, 248, 246, 255), // Set the background color to a light purple
+        /*color: const Color.fromARGB(
+            255, 248, 246, 255), */ // Set the background color to a light purple
         child: ListView.builder(
           itemCount: events.length,
           itemBuilder: (context, index) {

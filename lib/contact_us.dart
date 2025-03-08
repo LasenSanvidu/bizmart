@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -7,10 +9,10 @@ class ContactUsPage extends StatelessWidget {
 
   void _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+    if (await canLaunch(uri.toString())) {
+      await launch(uri.toString());
     } else {
-      throw 'Could not launch $url';
+      print('Could not launch $url');
     }
   }
 
@@ -42,23 +44,44 @@ class ContactUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "Contact Us",
+          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w500),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            CustomerFlowScreen.of(context)?.updateIndex(0); // Go back to Home
+          },
+        ),
+      ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
             SizedBox(height: 20), // Add this line to move "Contact Us" down
-            Text(
+            /*Text(
               "Contact Us",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            ),*/
             SizedBox(height: 10),
             Text(
-                "We’re here to help! Whether you have a question, a suggestion, or need assistance, don’t hesitate to reach out. Our team is available Monday to Friday from 9 AM to 5 PM to answer your calls and emails. You can also connect with us on social media for updates and quick support. Your feedback is valuable to us, and we’re always happy to hear from you!"),
+              "We’re here to help! Whether you have a question, a suggestion, or need assistance, don’t hesitate to reach out. Our team is always available for you. also connect with us on social media for updates and quick support. Your feedback is valuable to us, and we’re always happy to hear from you!",
+              style: GoogleFonts.poppins(fontSize: 16),
+            ),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildButton(Icons.call, "Call us", _makePhoneCall),
+                _buildButton(
+                  Icons.call,
+                  "Call us",
+                  _makePhoneCall,
+                ),
                 _buildButton(Icons.email, "Email us", _sendEmail),
               ],
             ),
@@ -79,9 +102,18 @@ class ContactUsPage extends StatelessWidget {
 
   Widget _buildButton(IconData icon, String label, VoidCallback onPressed) {
     return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
       onPressed: onPressed,
-      icon: Icon(icon, size: 24),
-      label: Text(label),
+      icon: Icon(
+        icon,
+        size: 24,
+        color: Colors.white,
+      ),
+      label: Text(
+        label,
+        style: GoogleFonts.poppins(
+            color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),
+      ),
     );
   }
 
@@ -91,7 +123,6 @@ class ContactUsPage extends StatelessWidget {
       leading: Icon(icon, size: 30),
       title: Text(platform),
       subtitle: Text(followers),
-      trailing: Icon(Icons.share),
       onTap: onPressed,
     );
   }

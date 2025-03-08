@@ -13,13 +13,24 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Profile',
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            //fontWeight: FontWeight.w400,
+          ),
+        ),
+        centerTitle: true,
+      ),
       backgroundColor: Colors.grey[200],
       body: Column(
         children: [
           // CUSTOM APP BAR
           Padding(
             padding: const EdgeInsets.only(
-                left: 30.0, right: 18.0, top: 25, bottom: 25),
+                left: 30.0, right: 18.0, top: 0, bottom: 25),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -52,13 +63,13 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),*/
-                Text(
+                /*Text(
                   'Account',
                   style: GoogleFonts.abel(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
+                ),*/
                 /*GestureDetector(
                   onTap: () {
                     Navigator.push(

@@ -46,13 +46,13 @@ class _PaymentState extends State<Payment> {
                   StripeService.instance.makePayment(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  elevation: 0,
-                  backgroundColor: Color(0xFF9C9BFB),
-                ),
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 0,
+                    //backgroundColor: Color(0xFF9C9BFB),
+                    backgroundColor: Colors.black),
                 child: Text(
                   'Pay',
                   style: GoogleFonts.poppins(

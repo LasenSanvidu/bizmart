@@ -1,10 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:myapp/component/business_flow_screens.dart';
 import 'package:myapp/component/button.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
+import 'package:myapp/shop/add_product_page.dart';
 import 'package:myapp/shop/product_details_businessman.dart';
 import 'package:myapp/provider/store_provider.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +19,43 @@ class StorePage extends StatelessWidget {
 
   StorePage({required this.storeId});
 
+  Widget _buildProductImage(String imagePath) {
+    if (imagePath.startsWith('data:image')) {
+      // This is a base64 image
+      return Image.memory(
+        base64Decode(imagePath.split(',')[1]),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else if (imagePath.startsWith('http')) {
+      // This is a network image
+      return Image.network(
+        imagePath,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else {
+      // This is a local file path
+      return Image.file(
+        File(imagePath),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final storeProvider = Provider.of<StoreProvider>(context);
@@ -23,6 +64,15 @@ class StorePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            /*BusinessFlowScreens.of(context)
+                ?.updateIndex(1);*/
+            CustomerFlowScreen.of(context)
+                ?.updateIndex(5); // Go back to MyStoreUi
+          },
+        ),
         backgroundColor: Colors.transparent,
         centerTitle: true, // This property centers the title
         title: Row(
@@ -56,7 +106,7 @@ class StorePage extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                           child: const Text(
                             'No',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 16, color: Colors.black),
                           )),
 
                       //yes button
@@ -67,7 +117,7 @@ class StorePage extends StatelessWidget {
                         },
                         child: const Text(
                           'Yes',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       )
                     ],
@@ -83,9 +133,15 @@ class StorePage extends StatelessWidget {
         children: [
           SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () => _showAddProductDialog(context, storeProvider),
+            //onPressed: () => _showAddProductDialog(context, storeProvider),
+            onPressed: () {
+              CustomerFlowScreen.of(context)
+                  ?.setNewScreen(AddProductPage(storeId: store.id));
+            },
+
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 184, 161, 249),
+              //backgroundColor: const Color.fromARGB(255, 184, 161, 249),
+              backgroundColor: Colors.black,
               padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
               textStyle: GoogleFonts.poppins(
                   fontSize: 20,
@@ -143,12 +199,17 @@ class StorePage extends StatelessWidget {
                           final product = store.products[index];
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductDetailsPage(product: product),
-                                  ));
+                              /*Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProductDetailsPage(product: product),
+                                ),
+                              );*/
+
+                              CustomerFlowScreen.of(context)?.setNewScreen(
+                                ProductDetailsPage(product: product),
+                              );
                             },
                             child: Card(
                               color: Colors.white,
@@ -161,32 +222,28 @@ class StorePage extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(10)),
-                                      child: product.image.startsWith("http")
-                                          ? Image.network(
-                                              product.image,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error,
-                                                      stackTrace) =>
-                                                  const Icon(
-                                                Icons.broken_image,
-                                                size: 50,
-                                              ),
-                                            )
-                                          : Image.file(
-                                              File(product.image),
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error,
-                                                      stackTrace) =>
-                                                  const Icon(
-                                                Icons.broken_image,
-                                                size: 50,
-                                              ),
-                                            ),
-                                    ),
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(10)),
+                                        child: /*product.image.startsWith("http")
+                                    ? Image.network(
+                                        product.image,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(Icons.broken_image,
+                                                    size: 50),
+                                      )
+                                    : Image.file(
+                                        File(product.image),
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(Icons.broken_image,
+                                                    size: 50),
+                                      ),*/
+                                            _buildProductImage(product.image)),
                                   ),
                                   Row(
                                     mainAxisAlignment:
@@ -241,7 +298,9 @@ class StorePage extends StatelessWidget {
                                                         child: const Text(
                                                           'No',
                                                           style: TextStyle(
-                                                              fontSize: 16),
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.black),
                                                         )),
 
                                                     //yes button
@@ -255,7 +314,9 @@ class StorePage extends StatelessWidget {
                                                       child: const Text(
                                                         'Yes',
                                                         style: TextStyle(
-                                                            fontSize: 16),
+                                                            fontSize: 16,
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     )
                                                   ],
@@ -280,125 +341,6 @@ class StorePage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _showAddProductDialog(
-      BuildContext context, StoreProvider storeProvider) {
-    final TextEditingController _productNameController =
-        TextEditingController();
-    final TextEditingController _productPriceController =
-        TextEditingController();
-
-    //final TextEditingController _productImageController =
-    //  TextEditingController();
-
-    final TextEditingController _productDescripController =
-        TextEditingController();
-    File? _selectedImage;
-    final ImagePicker _picker = ImagePicker();
-
-    final TextEditingController _productQuantityController =
-        TextEditingController();
-
-    Future<void> _pickImage() async {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        _selectedImage = File(pickedFile.path);
-      }
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text("Add Product"),
-              content: Container(
-                width: 300,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                          controller: _productNameController,
-                          decoration:
-                              InputDecoration(labelText: "Product Name")),
-                      TextField(
-                        controller: _productPriceController,
-                        decoration: InputDecoration(labelText: "Price"),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(
-                              r'^\d+\.?\d{0,2}$')), // Allows only numbers and up to two decimal places
-                        ],
-                      ),
-
-                      SizedBox(height: 10),
-
-                      // Image Picker Button
-                      _selectedImage != null
-                          ? Image.file(
-                              _selectedImage!,
-                              height: 100,
-                              width: 100,
-                              fit: BoxFit.cover,
-                            )
-                          : Text("No Image Selected"),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // Background color
-                        ),
-                        onPressed: () async {
-                          await _pickImage();
-                          setState(() {}); // Update UI after picking image
-                        },
-                        icon: Icon(Icons.image),
-                        label: Text("Pick Image"),
-                      ),
-
-                      TextField(
-                          controller: _productDescripController,
-                          decoration:
-                              InputDecoration(labelText: "Description")),
-
-                      TextField(
-                          controller: _productQuantityController,
-                          decoration: InputDecoration(labelText: "Quantity"),
-                          keyboardType: TextInputType.number),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    if (_productNameController.text.isNotEmpty &&
-                        _productPriceController.text.isNotEmpty) {
-                      final product = Product(
-                        id: Uuid().v4(),
-                        prodname: _productNameController.text,
-                        prodprice: double.parse(_productPriceController.text),
-                        image: _selectedImage != null
-                            ? _selectedImage!.path // Use local image path
-                            : "https://via.placeholder.com/150", // Fallback
-                        description: _productDescripController.text.isNotEmpty
-                            ? _productDescripController.text
-                            : "No Description",
-                      );
-                      storeProvider.addProductToStore(storeId, product);
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Text("Add"),
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
   }
 }

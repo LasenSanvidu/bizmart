@@ -1,10 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/store_provider.dart';
-import 'package:myapp/shop/shop.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -17,11 +18,12 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  //late int _quantity;
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _descriptionController;
   late String _imagePath;
+  bool _isProcessing = false;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -42,40 +44,129 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
+  // Helper method to display the image correctly based on its format
+  Widget _buildProductImage(String imagePath) {
+    if (imagePath.startsWith('data:image')) {
+      // This is a base64 image
+      return Image.memory(
+        base64Decode(imagePath.split(',')[1]),
+        height: 250,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else if (imagePath.startsWith('http')) {
+      // This is a network image
+      return Image.network(
+        imagePath,
+        height: 250,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else {
+      // This is a local file path
+      return Image.file(
+        File(imagePath),
+        height: 250,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    }
+  }
 
-    if (pickedFile != null) {
+  Future<void> _pickImage() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800, // Reduce image size
+        maxHeight: 800,
+        imageQuality: 70, // Reduce quality to make base64 string smaller
+      );
+
+      if (pickedFile != null) {
+        // Convert image to base64 immediately after picking
+        final String base64Image = await _imageToBase64(File(pickedFile.path));
+        setState(() {
+          _imagePath = base64Image;
+        });
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error picking image: $e')));
+    }
+  }
+
+  Future<String> _imageToBase64(File imageFile) async {
+    List<int> imageBytes = await imageFile.readAsBytes();
+    return 'data:image/jpeg;base64,${base64Encode(imageBytes)}';
+  }
+
+  Future<void> _updateProduct() async {
+    if (_nameController.text.isEmpty || _priceController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please fill all required fields')));
+      return;
+    }
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      final storeProvider = Provider.of<StoreProvider>(context, listen: false);
+
+      // If the image path is a local file path (not base64 or http URL), convert it to base64
+      String imageToSave = _imagePath;
+      if (!_imagePath.startsWith('data:image') &&
+          !_imagePath.startsWith('http')) {
+        imageToSave = await _imageToBase64(File(_imagePath));
+      }
+
+      await storeProvider.updateProduct(
+        widget.product.id,
+        _nameController.text,
+        double.tryParse(_priceController.text) ?? widget.product.prodprice,
+        imageToSave, // Use the base64 string or existing image path
+        _descriptionController.text,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Product Updated!')),
+      );
+    } catch (e) {
+      print("Error updating product: $e");
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error updating product: $e')));
+    } finally {
       setState(() {
-        _imagePath = pickedFile.path;
+        _isProcessing = false;
       });
     }
   }
 
-  void _updateProduct() {
-    final storeProvider = Provider.of<StoreProvider>(context, listen: false);
-
-    storeProvider.updateProduct(
-      widget.product.id,
-      _nameController.text,
-      double.tryParse(_priceController.text) ?? widget.product.prodprice,
-      _imagePath,
-      _descriptionController.text,
-      //_quantity,
-    );
-    Navigator.pop(context);
-  }
-
   @override
   Widget build(BuildContext context) {
-    //final storeProvider = Provider.of<StoreProvider>(context, listen: false);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            CustomerFlowScreen.of(context)
+                ?.updateIndex(5); // Go back to MyStoreUi
+          },
+        ),
         title: Text(widget.product.prodname),
+        centerTitle: true,
         backgroundColor: Colors.white,
       ),
       body: Padding(
@@ -84,32 +175,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              /*child: Image.network(
-                product.image,
-                height: 250,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.broken_image, size: 50),
-              ),*/
               child: GestureDetector(
                 onTap: _pickImage,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
-                  child: widget.product.image.startsWith('http')
-                      ? Image.network(
-                          _imagePath,
-                          height: 250,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.broken_image, size: 50),
-                        )
-                      : Image.file(
-                          File(_imagePath), // Use local file path
-                          height: 250,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.broken_image, size: 50),
-                        ),
+                  child: _buildProductImage(_imagePath),
                 ),
               ),
             ),
@@ -155,57 +225,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
             const SizedBox(height: 16),
 
-            // Quantity Selector
-            /*Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.remove_circle_outline, size: 28),
-                  onPressed: _quantity > 1
-                      ? () {
-                          setState(() {
-                            _quantity--;
-                          });
-                        }
-                      : null, // Disable if quantity is 1
-                ),
-                Text(
-                  '$_quantity',
-                  style: GoogleFonts.poppins(fontSize: 22),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add_circle_outline, size: 28),
-                  onPressed: () {
-                    setState(() {
-                      _quantity++;
-                    });
-                  },
-                ),
-              ],
-            ),*/
-
             const Spacer(),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 172, 144, 251),
+                  backgroundColor: Colors.black,
                   padding: EdgeInsets.symmetric(vertical: 12),
                   textStyle: GoogleFonts.poppins(
                       fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.w600),
                 ),
-                onPressed: () {
-                  _updateProduct();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Product Updated!')),
-                  );
-                  Navigator.pop(context);
-                },
-                child: Text("Update",
-                    style:
-                        GoogleFonts.poppins(fontSize: 20, color: Colors.white)),
+                onPressed: _isProcessing ? null : _updateProduct,
+                child: _isProcessing
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text("Update",
+                        style: GoogleFonts.poppins(
+                            fontSize: 20, color: Colors.white)),
               ),
             ),
           ],

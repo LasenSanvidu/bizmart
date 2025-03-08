@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,102 +9,181 @@ import 'package:myapp/shop/product_details_businessman.dart';
 import 'package:myapp/provider/store_provider.dart';
 import 'package:provider/provider.dart';
 
-class ShopPage extends StatelessWidget {
+class ShopPage extends StatefulWidget {
+  @override
+  State<ShopPage> createState() => _ShopPageState();
+}
+
+class _ShopPageState extends State<ShopPage> {
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Provider.of<StoreProvider>(context, listen: false).fetchStores();
+      setState(() {
+        isLoading = false; // Set loading to false once fetching is done
+      });
+    });
+  }
+
+  Widget _buildProductImage(String imagePath) {
+    if (imagePath.startsWith('data:image')) {
+      // This is a base64 image
+      return Image.memory(
+        base64Decode(imagePath.split(',')[1]),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else if (imagePath.startsWith('http')) {
+      // This is a network image
+      return Image.network(
+        imagePath,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else {
+      // This is a local file path
+      return Image.file(
+        File(imagePath),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final storeProvider = Provider.of<StoreProvider>(context);
-    final allProducts = storeProvider.allProducts;
+    final allProducts =
+        storeProvider.stores.isNotEmpty ? storeProvider.allProducts : [];
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Shop", style: GoogleFonts.poppins(fontSize: 24)),
+        centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: allProducts.isEmpty
-          ? Center(child: Text("No products available"))
-          : GridView.builder(
-              padding: EdgeInsets.all(8.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.7,
-              ),
-              itemCount: allProducts.length,
-              itemBuilder: (context, index) {
-                final product = allProducts[index];
-                return GestureDetector(
-                  onTap: () {
-                    /*Navigator.push(
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : allProducts.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/empty-shop.png',
+                        width: 350,
+                        fit: BoxFit.fitWidth,
+                      ),
+                      Text(
+                        "No products available",
+                        style: GoogleFonts.poppins(
+                            fontSize: 16, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                )
+              : GridView.builder(
+                  padding: EdgeInsets.all(8.0),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.7,
+                  ),
+                  itemCount: allProducts.length,
+                  itemBuilder: (context, index) {
+                    final product = allProducts[index];
+                    return GestureDetector(
+                      onTap: () {
+                        /*Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
                             ProductDetailsUserPage(product: product),
                       ),
                     );*/
-                    CustomerFlowScreen.of(context)?.setNewScreen(
-                        ProductDetailsUserPage(product: product));
+                        CustomerFlowScreen.of(context)?.setNewScreen(
+                            ProductDetailsUserPage(product: product));
+                      },
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(10)),
+                                child: /*product.image.startsWith("http")
+                                    ? Image.network(
+                                        product.image,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(Icons.broken_image,
+                                                    size: 50),
+                                      )
+                                    : Image.file(
+                                        File(product.image),
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(Icons.broken_image,
+                                                    size: 50),
+                                      ),*/
+                                    _buildProductImage(product.image),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                product.prodname,
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500, fontSize: 16),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                '\Rs ${product.prodprice.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 126, 126, 126),
+                                    fontSize: 15),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
+                    );
                   },
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(10)),
-                            child: product.image.startsWith("http")
-                                ? Image.network(
-                                    product.image,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            const Icon(Icons.broken_image,
-                                                size: 50),
-                                  )
-                                : Image.file(
-                                    File(product.image),
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            const Icon(Icons.broken_image,
-                                                size: 50),
-                                  ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            product.prodname,
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500, fontSize: 16),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            '\Rs ${product.prodprice.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 126, 126, 126),
-                                fontSize: 15),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                ),
     );
   }
 }

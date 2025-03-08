@@ -1,35 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myapp/models/product_and_store_model.dart';
-import 'package:myapp/shop/store_page.dart';
 import 'package:uuid/uuid.dart';
 
 class StoreProvider with ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final List<Store> _stores = [];
 
-  //Getter to access the private _stores list. Returns a List of Store.
   List<Store> get stores => _stores;
 
-  // getter to get all products from all stores
-  List<Product> get allProducts {
-    return _stores.expand((store) => store.products).toList();
+  Future<void> fetchStores() async {
+    try {
+      final querySnapshot = await _firestore.collection('stores').get();
+      _stores.clear();
+      for (var doc in querySnapshot.docs) {
+        List<Product> products = (doc['products'] as List).map((prod) {
+          return Product(
+            id: prod['id'],
+            prodname: prod['prodname'],
+            image: prod['image'],
+            prodprice: prod['prodprice'].toDouble(),
+            description: prod['description'],
+          );
+        }).toList();
+
+        _stores.add(Store(
+          id: doc.id,
+          storeName: doc['storeName'],
+          products: products,
+        ));
+      }
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching stores: $e");
+    }
   }
 
-  // function to add a new store to storesList
-  void addNewStore(String storeName, BuildContext context) {
+  List<Product> get allProducts {
+    return _stores.isNotEmpty
+        ? _stores.expand((store) => store.products).toList()
+        : [];
+  }
+
+  Future<void> addNewStore(String storeName) async {
     final newStore = Store(id: Uuid().v4(), storeName: storeName);
     _stores.add(newStore);
+    await _firestore.collection('stores').doc(newStore.id).set({
+      'storeName': newStore.storeName,
+      'products': [],
+    });
     notifyListeners();
-
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => StorePage(storeId: newStore.id)),
-    );*/
   }
 
-  void addProductToStore(String storeId, Product product) {
-    //_stores list to find the first store that matches a given storeId
+  Future<void> addProductToStore(String storeId, Product product) async {
     final store = _stores.firstWhere((s) => s.id == storeId);
     store.products.add(product);
+
+    await _firestore.collection('stores').doc(storeId).update({
+      'products': store.products
+          .map((p) => {
+                'id': p.id,
+                'prodname': p.prodname,
+                'image': p.image,
+                'prodprice': p.prodprice,
+                'description': p.description,
+              })
+          .toList()
+    });
+
     notifyListeners();
   }
 
@@ -37,66 +75,79 @@ class StoreProvider with ChangeNotifier {
     return _stores.firstWhere((store) => store.id == storeId);
   }
 
-  /*void UpdateProductQuantity(String prodId, int newQuantity) {
+  Future<void> updateProduct(String productId, String newName, double newPrice,
+      String newImage, String newDescription) async {
     for (var store in _stores) {
-      var product = store.products.firstWhere((p) => p.id == prodId);
-
-      if (product.id.isNotEmpty) {
-        product.quantity = newQuantity;
-        notifyListeners();
-        break;
-      }
-    }
-  }*/
-
-  void updateProduct(String productId, String newName, double newPrice,
-      String newImage, String newDescription) {
-    for (var store in _stores) {
-      var product = store.products.firstWhere(
-        (p) => p.id == productId,
-      );
-
-      if (product.id.isNotEmpty) {
-        product.prodname = newName;
-        product.prodprice = newPrice;
-        product.image = newImage;
-        product.description = newDescription;
-        //product.quantity = newQuantity;
-
+      var productIndex = store.products.indexWhere((p) => p.id == productId);
+      if (productIndex != -1) {
+        store.products[productIndex] = Product(
+          id: productId,
+          prodname: newName,
+          prodprice: newPrice,
+          image: newImage,
+          description: newDescription,
+        );
+        await _firestore.collection('stores').doc(store.id).update({
+          'products': store.products
+              .map((p) => {
+                    'id': p.id,
+                    'prodname': p.prodname,
+                    'image': p.image,
+                    'prodprice': p.prodprice,
+                    'description': p.description,
+                  })
+              .toList()
+        });
         notifyListeners();
         break;
       }
     }
   }
 
-  void deleteProduct(String productId) {
+  Future<void> deleteProduct(String productId) async {
     for (var store in _stores) {
       store.products.removeWhere((product) => product.id == productId);
+      await _firestore.collection('stores').doc(store.id).update({
+        'products': store.products
+            .map((p) => {
+                  'id': p.id,
+                  'prodname': p.prodname,
+                  'image': p.image,
+                  'prodprice': p.prodprice,
+                  'description': p.description,
+                })
+            .toList()
+      });
     }
     notifyListeners();
   }
 
-  void clearAllProductsInStore(String storeId) {
+  Future<void> clearAllProductsInStore(String storeId) async {
     final store = _stores.firstWhere((s) => s.id == storeId);
     store.products.clear();
+    await _firestore.collection('stores').doc(storeId).update({'products': []});
     notifyListeners();
   }
 
-  void renameStore(String storeId, String renamedText) {
+  Future<void> renameStore(String storeId, String renamedText) async {
     for (var store in _stores) {
       if (store.storeName == renamedText) {
-        // Use a proper way to notify the user, such as logging
         print('Store name already exists');
         return;
       }
     }
     final store = _stores.firstWhere((s) => s.id == storeId);
     store.storeName = renamedText;
+    await _firestore
+        .collection('stores')
+        .doc(storeId)
+        .update({'storeName': renamedText});
     notifyListeners();
   }
 
-  void clearWholeStore(String storeId) {
+  Future<void> clearWholeStore(String storeId) async {
     _stores.removeWhere((store) => store.id == storeId);
+    await _firestore.collection('stores').doc(storeId).delete();
     notifyListeners();
   }
 }

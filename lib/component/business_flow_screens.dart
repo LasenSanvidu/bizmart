@@ -9,12 +9,16 @@ import 'package:myapp/stripe/payment.dart';
 class BusinessFlowScreens extends StatefulWidget {
   const BusinessFlowScreens({super.key});
 
+  static _BusinessFlowScreensState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_BusinessFlowScreensState>();
+
   @override
   State<BusinessFlowScreens> createState() => _BusinessFlowScreensState();
 }
 
 class _BusinessFlowScreensState extends State<BusinessFlowScreens> {
   int _currentIndex = 0;
+  /**/ Widget? _activeScreen;
 
   final List<Widget> _pages = [
     MainSettings(),
@@ -27,7 +31,14 @@ class _BusinessFlowScreensState extends State<BusinessFlowScreens> {
 
   void updateIndex(int index) {
     setState(() {
+      _activeScreen = null;
       _currentIndex = index;
+    });
+  }
+
+  void setNewScreen(Widget screen) {
+    setState(() {
+      _activeScreen = screen;
     });
   }
 
@@ -35,10 +46,11 @@ class _BusinessFlowScreensState extends State<BusinessFlowScreens> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
+      body: _activeScreen ??
+          IndexedStack(
+            index: _currentIndex,
+            children: _pages,
+          ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 55,
         backgroundColor: Colors.black,
@@ -53,7 +65,7 @@ class _BusinessFlowScreensState extends State<BusinessFlowScreens> {
         animationDuration: const Duration(milliseconds: 300),
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            updateIndex(index);
           });
         },
       ),

@@ -85,12 +85,12 @@ class _ChatHomeScreenState extends State<ChatHomeScreen>
     }
   }
 
-  void logOut(BuildContext context) async {
+  /*void logOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => Login()),
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -116,12 +116,12 @@ class _ChatHomeScreenState extends State<ChatHomeScreen>
             ),
           ),
         ),
-        actions: [
+        /*actions: [
           IconButton(
             onPressed: () => logOut(context),
             icon: const Icon(Icons.logout),
           ),
-        ],
+        ],*/
       ),
       body: isLoading
           ? Center(

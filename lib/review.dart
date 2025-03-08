@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/provider/review_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +31,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
         SnackBar(content: Text('Review submitted successfully!')),
       );
 
-      Navigator.pop(context);
+      //Navigator.pop(context);
     }
   }
 
@@ -140,9 +141,11 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                     child: SliderTheme(
                       data: SliderThemeData(
                         trackHeight: 6,
-                        activeTrackColor: const Color(0xFFB9A0FF),
+                        //activeTrackColor: const Color(0xFFB9A0FF),
+                        activeTrackColor: Colors.black,
                         inactiveTrackColor: Colors.grey[200],
-                        thumbColor: const Color(0xFFB9A0FF),
+                        //thumbColor: const Color(0xFFB9A0FF),
+                        thumbColor: Colors.black,
                         thumbShape: const RoundSliderThumbShape(
                           enabledThumbRadius: 10,
                         ),
@@ -177,9 +180,13 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _submitReview,
+                  onPressed: () {
+                    _submitReview();
+                    CustomerFlowScreen.of(context)?.updateIndex(1);
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB9A0FF),
+                    //backgroundColor: const Color(0xFFB9A0FF),
+                    backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
