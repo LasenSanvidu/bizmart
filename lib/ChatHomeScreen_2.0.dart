@@ -59,7 +59,39 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
     print("Notification received: ${message.notification?.title} - ${message.notification?.body}");
   }
 
-  Future<void> _fetchLastChattedUsers() async {}
+  Future<void> _fetchLastChattedUsers() async {
+    if (_auth.currentUser == null) return;
+
+    try{
+      QuerySnapshot querySnapshot = await _firestore
+          .collection("chats")
+          .where("users", arrayContains: _auth.currentUser!.uid)
+          .orderBy("lastMessageTime", descending: true)
+          .limit(5)
+          .get();
+
+           List<Map<String, dynamic>> chats = [];
+
+           for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> chatData = doc.data() as Map<String, dynamic>;
+
+        List<dynamic> users = chatData["users"];
+        String otherUserId = users.firstWhere((id) => id != _auth.currentUser!.uid);
+
+        DocumentSnapshot userDoc = await _firestore.collection("users").doc(otherUserId).get();
+
+        if (userDoc.exists) {
+          chats.add({
+            "name": userDoc["name"],
+            "lastMessage": chatData["lastMessage"],
+          });
+        }
+      }
+
+    }catch(e){
+        debugPrint("Error fetching last chats: $e");
+    }
+  }
 
   String chatId(String user1, String user2) {
     return user1.compareTo(user2) > 0 ? "$user1$user2" : "$user2$user1";
