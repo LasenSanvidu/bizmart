@@ -285,6 +285,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/chat/chat_list_screen.dart';
 import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/component/business_flow_screens.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
@@ -390,7 +391,7 @@ class RouterClass {
         ),
         GoRoute(
           path: "/chat",
-          builder: (context, state) => const ChatHomeScreen(),
+          builder: (context, state) => ChatListScreen(),
         ),
         GoRoute(
           path: "/main",
