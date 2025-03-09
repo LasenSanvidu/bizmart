@@ -87,6 +87,9 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
           });
         }
       }
+      setState(() {
+        recentChats = chats;
+      });
 
     }catch(e){
         debugPrint("Error fetching last chats: $e");
@@ -126,7 +129,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
       });
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
