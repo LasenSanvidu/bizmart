@@ -183,16 +183,17 @@ class RouterClass {
         final user = FirebaseAuth.instance.currentUser;
         final isLoggingIn = state.matchedLocation == "/login";
         final isOnboarding = state.matchedLocation == "/onboard";
+        final isRegistering = state.matchedLocation == "/register";
 
         // Don't redirect when on onboarding screen or checking initial route
         if (isOnboarding || state.matchedLocation == "/") {
           return null;
         }
 
-        if (user == null && !isLoggingIn) {
+        if (user == null && !isLoggingIn && !isRegistering) {
           return "/login"; // Redirect to login if not authenticated
         }
-        if (user != null && isLoggingIn) {
+        if (user != null && (isLoggingIn || isRegistering)) {
           return "/main"; // Redirect to home if already logged in
         }
         return null; // Allow normal navigation
