@@ -8,7 +8,8 @@ class IntroScreen2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: const Color.fromARGB(255, 186, 163, 251),
+        //color: const Color.fromARGB(255, 186, 163, 251),
+        color: Colors.black,
         child: Container(
           padding: const EdgeInsets.only(top: 183, bottom: 90),
           child: Column(

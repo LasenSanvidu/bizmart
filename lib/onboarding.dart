@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/intro_screens/intro_screen1.dart';
 import 'package:myapp/intro_screens/intro_screen2.dart';
 import 'package:myapp/intro_screens/intro_screen3.dart';
 import 'package:myapp/main.dart';
+import 'package:myapp/routes/router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -18,6 +20,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
 
   bool onLastPage = false;
+
+  void _completeOnboarding() async {
+    // Mark onboarding as completed
+    await RouterClass.markOnboardingComplete();
+
+    // Navigate to login page
+    context.go('/login');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +84,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onLastPage
                     ? GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
+                          /*Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
                             return HomeScreen();
-                          }));
+                          }));*/
+                          _completeOnboarding();
                         },
                         child: Text(
                           'done',
