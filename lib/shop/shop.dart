@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
@@ -16,16 +17,58 @@ class ShopPage extends StatefulWidget {
 
 class _ShopPageState extends State<ShopPage> {
   bool isLoading = true;
+  List<Product> allProducts = [];
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
+    /**Future.delayed(Duration.zero, () async {
       await Provider.of<StoreProvider>(context, listen: false).fetchStores();
       setState(() {
         isLoading = false; // Set loading to false once fetching is done
       });
+    });*/
+    fetchAllProducts();
+  }
+
+  Future<void> fetchAllProducts() async {
+    setState(() {
+      isLoading = true;
     });
+
+    try {
+      // Fetch all stores from Firestore
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('stores').get();
+
+      List<Product> products = [];
+
+      for (var doc in querySnapshot.docs) {
+        if (doc.data().containsKey('products') && doc['products'] is List) {
+          final storeProducts = (doc['products'] as List).map((prod) {
+            return Product(
+              id: prod['id'],
+              prodname: prod['prodname'],
+              image: prod['image'],
+              prodprice: prod['prodprice'].toDouble(),
+              description: prod['description'],
+            );
+          }).toList();
+
+          products.addAll(storeProducts);
+        }
+      }
+
+      setState(() {
+        allProducts = products;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching all products: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Widget _buildProductImage(String imagePath) {
@@ -67,9 +110,9 @@ class _ShopPageState extends State<ShopPage> {
 
   @override
   Widget build(BuildContext context) {
-    final storeProvider = Provider.of<StoreProvider>(context);
-    final allProducts =
-        storeProvider.stores.isNotEmpty ? storeProvider.allProducts : [];
+    //final storeProvider = Provider.of<StoreProvider>(context);
+    //final allProducts =
+    //storeProvider.stores.isNotEmpty ? storeProvider.allProducts : [];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -136,26 +179,7 @@ class _ShopPageState extends State<ShopPage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(10)),
-                                child: /*product.image.startsWith("http")
-                                    ? Image.network(
-                                        product.image,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(Icons.broken_image,
-                                                    size: 50),
-                                      )
-                                    : Image.file(
-                                        File(product.image),
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(Icons.broken_image,
-                                                    size: 50),
-                                      ),*/
-                                    _buildProductImage(product.image),
+                                child: _buildProductImage(product.image),
                               ),
                             ),
                             Padding(
@@ -184,6 +208,14 @@ class _ShopPageState extends State<ShopPage> {
                     );
                   },
                 ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: fetchAllProducts,
+        child: Icon(
+          Icons.refresh,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+      ),
     );
   }
 }

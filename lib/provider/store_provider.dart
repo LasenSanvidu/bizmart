@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myapp/models/product_and_store_model.dart';
@@ -5,24 +6,38 @@ import 'package:uuid/uuid.dart';
 
 class StoreProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final List<Store> _stores = [];
 
   List<Store> get stores => _stores;
 
+  String? get currentUserId => _auth.currentUser?.uid;
+
   Future<void> fetchStores() async {
     try {
-      final querySnapshot = await _firestore.collection('stores').get();
+      if (currentUserId == null) {
+        print("No user logged in");
+        return;
+      }
+      final querySnapshot = await _firestore
+          .collection('stores')
+          .where('userId', isEqualTo: currentUserId)
+          .get();
       _stores.clear();
       for (var doc in querySnapshot.docs) {
-        List<Product> products = (doc['products'] as List).map((prod) {
-          return Product(
-            id: prod['id'],
-            prodname: prod['prodname'],
-            image: prod['image'],
-            prodprice: prod['prodprice'].toDouble(),
-            description: prod['description'],
-          );
-        }).toList();
+        List<Product> products = [];
+
+        if (doc.data().containsKey('products') && doc['products'] is List) {
+          products = (doc['products'] as List).map((prod) {
+            return Product(
+              id: prod['id'],
+              prodname: prod['prodname'],
+              image: prod['image'],
+              prodprice: prod['prodprice'].toDouble(),
+              description: prod['description'],
+            );
+          }).toList();
+        }
 
         _stores.add(Store(
           id: doc.id,
@@ -43,11 +58,16 @@ class StoreProvider with ChangeNotifier {
   }
 
   Future<void> addNewStore(String storeName) async {
+    if (currentUserId == null) {
+      print("No user logged in");
+      return;
+    }
     final newStore = Store(id: Uuid().v4(), storeName: storeName);
     _stores.add(newStore);
     await _firestore.collection('stores').doc(newStore.id).set({
       'storeName': newStore.storeName,
       'products': [],
+      'userId': currentUserId,
     });
     notifyListeners();
   }
