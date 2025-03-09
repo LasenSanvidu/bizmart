@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/material.dart';
 import 'package:myapp/login.dart';
 import 'chat.dart';
@@ -29,94 +30,24 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
   void initState() {
   super.initState();
 
-  FirebaseMessaging.instance.requestPermission();
+  
 
-  FirebaseMessaging.instance.getToken().then((token) {
-    print("Firebase Messaging Token: $token");
-  });
+  
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    if (message.notification != null) {
-      setState(() {
-        notifications.add('${message.notification?.title}: ${message.notification?.body}');
-      });
-      _showNotification(message);
-    }
-  });
+  
 
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    if (message.notification != null) {
-      setState(() {
-        notifications.add('${message.notification?.title}: ${message.notification?.body}');
-      });
-    }
-  });
-
-  _fetchLastChattedUsers()
+  
+  
 
   
 }
-Future<void> _fetchLastChattedUsers() async {
-  if (_auth.currentUser == null) return;
-
-  try {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection("chats")
-        .where("users", arrayContains: _auth.currentUser!.uid)
-        .orderBy("lastMessageTime", descending: true)
-        .limit(5) // Get the last 5 chatted users
-        .get();
-
-    List<Map<String, dynamic>> chats = [];
-
-    for (var doc in querySnapshot.docs) {
-      Map<String, dynamic> chatData = doc.data() as Map<String, dynamic>;
-
-      // Get the other user
-      List<dynamic> users = chatData["users"];
-      String otherUserId = users.firstWhere((id) => id != _auth.currentUser!.uid);
-
-      // Fetch user details
-      DocumentSnapshot userDoc = await _firestore.collection("users").doc(otherUserId).get();
-
-      if (userDoc.exists) {
-        chats.add({
-          "name": userDoc["name"],
-          "lastMessage": chatData["lastMessage"],
-        });
-      }
-    }
-
-    setState(() {
-      recentChats = chats;
-    });
-  } catch (e) {
-    debugPrint("Error fetching last chats: $e");
-  }
-}
 
 
-  void _showNotification(RemoteMessage message) {
-    // Implement your notification display logic here
-    print("Notification received: ${message.notification?.title} - ${message.notification?.body}");
-  }
 
-  void setStatus(String status) async {
-    if (_auth.currentUser != null) {
-      await _firestore.collection("users").doc(_auth.currentUser!.uid).update({
-        "status": status,
-      });
-    }
-  }
+  
+  
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      setStatus("Online");
-    } else {
-      setStatus("Offline");
-    }
-  }
+  
 
   String chatId(String user1, String user2) {
     return user1.compareTo(user2) > 0 ? "$user1$user2" : "$user2$user1";
@@ -152,13 +83,7 @@ Future<void> _fetchLastChattedUsers() async {
     }
   }
 
-  void logOut(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => Login()),
-    );
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
