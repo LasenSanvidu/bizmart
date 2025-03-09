@@ -28,52 +28,38 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
 
   @override
   void initState() {
-  super.initState();
+    super.initState();
     FirebaseMessaging.instance.requestPermission();
     FirebaseMessaging.instance.getToken().then((token) {
       print("Firebase Messaging Token: $token");
     });
 
-    
-
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         setState(() {
-          notifications.add('${message.notification?.title}: ${message.notification?.body}');
+          notifications.add(
+              '${message.notification?.title}: ${message.notification?.body}');
         });
         _showNotification(message);
       }
     });
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       if (message.notification != null) {
         setState(() {
-          notifications.add('${message.notification?.title}: ${message.notification?.body}');
+          notifications.add(
+              '${message.notification?.title}: ${message.notification?.body}');
         });
       }
     });
-  
 
-  
-
-  
-
-  
-
-  
-  
-
-  
-}
-
-void _showNotification(RemoteMessage message) {
-   
+    _fetchLastChattedUsers();
   }
 
-  
-  
+  void _showNotification(RemoteMessage message) {
+    print("Notification received: ${message.notification?.title} - ${message.notification?.body}");
+  }
 
-  
+  Future<void> _fetchLastChattedUsers() async {}
 
   String chatId(String user1, String user2) {
     return user1.compareTo(user2) > 0 ? "$user1$user2" : "$user2$user1";
@@ -109,7 +95,6 @@ void _showNotification(RemoteMessage message) {
     }
   }
 
-  
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
