@@ -34,6 +34,9 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
       print("Firebase Messaging Token: $token");
     });
 
+    
+
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         setState(() {
@@ -42,7 +45,13 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
         _showNotification(message);
       }
     });
-  
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        setState(() {
+          notifications.add('${message.notification?.title}: ${message.notification?.body}');
+        });
+      }
+    });
   
 
   
