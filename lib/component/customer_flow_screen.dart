@@ -29,8 +29,7 @@ class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
   final List<Widget> _pages = [
     MainSettings(),
     ShopPage(),
-    //CalendarPage(),
-    ChatHomeScreen(),
+    CalendarPage(),
     Payment(),
     Profile(),
     MyStoreUi(),
