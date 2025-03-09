@@ -29,6 +29,12 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
   @override
   void initState() {
   super.initState();
+    FirebaseMessaging.instance.requestPermission();
+    FirebaseMessaging.instance.getToken().then((token) {
+      print("Firebase Messaging Token: $token");
+    });
+  
+  
 
   
 
