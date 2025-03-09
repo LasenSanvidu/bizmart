@@ -63,17 +63,12 @@ class ContactUsPage extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            SizedBox(height: 20), // Add this line to move "Contact Us" down
-            /*Text(
-              "Contact Us",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),*/
             SizedBox(height: 10),
             Text(
               "We’re here to help! Whether you have a question, a suggestion, or need assistance, don’t hesitate to reach out. Our team is always available for you. also connect with us on social media for updates and quick support. Your feedback is valuable to us, and we’re always happy to hear from you!",
               style: GoogleFonts.poppins(fontSize: 16),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -120,7 +115,11 @@ class ContactUsPage extends StatelessWidget {
   Widget _buildSocialButton(IconData icon, String platform, String followers,
       VoidCallback onPressed) {
     return ListTile(
-      leading: Icon(icon, size: 30),
+      leading: Icon(
+        icon,
+        size: 30,
+        color: Colors.black,
+      ),
       title: Text(platform),
       subtitle: Text(followers),
       onTap: onPressed,
