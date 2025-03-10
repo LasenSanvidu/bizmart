@@ -4,8 +4,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
 import 'package:provider/provider.dart';
 
-class InquiryPage extends StatelessWidget {
+class InquiryPage extends StatefulWidget {
   const InquiryPage({super.key});
+
+  @override
+  State<InquiryPage> createState() => _InquiryPageState();
+}
+
+class _InquiryPageState extends State<InquiryPage> {
+// In the InquiryPage class, update the build method to include initState
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      Provider.of<InquiryProvider>(context, listen: false).fetchMyInquiries();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

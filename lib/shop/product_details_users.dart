@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/Inquiry_page.dart';
@@ -145,14 +146,36 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                           color: Colors.white,
                           fontWeight: FontWeight.w600),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       final inquiryProvider =
                           Provider.of<InquiryProvider>(context, listen: false);
-                      inquiryProvider.addToInquiry(widget.product);
+                      /*inquiryProvider.addToInquiry(widget.product);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InquiryPage()));
+                              builder: (context) => InquiryPage()));*/
+                      // Fetch product owner ID from Firestore
+                      final productDoc = await FirebaseFirestore.instance
+                          .collection('products')
+                          .doc(widget.product.id)
+                          .get();
+
+                      if (productDoc.exists) {
+                        final ownerId = productDoc.data()?['ownerId'];
+                        await inquiryProvider.addToInquiry(
+                            widget.product, ownerId);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Added to inquiry')));
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => InquiryPage()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Product information not found')));
+                      }
                     },
                     child: Text(
                       "Add to Inquiry",
