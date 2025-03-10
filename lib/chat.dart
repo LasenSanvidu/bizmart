@@ -55,8 +55,7 @@ class _ChatState extends State<Chat> {
                   ),
                   id: doc.id,
                   text: data['message'],
-                  createdAt:
-                      (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
+                  createdAt: (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
                 )
               : types.ImageMessage(
                   author: types.User(
@@ -67,8 +66,7 @@ class _ChatState extends State<Chat> {
                   id: doc.id,
                   uri: data['message'],
                   size: 0,
-                  createdAt:
-                      (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
+                  createdAt: (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
                   name: 'Image',
                 );
         }).toList();
@@ -151,21 +149,11 @@ class _ChatState extends State<Chat> {
     final currentUserId = _auth.currentUser?.uid ?? '';
 
     return Scaffold(
+      backgroundColor: Colors.white, // Set white background
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.black, Colors.grey],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        backgroundColor: Colors.black, // Solid black app bar
         title: StreamBuilder<DocumentSnapshot>(
-          stream: _firestore
-              .collection('users')
-              .doc(widget.userMap['uid'])
-              .snapshots(),
+          stream: _firestore.collection('users').doc(widget.userMap['uid']).snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const SizedBox.shrink();
@@ -185,7 +173,7 @@ class _ChatState extends State<Chat> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -201,9 +189,7 @@ class _ChatState extends State<Chat> {
                       status,
                       style: TextStyle(
                         fontSize: 14,
-                        color: status == 'Online'
-                            ? Colors.white70
-                            : Colors.grey[400],
+                        color: status == 'Online' ? Colors.white70 : Colors.grey[400],
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -213,8 +199,7 @@ class _ChatState extends State<Chat> {
             );
           },
         ),
-        elevation: 4,
-        shadowColor: Colors.black54,
+        elevation: 2,
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert, color: Colors.white),
@@ -223,32 +208,28 @@ class _ChatState extends State<Chat> {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.grey[800]!, Colors.black],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: Colors.white, // White background for chat area
         child: chat_ui.Chat(
           messages: _messages,
           onSendPressed: _onSendMessage,
           user: types.User(id: currentUserId),
           onAttachmentPressed: _pickImage,
           theme: chat_ui.DefaultChatTheme(
-            primaryColor: Colors.black,
-            secondaryColor: Colors.grey[700]!,
-            backgroundColor: Colors.transparent,
-            inputBackgroundColor: Colors.grey[200]!.withOpacity(0.9),
-            inputTextColor: Colors.black87,
-            inputBorderRadius: BorderRadius.circular(25),
+            primaryColor: Colors.black, // Sent messages
+            secondaryColor: Colors.grey[300]!, // Received messages
+            backgroundColor: Colors.white,
+            inputBackgroundColor: Colors.white,
+            inputTextColor: Colors.black,
+            inputBorderRadius: BorderRadius.circular(30),
             inputContainerDecoration: BoxDecoration(
-              border: Border.all(color: Colors.black.withOpacity(0.3)),
-              borderRadius: BorderRadius.circular(25),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 8,
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
                   offset: const Offset(0, 2),
                 ),
               ],
@@ -259,18 +240,26 @@ class _ChatState extends State<Chat> {
               fontWeight: FontWeight.w500,
             ),
             receivedMessageBodyTextStyle: const TextStyle(
-              color: Colors.white70,
+              color: Colors.black87,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
             messageBorderRadius: 20,
-            attachmentButtonIcon: const Icon(
+            attachmentButtonIcon: Icon(
               Icons.attach_file,
-              color: Colors.black,
+              color: Colors.grey[600],
             ),
-            sendButtonIcon: const Icon(
+            sendButtonIcon: Icon(
               Icons.send,
+              color: Colors.grey[600],
+            ),
+            inputTextStyle: const TextStyle(
               color: Colors.black,
+              fontSize: 16,
+            ),
+            dateDividerTextStyle: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 12,
             ),
           ),
         ),
