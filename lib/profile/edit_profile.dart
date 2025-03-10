@@ -38,7 +38,20 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   }
 
   
+ void _fetchUserData() async {
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        print("User ID is null.");
+        return;
+      }
 
+      
+    } catch (e) {
+      print("Error fetching user data: $e");
+    }
+  }
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
