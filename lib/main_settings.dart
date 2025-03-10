@@ -150,9 +150,9 @@ class CustomDrawer extends StatelessWidget {
           DrawerMenuItem(icon: Icons.person, title: "My Profile", route: "/"),
           DrawerMenuItem(icon: Icons.chat, title: "Chats", route: "/chat"),
           DrawerMenuItem(
-              icon: Icons.local_shipping,
-              title: "Delivery Address",
-              route: "/"),
+              icon: Icons.calendar_today,
+              title: "Calendar",
+              route: "/calendar"),
           DrawerMenuItem(
               icon: Icons.payment, title: "Payment Methods", route: "/"),
           DrawerMenuItem(
