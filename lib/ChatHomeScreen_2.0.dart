@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -144,12 +143,13 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                       hintText: 'Search by email',
                       hintStyle: const TextStyle(color: Colors.white54),
                       filled: true,
-                      fillColor: Colors.grey.shade800,
+                      fillColor: Colors.grey.shade900,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 30),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.search, color: Colors.white70),
                         onPressed: onSearch,
@@ -160,7 +160,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                     'Chats',
                     key: ValueKey('title'),
                     style: TextStyle(
-                      fontSize: 26,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -191,7 +191,8 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                 ),
               )
             : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -201,7 +202,8 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                           String currentUserName =
                               _auth.currentUser?.displayName ?? 'Unknown';
                           String otherUserName = userMap['name'] ?? 'Unknown';
-                          String roomId = chatId(currentUserName, otherUserName);
+                          String roomId =
+                              chatId(currentUserName, otherUserName);
 
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -235,7 +237,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                                           size: 28, color: Colors.grey)
                                       : null,
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 13),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -253,7 +255,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                                       Text(
                                         'Tap to chat',
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 15,
                                           color: Colors.grey.shade600,
                                         ),
                                       ),
@@ -261,22 +263,22 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                                   ),
                                 ),
                                 Icon(Icons.chat_bubble_outline,
-                                    color: Colors.grey.shade700),
+                                    color: Colors.grey.shade600),
                               ],
                             ),
                           ),
                         ),
                       ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 25),
                     const Text(
                       'Notifications',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 13),
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
                         stream:
@@ -330,7 +332,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                                         child: const Icon(Icons.notifications,
                                             color: Colors.grey),
                                       ),
-                                      const SizedBox(width: 12),
+                                      const SizedBox(width: 13),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -341,17 +343,17 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                                                   'No Title',
                                               style: const TextStyle(
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.w600,
+                                                fontWeight: FontWeight.w700,
                                                 color: Colors.black87,
                                               ),
                                             ),
-                                            const SizedBox(height: 4),
+                                            const SizedBox(height: 5),
                                             Text(
                                               notificationData['body'] ??
                                                   'No content available',
                                               style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey.shade600,
+                                                fontSize: 16,
+                                                color: Colors.grey.shade700,
                                               ),
                                             ),
                                           ],
