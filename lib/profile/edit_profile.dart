@@ -11,7 +11,6 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen>
     with SingleTickerProviderStateMixin {
-  
   final TextEditingController emailController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -26,7 +25,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   @override
   void initState() {
     super.initState();
-   
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -38,8 +37,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
     _animationController.forward();
   }
 
-  
- void _fetchUserData() async {
+  void _fetchUserData() async {
     try {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null) {
@@ -59,14 +57,40 @@ class _EditProfileScreenState extends State<EditProfileScreen>
           usernameController.text = userDoc["username"] ?? "";
         });
       }
-
-
-      
     } catch (e) {
       print("Error fetching user data: $e");
     }
   }
- 
+
+  void _updateUserData() async {
+
+      setState(() {
+        isLoading = true;
+      });
+
+      try{
+        String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        print("User ID is null.");
+        return;
+      }
+
+      await _firestore.collection("users").doc(userId).update({
+        "email": emailController.text,
+        "first_name": firstNameController.text,
+        "last_name": lastNameController.text,
+        "mobile": mobileController.text,
+        "username": usernameController.text,
+      });
+
+      }catch(e){
+          print("Error updating user data: $e");
+      }
+
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -299,9 +323,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
     );
   }
 
-  void _updateUserData() async {
-    
-  }
+  void _updateUserData() async {}
 
   @override
   void dispose() {
