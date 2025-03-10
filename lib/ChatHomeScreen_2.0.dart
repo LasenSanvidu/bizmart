@@ -1,8 +1,9 @@
-import 'package:chat/Screens/chat.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/chat.dart';
 
 class ChatHomeScreen2 extends StatefulWidget {
   const ChatHomeScreen2({super.key});
