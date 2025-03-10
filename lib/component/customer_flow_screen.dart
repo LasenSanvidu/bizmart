@@ -91,9 +91,11 @@ import 'package:myapp/contact_us.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/notification_page.dart';
 import 'package:myapp/profile.dart';
+import 'package:myapp/profile_2.0.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/shop/shop.dart';
+import 'package:myapp/stats_page.dart';
 import 'package:myapp/stripe/payment.dart';
 
 class CustomerFlowScreen extends StatefulWidget {
@@ -115,7 +117,9 @@ class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
     ShopPage(),
     CalendarPage(),
     Payment(),
+    //StatsPage(),
     Profile(),
+    UserProfilePage(),
     MyStoreUi(),
     BusinessDashboardScreen(),
     ContactUsPage(),

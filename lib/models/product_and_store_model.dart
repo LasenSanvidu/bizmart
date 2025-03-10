@@ -24,6 +24,8 @@ class Product {
       required this.description});
 }*/
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Store {
   String id;
   String storeName;
@@ -52,4 +54,49 @@ class Product {
       required this.image,
       required this.prodprice,
       required this.description});
+}
+
+// new one for inquiry shit
+class UserInquiry {
+  final String id;
+  final String productId;
+  final String productOwnerId;
+  final String inquirerUserId;
+  final String inquirerName;
+  final DateTime createdAt;
+  final bool isViewed;
+
+  UserInquiry({
+    required this.id,
+    required this.productId,
+    required this.productOwnerId,
+    required this.inquirerUserId,
+    required this.inquirerName,
+    required this.createdAt,
+    this.isViewed = false,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'productId': productId,
+      'productOwnerId': productOwnerId,
+      'inquirerUserId': inquirerUserId,
+      'inquirerName': inquirerName,
+      'createdAt': createdAt,
+      'isViewed': isViewed,
+    };
+  }
+
+  factory UserInquiry.fromMap(Map<String, dynamic> map) {
+    return UserInquiry(
+      id: map['id'],
+      productId: map['productId'],
+      productOwnerId: map['productOwnerId'],
+      inquirerUserId: map['inquirerUserId'],
+      inquirerName: map['inquirerName'],
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      isViewed: map['isViewed'] ?? false,
+    );
+  }
 }

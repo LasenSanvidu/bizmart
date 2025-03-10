@@ -72,7 +72,7 @@ class StoreProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addProductToStore(String storeId, Product product) async {
+  /*Future<void> addProductToStore(String storeId, Product product) async {
     final store = _stores.firstWhere((s) => s.id == storeId);
     store.products.add(product);
 
@@ -86,6 +86,38 @@ class StoreProvider with ChangeNotifier {
                 'description': p.description,
               })
           .toList()
+    });
+
+    notifyListeners();
+  }*/
+
+  // In StoreProvider, update the addProductToStore method
+  Future<void> addProductToStore(String storeId, Product product) async {
+    final store = _stores.firstWhere((s) => s.id == storeId);
+    store.products.add(product);
+
+    await _firestore.collection('stores').doc(storeId).update({
+      'products': store.products
+          .map((p) => {
+                'id': p.id,
+                'prodname': p.prodname,
+                'image': p.image,
+                'prodprice': p.prodprice,
+                'description': p.description,
+                'ownerId': currentUserId, // Add this line
+              })
+          .toList()
+    });
+
+    // Also add to products collection for easier querying
+    await _firestore.collection('products').doc(product.id).set({
+      'id': product.id,
+      'prodname': product.prodname,
+      'image': product.image,
+      'prodprice': product.prodprice,
+      'description': product.description,
+      'ownerId': currentUserId,
+      'storeId': storeId,
     });
 
     notifyListeners();

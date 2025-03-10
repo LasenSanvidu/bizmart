@@ -308,8 +308,6 @@ class _RegisterState extends State<Register> {
     }
   }*/
 
-// Call this function at app startup or on a debug button press
-
   /// Function to handle user registration
   Future<void> register() async {
     // Step 1: Validate if any field is empty
