@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/intro_screens/intro_screen1.dart';
 import 'package:myapp/intro_screens/intro_screen2.dart';
 import 'package:myapp/intro_screens/intro_screen3.dart';
-import 'package:myapp/login_and_register/login.dart';
 import 'package:myapp/main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -16,7 +15,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   // page controller
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
 
   bool onLastPage = false;
 

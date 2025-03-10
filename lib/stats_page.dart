@@ -40,7 +40,7 @@ class StatsPage extends StatelessWidget {
 }
 
 class SoleCraftDashboard extends StatefulWidget {
-  const SoleCraftDashboard({Key? key}) : super(key: key);
+  const SoleCraftDashboard({super.key});
 
   @override
   State<SoleCraftDashboard> createState() => _SoleCraftDashboardState();
@@ -117,13 +117,13 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeader(),
+                    //_buildHeader(),
                     const SizedBox(height: 24),
                     _buildSummaryCards(isTablet),
                     const SizedBox(height: 24),
                     _buildStatisticsCard(isTablet),
                     const SizedBox(height: 24),
-                    _buildOrderStatusList(),
+                    //_buildOrderStatusList(),
                   ],
                 ),
               ),

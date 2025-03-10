@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:myapp/component/flow_screen.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/component/button.dart';
 
 class OrderConfirmed extends StatefulWidget {
@@ -63,7 +63,7 @@ class _OrderConfirmedState extends State<OrderConfirmed> {
             buttonText: '     Go to Orders     ',
             //navigateTo: OtpConfirmation(),
             onPressed: () {
-              MainScreen.of(context)
+              CustomerFlowScreen.of(context)
                   ?.updateIndex(1); // Updates the current index
             },
             backgroundColor: Color(0xFFF5F5F5),
@@ -74,7 +74,7 @@ class _OrderConfirmedState extends State<OrderConfirmed> {
             buttonText: 'Continue Shopping',
             //navigateTo: OrderConfirmed(),
             onPressed: () {
-              MainScreen.of(context)
+              CustomerFlowScreen.of(context)
                   ?.updateIndex(0); // Updates the current index
             },
             backgroundColor: Color(0xFF9C9BFB),

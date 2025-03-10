@@ -2,23 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/Inquiry_page.dart';
+import 'package:myapp/services/auth_service.dart';
 
 class MainSettings extends StatelessWidget {
   MainSettings({super.key});
 
   final List<String> adImages = [
     "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg",
-    "https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg",
-    "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
-    "https://source.unsplash.com/600x400/?fries",
-    "https://source.unsplash.com/600x400/?snacks",
   ];
 
   final List<String> trendingImages = [
     "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg",
-    "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg",
-    "https://source.unsplash.com/600x600/?businessman",
-    "https://source.unsplash.com/600x600/?technology",
   ];
 
   @override
@@ -27,6 +22,17 @@ class MainSettings extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Dashboard"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.question_answer_rounded, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => InquiryPage()),
+              );
+            },
+          ),
+        ],
         backgroundColor: Colors.white,
       ),
       drawer: CustomDrawer(),
@@ -46,7 +52,6 @@ class MainSettings extends StatelessWidget {
               items: adImages.map((imageUrl) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  //child: Image.network(imageUrl, fit: BoxFit.cover, width: double.infinity),
                   child: Image.network(
                     imageUrl,
                     fit: BoxFit.cover,
@@ -90,8 +95,6 @@ class MainSettings extends StatelessWidget {
               itemBuilder: (context, index) {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  //child:
-                  //Image.network(trendingImages[index], fit: BoxFit.cover),
                   child: Image.network(
                     trendingImages[index],
                     fit: BoxFit.cover,
@@ -115,7 +118,8 @@ class MainSettings extends StatelessWidget {
 
 // Drawer Menu
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  CustomDrawer({super.key});
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +155,8 @@ class CustomDrawer extends StatelessWidget {
               route: "/"),
           DrawerMenuItem(
               icon: Icons.payment, title: "Payment Methods", route: "/"),
-          DrawerMenuItem(icon: Icons.mail, title: "Contact Us", route: "/"),
+          DrawerMenuItem(
+              icon: Icons.mail, title: "Contact Us", route: "/contact"),
           DrawerMenuItem(
               icon: Icons.settings, title: "Settings", route: "/settings"),
           DrawerMenuItem(icon: Icons.help, title: "Helps Us FAQs", route: "/"),
@@ -159,8 +164,9 @@ class CustomDrawer extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: ElevatedButton.icon(
-              onPressed: () {
-                context.go("/login");
+              onPressed: () async {
+                await _authService.signOut();
+                context.push("/login");
               },
               icon: Icon(
                 Icons.power_settings_new,
@@ -206,7 +212,7 @@ class DrawerMenuItem extends StatelessWidget {
       leading: Icon(icon, color: Colors.black),
       title: Text(title, style: TextStyle(fontSize: 16)),
       onTap: () {
-        context.go(route);
+        context.push(route);
       },
     );
   }

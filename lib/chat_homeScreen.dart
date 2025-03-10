@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myapp/login_and_register/login.dart';
 import 'chat.dart';
 
@@ -96,7 +97,15 @@ class _ChatHomeScreenState extends State<ChatHomeScreen>
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.menu),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            context.go("/main");
+          },
+        ),
         title: Align(
           alignment: Alignment.center,
           child: Text(
