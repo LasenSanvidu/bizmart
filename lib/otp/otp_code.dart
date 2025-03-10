@@ -137,7 +137,7 @@ class OtpCode extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    context.go("/otp_confirmation");
+                    context.push("/otp_confirmation");
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
