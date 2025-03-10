@@ -122,40 +122,45 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white, // White background for the body
+        backgroundColor: Colors.grey.shade100, // Softer background
         appBar: AppBar(
-          elevation: 2,
-          backgroundColor: Colors.black, // Black AppBar
+          elevation: 0, // Flat design
+          backgroundColor: Colors.grey.shade900, // Dark gray AppBar
           leading: IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
+            icon: const Icon(Icons.menu, color: Colors.white70),
             onPressed: () {},
           ),
           title: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
             child: isSearchMode
                 ? TextField(
                     controller: _search,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Search by email',
-                      hintStyle: const TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.white54),
                       filled: true,
-                      fillColor: Colors.black54,
+                      fillColor: Colors.grey.shade800,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
+                        borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,
                       ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.search, color: Colors.white),
+                        icon: const Icon(Icons.search, color: Colors.white70),
                         onPressed: onSearch,
                       ),
                     ),
                   )
                 : const Text(
-                    'Chat',
+                    'Chats',
                     key: ValueKey('title'),
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -165,7 +170,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
             IconButton(
               icon: Icon(
                 isSearchMode ? Icons.close : Icons.search,
-                color: Colors.white,
+                color: Colors.white70,
               ),
               onPressed: () {
                 setState(() {
@@ -182,11 +187,11 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
         body: isLoading
             ? const Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
                 ),
               )
             : Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -208,51 +213,70 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                           );
                         },
                         child: Card(
-                          elevation: 3,
+                          elevation: 4,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          color: Colors.white, // White card background
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: Colors.grey.shade300,
-                              backgroundImage: userMap['image'] != null &&
-                                      userMap['image'].isNotEmpty
-                                  ? NetworkImage(userMap['image'])
-                                  : null,
-                              child: userMap['image'] == null ||
-                                      userMap['image'].isEmpty
-                                  ? const Icon(Icons.person, color: Colors.black)
-                                  : null,
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 28,
+                                  backgroundColor: Colors.grey.shade200,
+                                  backgroundImage: userMap['image'] != null &&
+                                          userMap['image'].isNotEmpty
+                                      ? NetworkImage(userMap['image'])
+                                      : null,
+                                  child: userMap['image'] == null ||
+                                          userMap['image'].isEmpty
+                                      ? const Icon(Icons.person,
+                                          size: 28, color: Colors.grey)
+                                      : null,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userMap['name'] ?? 'No Name',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Tap to chat',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(Icons.chat_bubble_outline,
+                                    color: Colors.grey.shade700),
+                              ],
                             ),
-                            title: Text(
-                              userMap['name'] ?? 'No Name',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                            subtitle: const Text(
-                              'Tap to chat',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            trailing: const Icon(Icons.chat_bubble_outline,
-                                color: Colors.black),
                           ),
                         ),
                       ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
                     const Text(
                       'Notifications',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
                         stream:
@@ -261,19 +285,20 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.black),
-                            ));
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.grey),
+                              ),
+                            );
                           }
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
-                            return const Center(
+                            return Center(
                               child: Text(
-                                "No notifications available",
+                                "No notifications yet",
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey,
+                                  color: Colors.grey.shade600,
                                 ),
                               ),
                             );
@@ -290,32 +315,49 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
 
                               return Card(
                                 elevation: 2,
-                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                margin: const EdgeInsets.symmetric(vertical: 6),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 color: Colors.white,
-                                child: ListTile(
-                                  leading: const CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    child: Icon(Icons.notifications,
-                                        color: Colors.black),
-                                  ),
-                                  title: Text(
-                                    notificationData['title'] ?? 'No Title',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    notificationData['body'] ??
-                                        'No content available',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: Colors.grey.shade200,
+                                        child: const Icon(Icons.notifications,
+                                            color: Colors.grey),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              notificationData['title'] ??
+                                                  'No Title',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              notificationData['body'] ??
+                                                  'No content available',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );
@@ -336,18 +378,18 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
       onPressed: () {},
       style: ElevatedButton.styleFrom(
         elevation: 2,
-        backgroundColor: Colors.black, // Black button
+        backgroundColor: Colors.grey.shade800,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       ),
       child: Text(
         label,
         style: const TextStyle(
-          color: Colors.white, // White text
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
