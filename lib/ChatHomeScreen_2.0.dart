@@ -56,13 +56,14 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
   }
 
   void _showNotification(RemoteMessage message) {
-    print("Notification received: ${message.notification?.title} - ${message.notification?.body}");
+    print(
+        "Notification received: ${message.notification?.title} - ${message.notification?.body}");
   }
 
   Future<void> _fetchLastChattedUsers() async {
     if (_auth.currentUser == null) return;
 
-    try{
+    try {
       QuerySnapshot querySnapshot = await _firestore
           .collection("chats")
           .where("users", arrayContains: _auth.currentUser!.uid)
@@ -70,15 +71,17 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
           .limit(5)
           .get();
 
-           List<Map<String, dynamic>> chats = [];
+      List<Map<String, dynamic>> chats = [];
 
-           for (var doc in querySnapshot.docs) {
+      for (var doc in querySnapshot.docs) {
         Map<String, dynamic> chatData = doc.data() as Map<String, dynamic>;
 
         List<dynamic> users = chatData["users"];
-        String otherUserId = users.firstWhere((id) => id != _auth.currentUser!.uid);
+        String otherUserId =
+            users.firstWhere((id) => id != _auth.currentUser!.uid);
 
-        DocumentSnapshot userDoc = await _firestore.collection("users").doc(otherUserId).get();
+        DocumentSnapshot userDoc =
+            await _firestore.collection("users").doc(otherUserId).get();
 
         if (userDoc.exists) {
           chats.add({
@@ -90,9 +93,8 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
       setState(() {
         recentChats = chats;
       });
-
-    }catch(e){
-        debugPrint("Error fetching last chats: $e");
+    } catch (e) {
+      debugPrint("Error fetching last chats: $e");
     }
   }
 
@@ -129,7 +131,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -183,16 +185,6 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                 child: Column(
                   children: [
                     const SizedBox(height: 5.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildFilterButton("All"),
-                        const SizedBox(width: 10),
-                        _buildFilterButton("Unread"),
-                        const SizedBox(width: 10),
-                        _buildFilterButton("Favourites"),
-                      ],
-                    ),
                     if (userMap.isNotEmpty)
                       Card(
                         shape: RoundedRectangleBorder(
@@ -216,7 +208,6 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                               ),
                             );
                           },
-                        
                           leading: userMap['image'] != null &&
                                   userMap['image'].isNotEmpty
                               ? CircleAvatar(
@@ -264,7 +255,7 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
 
                               return Card(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: ListTile(
                                   leading: const Icon(Icons.notifications,
