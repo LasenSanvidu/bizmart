@@ -93,7 +93,7 @@ class _ChatState extends State<Chat> {
     await _firestore.collection('chat').doc(widget.chatId).collection('chats').doc(fileName).set({
       "sendBy": _auth.currentUser?.displayName,
       "message": "",
-      "type": "img",
+      "type_of the message": "img",
       "time": FieldValue.serverTimestamp(),
     });
 
@@ -126,7 +126,7 @@ class _ChatState extends State<Chat> {
                   Text(widget.userMap['name']),
                   Text(
                     snapshot.data?['status'],
-                    style: const TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 15),
                   ),
                 ],
               );
@@ -145,10 +145,10 @@ class _ChatState extends State<Chat> {
         theme: const chat_ui.DefaultChatTheme(
           primaryColor: Colors.purple,
           secondaryColor: Colors.blue,
-          inputBackgroundColor: Colors.grey,
+          inputBackgroundColor: Color.fromARGB(255, 149, 148, 148),
           inputTextColor: Colors.black,
         ),
-      ),
+      )
     );
   }
 }
