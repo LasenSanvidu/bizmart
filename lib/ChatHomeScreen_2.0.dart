@@ -216,23 +216,23 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                               ),
                             );
                           },
-                          tileColor: Colors.black,
+                        
                           leading: userMap['image'] != null &&
                                   userMap['image'].isNotEmpty
                               ? CircleAvatar(
                                   backgroundImage:
                                       NetworkImage(userMap['image']),
                                 )
-                              : const Icon(Icons.person, color: Colors.white),
+                              : const Icon(Icons.person, color: Colors.black),
                           title: Text(
                             userMap['name'] ?? 'No Name',
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
-                          trailing: const Icon(Icons.chat, color: Colors.white),
+                          trailing: const Icon(Icons.chat, color: Colors.black),
                         ),
                       ),
                     const SizedBox(height: 20),
