@@ -8,7 +8,6 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart' as chat_ui;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-/// A beautifully designed chat screen widget
 class Chat extends StatefulWidget {
   final Map<String, dynamic> userMap;
   final String chatId;
@@ -35,7 +34,6 @@ class _ChatState extends State<Chat> {
     _loadMessages();
   }
 
-  /// Loads chat messages from Firestore in real-time
   void _loadMessages() {
     _firestore
         .collection('chat')
@@ -57,7 +55,8 @@ class _ChatState extends State<Chat> {
                   ),
                   id: doc.id,
                   text: data['message'],
-                  createdAt: (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
+                  createdAt:
+                      (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
                 )
               : types.ImageMessage(
                   author: types.User(
@@ -68,7 +67,8 @@ class _ChatState extends State<Chat> {
                   id: doc.id,
                   uri: data['message'],
                   size: 0,
-                  createdAt: (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
+                  createdAt:
+                      (data['time'] as Timestamp?)?.millisecondsSinceEpoch,
                   name: 'Image',
                 );
         }).toList();
@@ -76,7 +76,6 @@ class _ChatState extends State<Chat> {
     });
   }
 
-  /// Handles sending text messages
   Future<void> _onSendMessage(types.PartialText message) async {
     if (message.text.isEmpty) return;
 
@@ -94,7 +93,6 @@ class _ChatState extends State<Chat> {
         .add(messageData);
   }
 
-  /// Picks an image from gallery
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final XFile? xFile = await picker.pickImage(source: ImageSource.gallery);
@@ -104,7 +102,6 @@ class _ChatState extends State<Chat> {
     }
   }
 
-  /// Uploads image to Firebase Storage and updates Firestore
   Future<void> _uploadImage(File imageFile) async {
     final fileName = const Uuid().v1();
     bool uploadSuccess = true;
@@ -158,14 +155,17 @@ class _ChatState extends State<Chat> {
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.purple, Colors.deepPurple],
+              colors: [Colors.black, Colors.grey],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
         ),
         title: StreamBuilder<DocumentSnapshot>(
-          stream: _firestore.collection('users').doc(widget.userMap['uid']).snapshots(),
+          stream: _firestore
+              .collection('users')
+              .doc(widget.userMap['uid'])
+              .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const SizedBox.shrink();
@@ -179,7 +179,7 @@ class _ChatState extends State<Chat> {
                   child: Text(
                     widget.userMap['name'][0].toUpperCase(),
                     style: const TextStyle(
-                      color: Colors.purple,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
@@ -201,7 +201,9 @@ class _ChatState extends State<Chat> {
                       status,
                       style: TextStyle(
                         fontSize: 14,
-                        color: status == 'Online' ? Colors.greenAccent : Colors.grey[300],
+                        color: status == 'Online'
+                            ? Colors.white70
+                            : Colors.grey[400],
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -212,12 +214,8 @@ class _ChatState extends State<Chat> {
           },
         ),
         elevation: 4,
-        shadowColor: Colors.black45,
+        shadowColor: Colors.black54,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.call, color: Colors.white),
-            onPressed: () {},
-          ),
           IconButton(
             icon: const Icon(Icons.more_vert, color: Colors.white),
             onPressed: () {},
@@ -227,7 +225,7 @@ class _ChatState extends State<Chat> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.grey[200]!, Colors.white],
+            colors: [Colors.grey[800]!, Colors.black],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -238,18 +236,18 @@ class _ChatState extends State<Chat> {
           user: types.User(id: currentUserId),
           onAttachmentPressed: _pickImage,
           theme: chat_ui.DefaultChatTheme(
-            primaryColor: Colors.purple,
-            secondaryColor: Colors.deepPurpleAccent,
+            primaryColor: Colors.black,
+            secondaryColor: Colors.grey[700]!,
             backgroundColor: Colors.transparent,
-            inputBackgroundColor: Colors.white.withOpacity(0.9),
+            inputBackgroundColor: Colors.grey[200]!.withOpacity(0.9),
             inputTextColor: Colors.black87,
             inputBorderRadius: BorderRadius.circular(25),
             inputContainerDecoration: BoxDecoration(
-              border: Border.all(color: Colors.purple.withOpacity(0.3)),
+              border: Border.all(color: Colors.black.withOpacity(0.3)),
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.black.withOpacity(0.2),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -261,18 +259,18 @@ class _ChatState extends State<Chat> {
               fontWeight: FontWeight.w500,
             ),
             receivedMessageBodyTextStyle: const TextStyle(
-              color: Colors.black87,
+              color: Colors.white70,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
             messageBorderRadius: 20,
             attachmentButtonIcon: const Icon(
               Icons.attach_file,
-              color: Colors.purple,
+              color: Colors.black,
             ),
             sendButtonIcon: const Icon(
               Icons.send,
-              color: Colors.purple,
+              color: Colors.black,
             ),
           ),
         ),
