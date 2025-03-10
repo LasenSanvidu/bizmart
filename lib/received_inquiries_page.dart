@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/chat/chat_page.dart';
+import 'package:myapp/chat/chat_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class ReceivedInquiriesPage extends StatefulWidget {
   const ReceivedInquiriesPage({Key? key}) : super(key: key);
@@ -210,6 +214,17 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
   }
 
+  void goToChat(String userId) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatPage(
+          userId: userId,
+        ),
+      ),
+    );
+  }
+
   void _showInquiryDetails(UserInquiry inquiry, Product product) {
     // Mark as viewed if not already
     if (!inquiry.isViewed) {
@@ -258,10 +273,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // Here you would implement chat functionality
-                    // This is a placeholder for future chat implementation
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Chat functionality coming soon!')));
+                    goToChat(inquiry.inquirerUserId);
                   },
                   icon: Icon(Icons.chat, color: Colors.white),
                   label: Text(

@@ -1,99 +1,103 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'chat_screen.dart';
+import 'chat_page.dart'; // Import your ChatPage
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ChatListScreen extends StatefulWidget {
-  @override
-  _ChatListScreenState createState() => _ChatListScreenState();
-}
+class ChatListScreen extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-class _ChatListScreenState extends State<ChatListScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  List<types.User> _allUsers = [];
-  List<types.User> _filteredUsers = [];
+  // Method to check if a chat exists with the user
+  Future<bool> _hasChatWithUser(String userId) async {
+    final currentUserId = _auth.currentUser!.uid;
+    final chatId = _getChatId(currentUserId, userId);
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchUsers();
+    // Check if there are any messages in the chat
+    final chatSnapshot = await FirebaseFirestore.instance
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .limit(1) // Only need to check if there are any messages
+        .get();
+
+    return chatSnapshot.docs.isNotEmpty;
   }
 
-  Future<void> _fetchUsers() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) return;
-
-    final snapshot = await FirebaseFirestore.instance.collection('users').get();
-    final users = snapshot.docs
-        .map((doc) => types.User(
-              id: doc.id,
-              firstName: doc['first_name'] ?? '',
-            ))
-        .where((user) => user.id != currentUser.uid) // Exclude current user
-        .toList();
-
-    setState(() {
-      _allUsers = users;
-      _filteredUsers = users;
-    });
-  }
-
-  void _searchUsers(String query) {
-    final filtered = _allUsers
-        .where((user) =>
-            user.firstName!.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
-    setState(() {
-      _filteredUsers = filtered;
-    });
-  }
-
-  Future<void> _startChat(types.User user) async {
-    final room = await FirebaseChatCore.instance.createRoom(user);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(room: room),
-      ),
-    );
+  // Method to generate chat ID based on two user IDs
+  String _getChatId(String user1, String user2) {
+    List<String> ids = [user1, user2];
+    ids.sort(); // Ensure the order is consistent
+    return ids.join('_');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Search Users')),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Search users...',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: _searchUsers,
-            ),
-          ),
-          Expanded(
-            child: _filteredUsers.isEmpty
-                ? Center(child: Text('No users found'))
-                : ListView.builder(
-                    itemCount: _filteredUsers.length,
-                    itemBuilder: (context, index) {
-                      final user = _filteredUsers[index];
-                      return ListTile(
-                        title: Text(user.firstName ?? 'Unknown'),
-                        onTap: () => _startChat(user),
+      appBar: AppBar(title: Text('Users')),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text("No users found"));
+          }
+
+          List<Map<String, dynamic>> users = snapshot.data!.docs.map((doc) {
+            return {
+              'id': doc.id, // Get Firestore document ID
+              'name': doc['first_name'], // Ensure 'name' field exists
+            };
+          }).toList();
+
+          return FutureBuilder<List<Map<String, dynamic>>>(
+            future: _getUsersWithChats(users),
+            builder: (context, futureSnapshot) {
+              if (futureSnapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              final usersWithChats = futureSnapshot.data ?? [];
+
+              if (usersWithChats.isEmpty) {
+                return Center(child: Text('No chats found.'));
+              }
+
+              return ListView.builder(
+                itemCount: usersWithChats.length,
+                itemBuilder: (context, index) {
+                  final user = usersWithChats[index];
+                  return ListTile(
+                    title: Text(user['name']),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(userId: user['id']), // Pass Firestore document ID
+                        ),
                       );
                     },
-                  ),
-          ),
-        ],
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
     );
+  }
+
+  // This method filters users with existing chats
+  Future<List<Map<String, dynamic>>> _getUsersWithChats(List<Map<String, dynamic>> users) async {
+    final List<Future<Map<String, dynamic>?>> futures = users.map((user) async {
+      final hasChat = await _hasChatWithUser(user['id']);
+      return hasChat ? user : null;
+    }).toList();
+
+    // Wait for all futures to complete and filter out null values
+    final results = await Future.wait(futures);
+
+    return results.whereType<Map<String, dynamic>>().toList();
   }
 }
