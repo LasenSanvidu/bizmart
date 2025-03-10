@@ -1,10 +1,8 @@
+import 'package:chat/Screens/chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:flutter/material.dart';
-import 'package:myapp/login.dart';
-import 'chat.dart';
 
 class ChatHomeScreen2 extends StatefulWidget {
   const ChatHomeScreen2({super.key});
@@ -22,8 +20,6 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _search = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // New state variable to toggle search bar visibility
   bool isSearchMode = false;
 
   @override
@@ -72,10 +68,8 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
           .get();
 
       List<Map<String, dynamic>> chats = [];
-
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> chatData = doc.data() as Map<String, dynamic>;
-
         List<dynamic> users = chatData["users"];
         String otherUserId =
             users.firstWhere((id) => id != _auth.currentUser!.uid);
@@ -103,32 +97,22 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
   }
 
   void onSearch() async {
-    setState(() {
-      isLoading = true;
-    });
-
+    setState(() => isLoading = true);
     try {
       QuerySnapshot querySnapshot = await _firestore
           .collection("users")
           .where("email", isEqualTo: _search.text)
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
-          userMap = querySnapshot.docs.first.data() as Map<String, dynamic>;
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          userMap = {};
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      print("Error fetching user: $e");
       setState(() {
+        userMap = querySnapshot.docs.isNotEmpty
+            ? querySnapshot.docs.first.data() as Map<String, dynamic>
+            : {};
         isLoading = false;
       });
+    } catch (e) {
+      print("Error fetching user: $e");
+      setState(() => isLoading = false);
     }
   }
 
@@ -137,35 +121,51 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white, // White background for the body
         appBar: AppBar(
-          leading: const Icon(Icons.menu),
-          title: isSearchMode
-              ? TextField(
-                  controller: _search,
-                  decoration: InputDecoration(
-                    hintText: 'Search by email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+          elevation: 2,
+          backgroundColor: Colors.black, // Black AppBar
+          leading: IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () {},
+          ),
+          title: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: isSearchMode
+                ? TextField(
+                    controller: _search,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Search by email',
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      filled: true,
+                      fillColor: Colors.black54,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide.none,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.search, color: Colors.white),
+                        onPressed: onSearch,
+                      ),
                     ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: onSearch,
-                    ),
-                  ),
-                )
-              : const Align(
-                  alignment: Alignment.center,
-                  child: Text(
+                  )
+                : const Text(
                     'Chat',
+                    key: ValueKey('title'),
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
-                ),
+          ),
           actions: [
             IconButton(
-              icon: Icon(isSearchMode ? Icons.close : Icons.search),
+              icon: Icon(
+                isSearchMode ? Icons.close : Icons.search,
+                color: Colors.white,
+              ),
               onPressed: () {
                 setState(() {
                   isSearchMode = !isSearchMode;
@@ -179,54 +179,79 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
           ],
         ),
         body: isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                ),
+              )
             : Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 5.0),
                     if (userMap.isNotEmpty)
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ListTile(
-                          onTap: () {
-                            String currentUserName =
-                                _auth.currentUser?.displayName ?? 'Unknown';
-                            String otherUserName = userMap['name'] ?? 'Unknown';
+                      GestureDetector(
+                        onTap: () {
+                          String currentUserName =
+                              _auth.currentUser?.displayName ?? 'Unknown';
+                          String otherUserName = userMap['name'] ?? 'Unknown';
+                          String roomId = chatId(currentUserName, otherUserName);
 
-                            String roomId =
-                                chatId(currentUserName, otherUserName);
-
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => Chat(
-                                  chatId: roomId,
-                                  userMap: userMap,
-                                ),
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Chat(
+                                chatId: roomId,
+                                userMap: userMap,
                               ),
-                            );
-                          },
-                          leading: userMap['image'] != null &&
-                                  userMap['image'].isNotEmpty
-                              ? CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(userMap['image']),
-                                )
-                              : const Icon(Icons.person, color: Colors.black),
-                          title: Text(
-                            userMap['name'] ?? 'No Name',
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
                             ),
+                          );
+                        },
+                        child: Card(
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          trailing: const Icon(Icons.chat, color: Colors.black),
+                          color: Colors.white, // White card background
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.grey.shade300,
+                              backgroundImage: userMap['image'] != null &&
+                                      userMap['image'].isNotEmpty
+                                  ? NetworkImage(userMap['image'])
+                                  : null,
+                              child: userMap['image'] == null ||
+                                      userMap['image'].isEmpty
+                                  ? const Icon(Icons.person, color: Colors.black)
+                                  : null,
+                            ),
+                            title: Text(
+                              userMap['name'] ?? 'No Name',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                            subtitle: const Text(
+                              'Tap to chat',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            trailing: const Icon(Icons.chat_bubble_outline,
+                                color: Colors.black),
+                          ),
                         ),
                       ),
                     const SizedBox(height: 20),
+                    const Text(
+                      'Notifications',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     Expanded(
                       child: StreamBuilder<QuerySnapshot>(
                         stream:
@@ -235,12 +260,21 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.black),
+                            ));
                           }
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
                             return const Center(
-                              child: Text("No notifications available"),
+                              child: Text(
+                                "No notifications available",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
                             );
                           }
 
@@ -254,20 +288,33 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
                                   .data() as Map<String, dynamic>;
 
                               return Card(
+                                elevation: 2,
+                                margin: const EdgeInsets.symmetric(vertical: 8),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
+                                color: Colors.white,
                                 child: ListTile(
-                                  leading: const Icon(Icons.notifications,
-                                      color: Colors.blue),
+                                  leading: const CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    child: Icon(Icons.notifications,
+                                        color: Colors.black),
+                                  ),
                                   title: Text(
                                     notificationData['title'] ?? 'No Title',
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                   subtitle: Text(
                                     notificationData['body'] ??
                                         'No content available',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
                               );
@@ -282,21 +329,26 @@ class _ChatHomeScreen2State extends State<ChatHomeScreen2>
       ),
     );
   }
-}
 
-Widget _buildFilterButton(String label) {
-  return ElevatedButton(
-    onPressed: () {},
-    style: ElevatedButton.styleFrom(
-      backgroundColor: const Color.fromARGB(255, 175, 108, 187),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
+  Widget _buildFilterButton(String label) {
+    return ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        elevation: 2,
+        backgroundColor: Colors.black, // Black button
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    ),
-    child: Text(
-      label,
-      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-    ),
-  );
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white, // White text
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 }
