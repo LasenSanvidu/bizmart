@@ -86,6 +86,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
+import 'package:myapp/stats_page.dart';
 
 class BusinessDashboardScreen extends StatelessWidget {
   const BusinessDashboardScreen({super.key});
@@ -121,7 +122,7 @@ class BusinessDashboardScreen extends StatelessWidget {
             _buildDashboardButton(
                 context, Icons.bar_chart, "Transactions", MyStoreUi()),
             _buildDashboardButton(
-                context, Icons.insert_chart, "Statistics", MyStoreUi()),
+                context, Icons.insert_chart, "Statistics", StatsPage()),
             _buildDashboardButton(
                 context, Icons.inventory, "Store & Products", MyStoreUi()),
             _buildDashboardButton(
