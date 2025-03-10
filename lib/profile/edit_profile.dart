@@ -19,6 +19,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   final TextEditingController usernameController = TextEditingController();
 
   bool isLoading = false;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -45,6 +46,20 @@ class _EditProfileScreenState extends State<EditProfileScreen>
         print("User ID is null.");
         return;
       }
+
+      DocumentSnapshot userDoc =
+          await _firestore.collection("users").doc(userId).get();
+
+      if (userDoc.exists) {
+        setState(() {
+          emailController.text = userDoc["email"] ?? "";
+          firstNameController.text = userDoc["first_name"] ?? "";
+          lastNameController.text = userDoc["last_name"] ?? "";
+          mobileController.text = userDoc["mobile"] ?? "";
+          usernameController.text = userDoc["username"] ?? "";
+        });
+      }
+
 
       
     } catch (e) {
