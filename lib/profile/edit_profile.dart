@@ -11,6 +11,8 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen>
     with SingleTickerProviderStateMixin {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -18,14 +20,13 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   final TextEditingController usernameController = TextEditingController();
 
   bool isLoading = false;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-
+    _fetchUserData();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -63,13 +64,11 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   }
 
   void _updateUserData() async {
-
-      setState(() {
-        isLoading = true;
-      });
-
-      try{
-        String? userId = FirebaseAuth.instance.currentUser?.uid;
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null) {
         print("User ID is null.");
         return;
@@ -83,12 +82,36 @@ class _EditProfileScreenState extends State<EditProfileScreen>
         "username": usernameController.text,
       });
 
-      }catch(e){
-          print("Error updating user data: $e");
-      }
-
-
-
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Profile updated successfully!"),
+          backgroundColor: Colors.black87,
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+        ),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      print("Error updating user data: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed to update profile."),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -322,8 +345,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
       ),
     );
   }
-
-  void _updateUserData() async {}
 
   @override
   void dispose() {
