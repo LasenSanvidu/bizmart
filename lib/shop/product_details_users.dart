@@ -9,6 +9,7 @@ import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
 import 'package:myapp/provider/review_provider.dart';
 import 'package:myapp/review.dart';
+import 'package:myapp/services/message_service.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsUserPage extends StatefulWidget {
@@ -71,6 +72,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
     final reviewProvider = Provider.of<ReviewProvider>(context);
     final productReviews =
         reviewProvider.getReviewsForProduct(widget.product.id);
+         final MessageService _messageService = MessageService();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -164,6 +166,8 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                         final ownerId = productDoc.data()?['ownerId'];
                         await inquiryProvider.addToInquiry(
                             widget.product, ownerId);
+
+                        await _messageService.sendMessage(productDoc['ownerId'], productDoc['prodname']);
 
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Added to inquiry')));

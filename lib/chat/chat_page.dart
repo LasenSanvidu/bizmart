@@ -15,15 +15,24 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late types.User _currentUser;
+  types.User? _currentUser; // Nullable to handle async initialization
   late types.User user;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    loadUserData();
-    _currentUser = types.User(id: _auth.currentUser!.uid);
+    _initializeUser();
+  }
+
+  void _initializeUser() async {
+    final firebaseUser = _auth.currentUser;
+    if (firebaseUser != null) {
+      setState(() {
+        _currentUser = types.User(id: firebaseUser.uid);
+      });
+    }
+    await loadUserData();
   }
 
   String _getChatId(String user1, String user2) {
@@ -32,7 +41,7 @@ class _ChatPageState extends State<ChatPage> {
     return ids.join('_');
   }
 
-  void loadUserData() async {
+  Future<void> loadUserData() async {
     final userSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(widget.userId)
@@ -68,9 +77,10 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage(types.PartialText message) async {
-    final currentUserId = _auth.currentUser!.uid;
-    final chatId =
-        _getChatId(currentUserId, widget.userId); // Get unique chat ID
+    if (_currentUser == null) return; // Ensure user is set before sending
+
+    final currentUserId = _currentUser!.id;
+    final chatId = _getChatId(currentUserId, widget.userId);
 
     await FirebaseFirestore.instance
         .collection('chats')
@@ -91,16 +101,13 @@ class _ChatPageState extends State<ChatPage> {
             ? Text('Loading...')
             : Text('Chat with ${user.firstName}'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _isLoading
-                ? Center(
-                    child:
-                        CircularProgressIndicator()) // Show loading spinner while data is loading.
-                : StreamBuilder<List<types.Message>>(
-                    stream:
-                        _getMessages(), // Use the stream for real-time updates
+      body: _isLoading || _currentUser == null
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder<List<types.Message>>(
+                    stream: _getMessages(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
@@ -110,22 +117,18 @@ class _ChatPageState extends State<ChatPage> {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       }
 
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No messages yet.'));
-                      }
-
-                      final messages = snapshot.data!;
+                      final messages = snapshot.data ?? [];
 
                       return Chat(
                         messages: messages,
-                        user: _currentUser,
+                        user: _currentUser!,
                         onSendPressed: _sendMessage,
                       );
                     },
                   ),
-          ),
-        ],
-      ),
+                ),
+              ],
+            ),
     );
   }
 }
