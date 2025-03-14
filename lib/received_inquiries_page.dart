@@ -94,7 +94,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             CustomerFlowScreen.of(context)
-                ?.updateIndex(7); // Go back to Business Dashboard
+                ?.updateIndex(6); // Go back to Business Dashboard
           },
         ),
         actions: [
