@@ -169,12 +169,6 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           DrawerMenuItem(icon: Icons.chat, title: "Chats", route: "/chat"),
-          /*DrawerMenuItem(
-              icon: Icons.local_shipping,
-              title: "Delivery Address",
-              route: "/"),*/
-          /*DrawerMenuItem(
-              icon: Icons.payment, title: "Payment Methods", route: "/"),*/
           DrawerMenuItem(
             icon: Icons.mail,
             title: "Contact Us",
