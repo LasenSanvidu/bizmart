@@ -4,15 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:myapp/component/business_flow_screens.dart';
-import 'package:myapp/component/button.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
-import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/shop/add_product_page.dart';
 import 'package:myapp/shop/product_details_businessman.dart';
 import 'package:myapp/provider/store_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class StorePage extends StatelessWidget {
   final String storeId;
@@ -56,6 +52,20 @@ class StorePage extends StatelessWidget {
     }
   }
 
+  //method to update the store banner image
+  Future<void> _pickBannerImage(StoreProvider storeProvider) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      final base64Image = 'data:image/jpeg;base64,${base64Encode(bytes)}';
+
+      // Update store banner
+      await storeProvider.updateStoreBanner(storeId, base64Image);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final storeProvider = Provider.of<StoreProvider>(context);
@@ -67,8 +77,6 @@ class StorePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            /*BusinessFlowScreens.of(context)
-                ?.updateIndex(1);*/
             CustomerFlowScreen.of(context)
                 ?.updateIndex(5); // Go back to MyStoreUi
           },
@@ -131,13 +139,45 @@ class StorePage extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(height: 20),
+          GestureDetector(
+            onTap: () => _pickBannerImage(storeProvider),
+            child: Container(
+              width: double.infinity,
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: store.bannerImage.isNotEmpty
+                  ? _buildProductImage(store.bannerImage)
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_photo_alternate,
+                            size: 40,
+                            color: Colors.grey[600],
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "Add Store Banner",
+                            style: GoogleFonts.poppins(
+                              color: Colors.grey[600],
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+          ),
+          SizedBox(height: 20),
           ElevatedButton(
-            //onPressed: () => _showAddProductDialog(context, storeProvider),
             onPressed: () {
               CustomerFlowScreen.of(context)
                   ?.setNewScreen(AddProductPage(storeId: store.id));
             },
-
             style: ElevatedButton.styleFrom(
               //backgroundColor: const Color.fromARGB(255, 184, 161, 249),
               backgroundColor: Colors.black,

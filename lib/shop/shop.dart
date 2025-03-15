@@ -55,6 +55,7 @@ class _ShopPageState extends State<ShopPage> {
           storeName: doc['storeName'],
           products: products,
           userId: doc['userId'] ?? '',
+          bannerImage: doc['bannerImage'] ?? '',
         ));
       }
 
@@ -75,7 +76,11 @@ class _ShopPageState extends State<ShopPage> {
     int productCount = store.products.length;
 
     // Use the first product image as store thumbnail if available
-    String? thumbnailImage = productCount > 0 ? store.products[0].image : null;
+    String? thumbnailImage = store.bannerImage.isNotEmpty
+        ? store.bannerImage
+        : productCount > 0
+            ? store.products[0].image
+            : null;
 
     return Card(
       color: Colors.white,

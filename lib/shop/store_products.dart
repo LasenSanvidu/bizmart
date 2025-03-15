@@ -299,82 +299,98 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
           },
         ),
       ),
-      body: storeProducts.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/empty-shop.png',
-                    width: 350,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  Text(
-                    "No products in this store",
-                    style:
-                        GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
-                  ),
-                ],
-              ),
-            )
-          : GridView.builder(
-              padding: EdgeInsets.all(8.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.7,
-              ),
-              itemCount: storeProducts.length,
-              itemBuilder: (context, index) {
-                final product = storeProducts[index];
-                return GestureDetector(
-                  onTap: () {
-                    CustomerFlowScreen.of(context)?.setNewScreen(
-                      ProductDetailsUserPage(product: product),
-                    );
-                  },
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+      body: Column(
+        children: [
+          widget.store.bannerImage.isNotEmpty
+              ? Container(
+                  width: double.infinity,
+                  height: 150,
+                  child: _buildProductImage(widget.store.bannerImage),
+                )
+              : SizedBox(),
+          Expanded(
+            child: storeProducts.isEmpty
+                ? Center(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(10)),
-                            child: _buildProductImage(product.image),
-                          ),
+                        Image.asset(
+                          'assets/empty-shop.png',
+                          width: 350,
+                          fit: BoxFit.fitWidth,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            product.prodname,
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500, fontSize: 16),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Text(
+                          "No products in this store",
+                          style: GoogleFonts.poppins(
+                              fontSize: 16, color: Colors.grey),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            '\Rs ${product.prodprice.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 126, 126, 126),
-                                fontSize: 15),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
                       ],
                     ),
+                  )
+                : GridView.builder(
+                    padding: EdgeInsets.all(8.0),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.7,
+                    ),
+                    itemCount: storeProducts.length,
+                    itemBuilder: (context, index) {
+                      final product = storeProducts[index];
+                      return GestureDetector(
+                        onTap: () {
+                          CustomerFlowScreen.of(context)?.setNewScreen(
+                            ProductDetailsUserPage(product: product),
+                          );
+                        },
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(10)),
+                                  child: _buildProductImage(product.image),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  product.prodname,
+                                  style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  '\Rs ${product.prodprice.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 126, 126, 126),
+                                      fontSize: 15),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
+          ),
+        ],
+      ),
     );
   }
 }

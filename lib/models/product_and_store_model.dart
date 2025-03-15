@@ -30,13 +30,15 @@ class Store {
   String id;
   String storeName;
   List<Product> products; // list of Products to store
-  String userId; // Add userId field
+  String userId;
+  String bannerImage; // New field for store banner image
 
   Store({
     required this.id,
     required this.storeName,
     List<Product>? products,
     this.userId = '', // Default empty string for backward compatibility
+    this.bannerImage = '',
   }) : products = products ?? [];
 }
 
