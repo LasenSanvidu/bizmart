@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
-import 'package:myapp/shop/store_products.dart';
+import 'package:myapp/shop/product_details_users.dart';
+import 'package:myapp/shop/product_details_businessman.dart';
+import 'package:myapp/provider/store_provider.dart';
+import 'package:provider/provider.dart';
 
 class ShopPage extends StatefulWidget {
   @override
@@ -14,15 +17,21 @@ class ShopPage extends StatefulWidget {
 
 class _ShopPageState extends State<ShopPage> {
   bool isLoading = true;
-  List<Store> allStores = [];
+  List<Product> allProducts = [];
 
   @override
   void initState() {
     super.initState();
-    fetchAllStores();
+    /**Future.delayed(Duration.zero, () async {
+      await Provider.of<StoreProvider>(context, listen: false).fetchStores();
+      setState(() {
+        isLoading = false; // Set loading to false once fetching is done
+      });
+    });*/
+    fetchAllProducts();
   }
 
-  Future<void> fetchAllStores() async {
+  Future<void> fetchAllProducts() async {
     setState(() {
       isLoading = true;
     });
@@ -32,13 +41,11 @@ class _ShopPageState extends State<ShopPage> {
       final querySnapshot =
           await FirebaseFirestore.instance.collection('stores').get();
 
-      List<Store> stores = [];
+      List<Product> products = [];
 
       for (var doc in querySnapshot.docs) {
-        // For each store, get its products
-        List<Product> products = [];
         if (doc.data().containsKey('products') && doc['products'] is List) {
-          products = (doc['products'] as List).map((prod) {
+          final storeProducts = (doc['products'] as List).map((prod) {
             return Product(
               id: prod['id'],
               prodname: prod['prodname'],
@@ -47,89 +54,21 @@ class _ShopPageState extends State<ShopPage> {
               description: prod['description'],
             );
           }).toList();
-        }
 
-        // Create store object
-        stores.add(Store(
-          id: doc.id,
-          storeName: doc['storeName'],
-          products: products,
-          userId: doc['userId'] ?? '',
-        ));
+          products.addAll(storeProducts);
+        }
       }
 
       setState(() {
-        allStores = stores;
+        allProducts = products;
         isLoading = false;
       });
     } catch (e) {
-      print("Error fetching all stores: $e");
+      print("Error fetching all products: $e");
       setState(() {
         isLoading = false;
       });
     }
-  }
-
-  Widget _buildStoreCard(Store store) {
-    // Count products in the store
-    int productCount = store.products.length;
-
-    // Use the first product image as store thumbnail if available
-    String? thumbnailImage = productCount > 0 ? store.products[0].image : null;
-
-    return Card(
-      color: Colors.white,
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: InkWell(
-        onTap: () {
-          CustomerFlowScreen.of(context)?.setNewScreen(
-            StoreProductsPage(store: store),
-          );
-        },
-        borderRadius: BorderRadius.circular(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                child: thumbnailImage != null
-                    ? _buildProductImage(thumbnailImage)
-                    : Container(
-                        color: Colors.grey[200],
-                        child: Center(
-                          child:
-                              Icon(Icons.store, size: 50, color: Colors.grey),
-                        ),
-                      ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                store.storeName,
-                style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500, fontSize: 16),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: Text(
-                '$productCount products',
-                style: const TextStyle(
-                    color: Color.fromARGB(255, 126, 126, 126), fontSize: 14),
-              ),
-            ),
-            const SizedBox(height: 4),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildProductImage(String imagePath) {
@@ -171,6 +110,10 @@ class _ShopPageState extends State<ShopPage> {
 
   @override
   Widget build(BuildContext context) {
+    //final storeProvider = Provider.of<StoreProvider>(context);
+    //final allProducts =
+    //storeProvider.stores.isNotEmpty ? storeProvider.allProducts : [];
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -182,7 +125,7 @@ class _ShopPageState extends State<ShopPage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : allStores.isEmpty
+          : allProducts.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -193,7 +136,7 @@ class _ShopPageState extends State<ShopPage> {
                         fit: BoxFit.fitWidth,
                       ),
                       Text(
-                        "No stores available",
+                        "No products available",
                         style: GoogleFonts.poppins(
                             fontSize: 16, color: Colors.grey),
                       ),
@@ -206,16 +149,67 @@ class _ShopPageState extends State<ShopPage> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 0.8,
+                    childAspectRatio: 0.7,
                   ),
-                  itemCount: allStores.length,
+                  itemCount: allProducts.length,
                   itemBuilder: (context, index) {
-                    final store = allStores[index];
-                    return _buildStoreCard(store);
+                    final product = allProducts[index];
+                    return GestureDetector(
+                      onTap: () {
+                        /*Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailsUserPage(product: product),
+                      ),
+                    );*/
+                        CustomerFlowScreen.of(context)?.setNewScreen(
+                            ProductDetailsUserPage(product: product));
+                      },
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(10)),
+                                child: _buildProductImage(product.image),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                product.prodname,
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500, fontSize: 16),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                '\Rs ${product.prodprice.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 126, 126, 126),
+                                    fontSize: 15),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
+                    );
                   },
                 ),
       floatingActionButton: FloatingActionButton(
-        onPressed: fetchAllStores,
+        onPressed: fetchAllProducts,
         child: Icon(
           Icons.refresh,
           color: Colors.white,

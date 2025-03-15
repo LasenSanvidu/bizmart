@@ -74,10 +74,9 @@ class StorePage extends StatelessWidget {
           },
         ),
         backgroundColor: Colors.transparent,
-        centerTitle: true, // This property centers the title
+        centerTitle: true,
         title: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.center, // Center the title within the row
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: Text(

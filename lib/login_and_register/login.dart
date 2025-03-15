@@ -506,7 +506,10 @@ class _LoginState extends State<Login> {
                           fontSize: 18, color: const Color(0xFF6B5E5E))),
                   Text(" Terms and Privacy Policy",
                       style: GoogleFonts.abel(
-                          fontSize: 18, color: const Color(0xFF0386D0))),
+                          fontSize: 18,
+                          color: /*const Color(0xFF0386D0)*/
+                              const Color(0xFF000000),
+                          fontWeight: FontWeight.w800)),
                 ],
               ),
               const SizedBox(height: 29),
@@ -527,7 +530,8 @@ class _LoginState extends State<Login> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: _isLoginSelected
-                                  ? const Color(0xFF0386D0)
+                                  ? //const Color(0xFF0386D0)
+                                  const Color(0xFF000000)
                                   : const Color(0xFFA6A6A6),
                             )),
                         const SizedBox(height: 0),
@@ -560,7 +564,8 @@ class _LoginState extends State<Login> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: !_isLoginSelected
-                                  ? const Color(0xFF0386D0)
+                                  ? //const Color(0xFF0386D0)
+                                  const Color(0xFF000000)
                                   : const Color(0xFFA6A6A6),
                             )),
                         const SizedBox(height: 0),
@@ -695,7 +700,10 @@ class _LoginState extends State<Login> {
                   ),
                   const Text(
                     "      Forgot password",
-                    style: TextStyle(fontSize: 15, color: Color(0xFF0386D0)),
+                    style: TextStyle(
+                        fontSize: 15,
+                        /*color: Color(0xFF0386D0)*/ color: Colors.black,
+                        fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -709,7 +717,8 @@ class _LoginState extends State<Login> {
                   child: Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0386D0),
+                      //color: const Color(0xFF0386D0),
+                      color: Colors.black,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Center(
