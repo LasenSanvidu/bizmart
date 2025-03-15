@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:animations/animations.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
@@ -19,7 +18,8 @@ class StatsPage extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF8F9FA),
         cardTheme: CardTheme(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
@@ -45,10 +45,12 @@ class SoleCraftDashboard extends StatefulWidget {
   State<SoleCraftDashboard> createState() => _SoleCraftDashboardState();
 }
 
-class _SoleCraftDashboardState extends State<SoleCraftDashboard> with SingleTickerProviderStateMixin {
+class _SoleCraftDashboardState extends State<SoleCraftDashboard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
+  // Mock data instead of Firebase data
   final orderStats = {
     'totalOrders': 476,
     'completedOrders': 186,
@@ -110,17 +112,16 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> with SingleTick
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeader(),
                     const SizedBox(height: 24),
                     _buildSummaryCards(isTablet),
                     const SizedBox(height: 24),
                     _buildStatisticsCard(isTablet),
                     const SizedBox(height: 24),
-                    _buildOrderStatusList(),
                   ],
                 ),
               ),
@@ -128,34 +129,6 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> with SingleTick
           );
         },
       ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: const Color(0xFF6A1B9A).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(
-            Icons.bubble_chart,
-            color: Color(0xFF6A1B9A),
-            size: 24,
-          ),
-        ),
-        const SizedBox(width: 12),
-        const Text(
-          'Order Statistics',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF333333),
-          ),
-        ),
-      ],
     );
   }
 
@@ -182,11 +155,24 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> with SingleTick
           Icons.check_circle_outline,
           completedColor,
         ),
+        _buildSummaryCard(
+          'Overdue',
+          orderStats['overdueOrders']!,
+          Icons.timer_off_outlined,
+          overdueColor,
+        ),
+        _buildSummaryCard(
+          'Pending',
+          orderStats['pendingOrders']!,
+          Icons.pending_outlined,
+          pendingColor,
+        ),
       ],
     );
   }
 
-  Widget _buildSummaryCard(String title, int count, IconData icon, Color color) {
+  Widget _buildSummaryCard(
+      String title, int count, IconData icon, Color color) {
     return FadeTransition(
       opacity: _animation,
       child: AnimatedContainer(
@@ -290,7 +276,8 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> with SingleTick
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF5F5F5),
                     borderRadius: BorderRadius.circular(20),
@@ -412,7 +399,8 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> with SingleTick
     );
   }
 
-  PieChartSectionData _buildPieChartSection(int count, Color color, IconData icon) {
+  PieChartSectionData _buildPieChartSection(
+      int count, Color color, IconData icon) {
     final percentage = (count / orderStats['totalOrders']! * 100);
     return PieChartSectionData(
       value: count.toDouble(),
@@ -477,165 +465,6 @@ class _SoleCraftDashboardState extends State<SoleCraftDashboard> with SingleTick
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildOrderStatusList() {
-    return FadeTransition(
-      opacity: _animation,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Order Status',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Color(0xFF333333),
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildOrderStatusItem('Completed Tasks', orderStats['completedOrders']!, completedColor),
-          _buildOrderStatusItem('Awaiting Confirmation', orderStats['awaitingConfirmation']!, awaitingColor),
-          _buildOrderStatusItem('Overdue Orders', orderStats['overdueOrders']!, overdueColor),
-          _buildOrderStatusItem('Pending Orders', orderStats['pendingOrders']!, pendingColor),
-          _buildOrderStatusItem('Cancelled Orders', orderStats['cancelledOrders']!, cancelledColor),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOrderStatusItem(String title, int count, Color dotColor) {
-    final percentage = (count / orderStats['totalOrders']! * 100).toStringAsFixed(1);
-
-    return OpenContainer(
-      transitionDuration: const Duration(milliseconds: 500),
-      openBuilder: (context, _) => _buildDetailScreen(title, count, dotColor),
-      closedElevation: 0,
-      closedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      closedColor: Colors.transparent,
-      closedBuilder: (context, openContainer) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-        margin: const EdgeInsets.only(bottom: 12.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: dotColor.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-              spreadRadius: 0,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: dotColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Color(0xFF333333),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  '$percentage% of total',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: dotColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '$count',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: dotColor,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 14,
-              color: Colors.grey[400],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailScreen(String title, int count, Color color) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        backgroundColor: color.withOpacity(0.1),
-        foregroundColor: color,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.list_alt,
-              size: 64,
-              color: color,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Details for $title',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Total count: $count',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: color,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: const Text('Go Back'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
