@@ -81,7 +81,7 @@ class StorePage extends StatelessWidget {
                 ?.updateIndex(5); // Go back to MyStoreUi
           },
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -139,60 +139,128 @@ class StorePage extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(height: 20),
-          GestureDetector(
-            onTap: () => _pickBannerImage(storeProvider),
-            child: Container(
-              width: double.infinity,
-              height: 150,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: store.bannerImage.isNotEmpty
-                  ? _buildProductImage(store.bannerImage)
-                  : Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add_photo_alternate,
-                            size: 40,
-                            color: Colors.grey[600],
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "Add Store Banner",
-                            style: GoogleFonts.poppins(
-                              color: Colors.grey[600],
-                              fontSize: 16,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: GestureDetector(
+              onTap: () => _pickBannerImage(storeProvider),
+              child: Container(
+                width: double.infinity,
+                height: 180,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 232, 232, 232),
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: store.bannerImage.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: _buildProductImage(store.bannerImage))
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_photo_alternate,
+                              size: 40,
+                              color: Colors.black,
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 8),
+                            Text(
+                              "Add Store Banner",
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+              ),
             ),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              CustomerFlowScreen.of(context)
-                  ?.setNewScreen(AddProductPage(storeId: store.id));
-            },
-            style: ElevatedButton.styleFrom(
-              //backgroundColor: const Color.fromARGB(255, 184, 161, 249),
-              backgroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-              textStyle: GoogleFonts.poppins(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600),
-            ),
-            child: Text(
-              "Add Product",
-              style: GoogleFonts.poppins(fontSize: 20, color: Colors.white),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  CustomerFlowScreen.of(context)
+                      ?.setNewScreen(AddProductPage(storeId: store.id));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                  textStyle: GoogleFonts.poppins(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)),
+                  ),
+                ),
+                child: Text(
+                  "Add Product",
+                  style: GoogleFonts.poppins(fontSize: 20, color: Colors.white),
+                ),
+              ),
             ),
           ),
-          //SizedBox(height: 20),
+
+// After the "Add Product" button
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Manage your products below. Tap on a product",
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                Text(
+                  "to view details or update them.",
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Products",
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${store.products.length} items",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 10),
+
           //Text("Store ID: $storeId"),
           Expanded(
             child: store.products.isEmpty
@@ -238,14 +306,6 @@ class StorePage extends StatelessWidget {
                           final product = store.products[index];
                           return GestureDetector(
                             onTap: () {
-                              /*Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductDetailsPage(product: product),
-                                ),
-                              );*/
-
                               CustomerFlowScreen.of(context)?.setNewScreen(
                                 ProductDetailsPage(product: product),
                               );
@@ -263,25 +323,7 @@ class StorePage extends StatelessWidget {
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(10)),
-                                        child: /*product.image.startsWith("http")
-                                    ? Image.network(
-                                        product.image,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(Icons.broken_image,
-                                                    size: 50),
-                                      )
-                                    : Image.file(
-                                        File(product.image),
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(Icons.broken_image,
-                                                    size: 50),
-                                      ),*/
+                                        child:
                                             _buildProductImage(product.image)),
                                   ),
                                   Row(

@@ -15,14 +15,31 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   bool isLoading = true;
   List<Store> allStores = [];
+  List<Store> filteredStores = [];
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     fetchAllStores();
+    filteredStores = allStores;
+  }
+
+  //search function
+  void _searchStores(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredStores = allStores;
+      } else {
+        filteredStores = allStores.where((store) {
+          return store.storeName.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      }
+    });
   }
 
   Future<void> fetchAllStores() async {
+    if (!mounted) return;
     setState(() {
       isLoading = true;
     });
@@ -31,40 +48,64 @@ class _ShopPageState extends State<ShopPage> {
       // Fetch all stores from Firestore
       final querySnapshot =
           await FirebaseFirestore.instance.collection('stores').get();
+      print("Number of documents found: ${querySnapshot.docs.length}");
 
       List<Store> stores = [];
 
       for (var doc in querySnapshot.docs) {
-        // For each store, get its products
-        List<Product> products = [];
-        if (doc.data().containsKey('products') && doc['products'] is List) {
-          products = (doc['products'] as List).map((prod) {
-            return Product(
-              id: prod['id'],
-              prodname: prod['prodname'],
-              image: prod['image'],
-              prodprice: prod['prodprice'].toDouble(),
-              description: prod['description'],
-            );
-          }).toList();
+        try {
+          print("Store ID: ${doc.id}, Name: ${doc.data()['storeName']}");
+          // For each store, get its products
+          List<Product> products = [];
+          if (doc.data().containsKey('products') && doc['products'] is List) {
+            products = (doc['products'] as List).map((prod) {
+              return Product(
+                id: prod['id'],
+                prodname: prod['prodname'],
+                image: prod['image'],
+                prodprice: prod['prodprice'].toDouble(),
+                description: prod['description'],
+              );
+            }).toList();
+            print("Number of products in store: ${products.length}");
+          }
+
+          // Safely access bannerImage - provide a default if it doesn't exist
+          String bannerImage = '';
+          try {
+            if (doc.data().containsKey('bannerImage')) {
+              bannerImage = doc['bannerImage'];
+            }
+          } catch (e) {
+            print("No banner image for store ${doc.id}");
+          }
+
+          // Create store object
+          stores.add(
+            Store(
+              id: doc.id,
+              storeName: doc['storeName'],
+              products: products,
+              userId: doc['userId'] ?? '',
+              bannerImage: bannerImage,
+            ),
+          );
+        } catch (e) {
+          print("Error processing store document ${doc.id}: $e");
         }
-
-        // Create store object
-        stores.add(Store(
-          id: doc.id,
-          storeName: doc['storeName'],
-          products: products,
-          userId: doc['userId'] ?? '',
-          bannerImage: doc['bannerImage'] ?? '',
-        ));
       }
-
+      filteredStores = stores;
+      if (!mounted)
+        return; // Avoid calling `setState` if the widget is disposed
       setState(() {
         allStores = stores;
         isLoading = false;
       });
+      print("Total stores loaded: ${allStores.length}");
     } catch (e) {
       print("Error fetching all stores: $e");
+      if (!mounted)
+        return; // Avoid calling `setState` if the widget is disposed
       setState(() {
         isLoading = false;
       });
@@ -78,9 +119,7 @@ class _ShopPageState extends State<ShopPage> {
     // Use the first product image as store thumbnail if available
     String? thumbnailImage = store.bannerImage.isNotEmpty
         ? store.bannerImage
-        : productCount > 0
-            ? store.products[0].image
-            : null;
+        : (productCount > 0 ? store.products[0].image : null);
 
     return Card(
       color: Colors.white,
@@ -183,42 +222,122 @@ class _ShopPageState extends State<ShopPage> {
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : allStores.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/empty-shop.png',
-                        width: 350,
-                        fit: BoxFit.fitWidth,
-                      ),
-                      Text(
-                        "No stores available",
-                        style: GoogleFonts.poppins(
-                            fontSize: 16, color: Colors.grey),
-                      ),
-                    ],
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            margin: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Discover Stores",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                )
-              : GridView.builder(
-                  padding: EdgeInsets.all(8.0),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.8,
-                  ),
-                  itemCount: allStores.length,
-                  itemBuilder: (context, index) {
-                    final store = allStores[index];
-                    return _buildStoreCard(store);
-                  },
                 ),
+                SizedBox(height: 4),
+                Text(
+                  "Explore your store in one click and get find your favorite products",
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search stores...',
+                hintStyle: GoogleFonts.poppins(
+                    color: const Color.fromARGB(255, 127, 127, 127)),
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 243, 243, 243),
+              ),
+              onChanged: _searchStores,
+            ),
+          ),
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "All Stores",
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${allStores.length} items",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : allStores.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/empty-shop.png',
+                              width: 350,
+                              fit: BoxFit.fitWidth,
+                            ),
+                            Text(
+                              "No stores available",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 16, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                    : GridView.builder(
+                        padding: EdgeInsets.all(8.0),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemCount: filteredStores.length,
+                        itemBuilder: (context, index) {
+                          final store = filteredStores[index];
+                          return _buildStoreCard(store);
+                        },
+                      ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: fetchAllStores,
         child: Icon(
