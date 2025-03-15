@@ -240,12 +240,12 @@ class _ShopPageState extends State<ShopPage> {
                 Text(
                   "Discover Stores",
                   style: GoogleFonts.poppins(
-                    fontSize: 18,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 8),
                 Text(
                   "Explore your store in one click and get find your favorite products",
                   style: GoogleFonts.poppins(
@@ -257,7 +257,8 @@ class _ShopPageState extends State<ShopPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, bottom: 10, top: 10),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(

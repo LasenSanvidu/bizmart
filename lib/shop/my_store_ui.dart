@@ -79,8 +79,7 @@ class _MyStoreUiState extends State<MyStoreUi> {
           },
         ),
       ),
-      body // Show loading
-          : Container(
+      body: Container(
         constraints: BoxConstraints(
           maxWidth: 400, // Maximum width
           minWidth: 300, // Minimum width

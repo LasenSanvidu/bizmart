@@ -98,24 +98,12 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: /*widget.product.image.startsWith('http')
-                      ? Image.network(
-                          widget.product.image,
-                          height: 250,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.broken_image, size: 50),
-                        )
-                      : Image.file(
-                          File(widget.product.image), // Use local file path
-                          height: 250,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.broken_image, size: 50),
-                        ),*/
-                      _buildProductImage(widget.product.image),
+                child: Container(
+                  height: 220,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: _buildProductImage(widget.product.image),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

@@ -534,34 +534,30 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
+            backgroundColor: Colors.white.withOpacity(0.85),
             context: context,
             builder: (context) => Container(
               padding: EdgeInsets.all(16),
-              height: 300,
+              height: 280,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Filter Products",
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-
-                  // Add your filter options here
-                  Text(
-                    "Price Range",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 20,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 8),
-                  // Add price range slider here
-                  // Replace the comment "Add price range slider here" with this code
-
+                  SizedBox(height: 16),
+                  Text(
+                    "Price Range",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 20),
                   StatefulBuilder(
                     builder: (context, setState) {
                       return Column(
@@ -569,18 +565,38 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Rs ${_currentRangeValues.start.round()}",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(color: Colors.grey[300]!),
+                                ),
+                                child: Text(
+                                  "Rs ${_currentRangeValues.start.round()}",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
-                              Text(
-                                "Rs ${_currentRangeValues.end.round()}",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(color: Colors.grey[300]!),
+                                ),
+                                child: Text(
+                                  "Rs ${_currentRangeValues.end.round()}",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ],
@@ -589,7 +605,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                             values: _currentRangeValues,
                             min: _minPrice,
                             max: _maxPrice,
-                            divisions: 50,
+                            //divisions: 50,
                             activeColor: Colors.black,
                             inactiveColor: Colors.grey[300],
                             labels: RangeLabels(
@@ -610,6 +626,8 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                   Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black,
                         padding:
                             EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                         shape: RoundedRectangleBorder(
