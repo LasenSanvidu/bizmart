@@ -43,6 +43,7 @@ class StoreProvider with ChangeNotifier {
           id: doc.id,
           storeName: doc['storeName'],
           products: products,
+          bannerImage: doc['bannerImage'] ?? '', // Add this line
         ));
       }
       notifyListeners();
@@ -51,6 +52,17 @@ class StoreProvider with ChangeNotifier {
     }
   }
 
+  //method to update the store banner image
+  Future<void> updateStoreBanner(String storeId, String bannerImage) async {
+    final store = _stores.firstWhere((s) => s.id == storeId);
+    store.bannerImage = bannerImage;
+    await _firestore.collection('stores').doc(storeId).update({
+      'bannerImage': bannerImage,
+    });
+    notifyListeners();
+  }
+
+  //a getter to get all products from all stores
   List<Product> get allProducts {
     return _stores.isNotEmpty
         ? _stores.expand((store) => store.products).toList()
@@ -68,6 +80,7 @@ class StoreProvider with ChangeNotifier {
       'storeName': newStore.storeName,
       'products': [],
       'userId': currentUserId,
+      'bannerImage': '',
     });
     notifyListeners();
   }

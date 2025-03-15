@@ -72,7 +72,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
     final reviewProvider = Provider.of<ReviewProvider>(context);
     final productReviews =
         reviewProvider.getReviewsForProduct(widget.product.id);
-         final MessageService _messageService = MessageService();
+    final MessageService _messageService = MessageService();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -98,24 +98,12 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: /*widget.product.image.startsWith('http')
-                      ? Image.network(
-                          widget.product.image,
-                          height: 250,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.broken_image, size: 50),
-                        )
-                      : Image.file(
-                          File(widget.product.image), // Use local file path
-                          height: 250,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.broken_image, size: 50),
-                        ),*/
-                      _buildProductImage(widget.product.image),
+                child: Container(
+                  height: 220,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: _buildProductImage(widget.product.image),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -167,7 +155,8 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                         await inquiryProvider.addToInquiry(
                             widget.product, ownerId);
 
-                        await _messageService.sendMessage(productDoc['ownerId'], productDoc['prodname']);
+                        await _messageService.sendMessage(
+                            productDoc['ownerId'], productDoc['prodname']);
 
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Added to inquiry')));

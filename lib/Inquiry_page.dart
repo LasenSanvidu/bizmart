@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,13 @@ class _InquiryPageState extends State<InquiryPage> {
         title: Text(
           "Inquiries",
           style: GoogleFonts.poppins(fontSize: 24),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            CustomerFlowScreen.of(context)
+                ?.updateIndex(0); // Go back to Business Dashboard screen
+          },
         ),
         actions: [
           IconButton(

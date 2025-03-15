@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/Inquiry_page.dart';
 import 'package:myapp/business_dashboard.dart';
+import 'package:myapp/chat/chat_list_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/contact_us.dart';
 import 'package:myapp/faqs.dart';
@@ -39,10 +40,11 @@ class MainSettings extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.question_answer_rounded, color: Colors.black),
             onPressed: () {
-              Navigator.push(
+              /*Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => InquiryPage()),
-              );
+              );*/
+              CustomerFlowScreen.of(context)?.setNewScreen(InquiryPage());
             },
           ),
         ],
@@ -210,7 +212,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
               Navigator.pop(context);
             },
           ),
-          DrawerMenuItem(icon: Icons.chat, title: "Chats", route: "/chat"),
+          DrawerMenuItem(
+            icon: Icons.chat,
+            title: "Chats",
+            /*route: "/chat"*/ onTap: () {
+              CustomerFlowScreen.of(context)?.setNewScreen(ChatListScreen());
+              Navigator.pop(context); // Close the drawer
+            },
+          ),
           DrawerMenuItem(
             icon: Icons.mail,
             title: "Contact Us",

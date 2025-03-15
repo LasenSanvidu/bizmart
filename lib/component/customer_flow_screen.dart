@@ -94,6 +94,7 @@ import 'package:myapp/profile.dart';
 import 'package:myapp/profile_2.0.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
+import 'package:myapp/shop/store_products.dart';
 import 'package:myapp/shop/shop.dart';
 import 'package:myapp/summary_page.dart';
 import 'package:myapp/stripe/payment.dart';
