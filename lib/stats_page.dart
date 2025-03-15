@@ -496,7 +496,7 @@ class StatsPage extends StatelessWidget {
 }
 
 class SoleCraftDashboard extends StatefulWidget {
-  const SoleCraftDashboard({Key? key}) : super(key: key);
+  const SoleCraftDashboard({super.key});
   @override
   State<SoleCraftDashboard> createState() => _SoleCraftDashboardState();
 }

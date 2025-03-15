@@ -17,7 +17,7 @@ import 'package:uuid/uuid.dart';
 class StorePage extends StatelessWidget {
   final String storeId;
 
-  StorePage({required this.storeId});
+  const StorePage({super.key, required this.storeId});
 
   Widget _buildProductImage(String imagePath) {
     if (imagePath.startsWith('data:image')) {

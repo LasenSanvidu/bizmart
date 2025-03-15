@@ -14,7 +14,7 @@ import 'package:uuid/uuid.dart';
 class AddProductPage extends StatefulWidget {
   final String storeId;
 
-  AddProductPage({required this.storeId});
+  const AddProductPage({super.key, required this.storeId});
 
   @override
   _AddProductPageState createState() => _AddProductPageState();

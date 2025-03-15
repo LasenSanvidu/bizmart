@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ChatScreen extends StatelessWidget {
   final types.Room room;
 
-  ChatScreen({required this.room});
+  const ChatScreen({super.key, required this.room});
 
   @override
   Widget build(BuildContext context) {

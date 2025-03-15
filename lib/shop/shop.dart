@@ -11,6 +11,8 @@ import 'package:myapp/provider/store_provider.dart';
 import 'package:provider/provider.dart';
 
 class ShopPage extends StatefulWidget {
+  const ShopPage({super.key});
+
   @override
   State<ShopPage> createState() => _ShopPageState();
 }
@@ -195,7 +197,7 @@ class _ShopPageState extends State<ShopPage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
-                                '\Rs ${product.prodprice.toStringAsFixed(2)}',
+                                'Rs ${product.prodprice.toStringAsFixed(2)}',
                                 style: const TextStyle(
                                     color: Color.fromARGB(255, 126, 126, 126),
                                     fontSize: 15),
@@ -210,11 +212,11 @@ class _ShopPageState extends State<ShopPage> {
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: fetchAllProducts,
+        backgroundColor: Colors.black,
         child: Icon(
           Icons.refresh,
           color: Colors.white,
         ),
-        backgroundColor: Colors.black,
       ),
     );
   }

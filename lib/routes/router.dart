@@ -356,7 +356,7 @@ class RouterClass {
         if (user == null /*&& !isLoggingIn*/) {
           return "/login"; // Redirect to login if not authenticated
         }
-        if (user != null && /*isLoggingIn*/ state.matchedLocation == "/login") {
+        if (state.matchedLocation == "/login") {
           return "/main"; // Redirect to home if already logged in
         }
         return null; // Allow normal navigation

@@ -35,7 +35,7 @@ class TransactionItem {
 }
 
 class TransactionsScreen extends StatefulWidget {
-  const TransactionsScreen({Key? key}) : super(key: key);
+  const TransactionsScreen({super.key});
 
   @override
   _TransactionsScreenState createState() => _TransactionsScreenState();
@@ -222,8 +222,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 class TransactionDetailScreen extends StatelessWidget {
   final Transaction transaction;
 
-  const TransactionDetailScreen({Key? key, required this.transaction})
-      : super(key: key);
+  const TransactionDetailScreen({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
