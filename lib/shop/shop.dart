@@ -216,8 +216,10 @@ class _ShopPageState extends State<ShopPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false, // This removes the back button
         title: Text("Shop", style: GoogleFonts.poppins(fontSize: 24)),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -287,7 +289,7 @@ class _ShopPageState extends State<ShopPage> {
                   ),
                 ),
                 Text(
-                  "${allStores.length} items",
+                  "${filteredStores.length} items",
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     color: Colors.grey[600],
@@ -320,22 +322,55 @@ class _ShopPageState extends State<ShopPage> {
                           ],
                         ),
                       )
-                    : GridView.builder(
-                        padding: EdgeInsets.all(8.0),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 0.8,
-                        ),
-                        itemCount: filteredStores.length,
-                        itemBuilder: (context, index) {
-                          final store = filteredStores[index];
-                          return _buildStoreCard(store);
-                        },
-                      ),
+                    : filteredStores.isEmpty
+                        ? Center(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/empty-shop.png',
+                                      width: 250,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      "No matching stores found",
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[700]),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      "Try a different search term",
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 16, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : GridView.builder(
+                            padding: EdgeInsets.all(8.0),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.8,
+                            ),
+                            itemCount: filteredStores.length,
+                            itemBuilder: (context, index) {
+                              final store = filteredStores[index];
+                              return _buildStoreCard(store);
+                            },
+                          ),
           ),
+          //SizedBox(height: 9),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -343,6 +378,7 @@ class _ShopPageState extends State<ShopPage> {
         child: Icon(
           Icons.refresh,
           color: Colors.white,
+          size: 26,
         ),
         backgroundColor: Colors.black,
       ),

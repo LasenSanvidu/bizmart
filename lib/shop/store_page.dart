@@ -145,7 +145,7 @@ class StorePage extends StatelessWidget {
               onTap: () => _pickBannerImage(storeProvider),
               child: Container(
                 width: double.infinity,
-                height: 180,
+                height: 160,
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 232, 232, 232),
                   border: Border.all(color: Colors.grey[300]!),

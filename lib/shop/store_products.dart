@@ -239,11 +239,93 @@ class StoreProductsPage extends StatefulWidget {
 
 class _StoreProductsPageState extends State<StoreProductsPage> {
   late List<Product> storeProducts;
+  List<Product> filteredProducts = [];
+  TextEditingController searchController = TextEditingController();
+  bool isSearching = false;
+  double _minPrice = 0;
+  double _maxPrice = 5000;
+  RangeValues _currentRangeValues = RangeValues(0, 5000);
+
+  late Widget _bannerWidget;
 
   @override
   void initState() {
     super.initState();
     storeProducts = widget.store.products;
+    filteredProducts = storeProducts;
+    // initialize the banner widget once
+    // so that it doesn't rebuild on every setState, so it'll prevent banner flickering.
+    _bannerWidget = _buildBannerWidget();
+  }
+
+  //search function
+  void searchProducts(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredProducts = storeProducts;
+      } else {
+        filteredProducts = storeProducts.where((product) {
+          return product.prodname.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      }
+    });
+  }
+
+  Widget _buildBannerWidget() {
+    return widget.store.bannerImage.isNotEmpty
+        ? Container(
+            width: double.infinity,
+            height: 180,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _buildProductImage(widget.store.bannerImage),
+                // Gradient overlay for better text visibility
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.1),
+                        Colors.black.withOpacity(0.5),
+                      ],
+                    ),
+                  ),
+                ),
+                // Store description
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  right: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Welcome to ${widget.store.storeName}",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Discover our amazing products",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        : SizedBox();
   }
 
   Widget _buildProductImage(String imagePath) {
@@ -288,8 +370,19 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.store.storeName,
-            style: GoogleFonts.poppins(fontSize: 22)),
+        title: isSearching
+            ? TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search products...',
+                  border: InputBorder.none,
+                  hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                ),
+                style: GoogleFonts.poppins(),
+                onChanged: searchProducts,
+              )
+            : Text(widget.store.storeName,
+                style: GoogleFonts.poppins(fontSize: 22)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -298,33 +391,78 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
             CustomerFlowScreen.of(context)?.updateIndex(1); // Go back to shop
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(isSearching ? Icons.close : Icons.search,
+                color: Colors.black87),
+            onPressed: () {
+              setState(() {
+                isSearching = !isSearching;
+                if (!isSearching) {
+                  searchController.clear();
+                  filteredProducts = storeProducts;
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
-          widget.store.bannerImage.isNotEmpty
-              ? Container(
-                  width: double.infinity,
-                  height: 150,
-                  child: _buildProductImage(widget.store.bannerImage),
-                )
-              : SizedBox(),
+          _bannerWidget,
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Products",
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  "${filteredProducts.length} items",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 10),
           Expanded(
-            child: storeProducts.isEmpty
+            child: storeProducts.isEmpty || filteredProducts.isEmpty
                 ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/empty-shop.png',
-                          width: 350,
-                          fit: BoxFit.fitWidth,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/empty-shop.png',
+                              width: 350,
+                              fit: BoxFit.fitWidth,
+                            ),
+                            Text(
+                              "No products in this store",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey),
+                            ),
+                            Text(
+                              "Check back soon for new arrivals!",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 16, color: Colors.grey),
+                            ),
+                          ],
                         ),
-                        Text(
-                          "No products in this store",
-                          style: GoogleFonts.poppins(
-                              fontSize: 16, color: Colors.grey),
-                        ),
-                      ],
+                      ),
                     ),
                   )
                 : GridView.builder(
@@ -336,10 +474,11 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                       mainAxisSpacing: 10,
                       childAspectRatio: 0.7,
                     ),
-                    itemCount: storeProducts.length,
+                    itemCount: filteredProducts.length,
                     itemBuilder: (context, index) {
-                      final product = storeProducts[index];
+                      final product = filteredProducts[index];
                       return GestureDetector(
+                        key: ValueKey(product.id),
                         onTap: () {
                           CustomerFlowScreen.of(context)?.setNewScreen(
                             ProductDetailsUserPage(product: product),
@@ -357,7 +496,8 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                               Expanded(
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(10)),
+                                    top: Radius.circular(10),
+                                  ),
                                   child: _buildProductImage(product.image),
                                 ),
                               ),
@@ -390,6 +530,122 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                   ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => Container(
+              padding: EdgeInsets.all(16),
+              height: 300,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Filter Products",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+
+                  // Add your filter options here
+                  Text(
+                    "Price Range",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  // Add price range slider here
+                  // Replace the comment "Add price range slider here" with this code
+
+                  StatefulBuilder(
+                    builder: (context, setState) {
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Rs ${_currentRangeValues.start.round()}",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              Text(
+                                "Rs ${_currentRangeValues.end.round()}",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                          RangeSlider(
+                            values: _currentRangeValues,
+                            min: _minPrice,
+                            max: _maxPrice,
+                            divisions: 50,
+                            activeColor: Colors.black,
+                            inactiveColor: Colors.grey[300],
+                            labels: RangeLabels(
+                              "Rs ${_currentRangeValues.start.round()}",
+                              "Rs ${_currentRangeValues.end.round()}",
+                            ),
+                            onChanged: (RangeValues values) {
+                              setState(() {
+                                _currentRangeValues = values;
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          filteredProducts = storeProducts.where((product) {
+                            return product.prodprice >=
+                                    _currentRangeValues.start &&
+                                product.prodprice <= _currentRangeValues.end;
+                          }).toList();
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Apply Filters",
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        backgroundColor: Colors.black,
+        child: Icon(
+          Icons.filter_list,
+          color: Colors.white,
+          size: 28,
+        ),
       ),
     );
   }
