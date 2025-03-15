@@ -1,4 +1,4 @@
-import 'dart:convert';
+/*import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -216,6 +216,165 @@ class _ShopPageState extends State<ShopPage> {
         ),
         backgroundColor: Colors.black,
       ),
+    );
+  }
+}*/
+
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
+import 'package:myapp/models/product_and_store_model.dart';
+import 'package:myapp/shop/product_details_users.dart';
+
+class StoreProductsPage extends StatefulWidget {
+  final Store store;
+
+  const StoreProductsPage({Key? key, required this.store}) : super(key: key);
+
+  @override
+  State<StoreProductsPage> createState() => _StoreProductsPageState();
+}
+
+class _StoreProductsPageState extends State<StoreProductsPage> {
+  late List<Product> storeProducts;
+
+  @override
+  void initState() {
+    super.initState();
+    storeProducts = widget.store.products;
+  }
+
+  Widget _buildProductImage(String imagePath) {
+    if (imagePath.startsWith('data:image')) {
+      // This is a base64 image
+      return Image.memory(
+        base64Decode(imagePath.split(',')[1]),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else if (imagePath.startsWith('http')) {
+      // This is a network image
+      return Image.network(
+        imagePath,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    } else {
+      // This is a local file path
+      return Image.file(
+        File(imagePath),
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 50,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(widget.store.storeName,
+            style: GoogleFonts.poppins(fontSize: 22)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            CustomerFlowScreen.of(context)?.updateIndex(1); // Go back to shop
+          },
+        ),
+      ),
+      body: storeProducts.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/empty-shop.png',
+                    width: 350,
+                    fit: BoxFit.fitWidth,
+                  ),
+                  Text(
+                    "No products in this store",
+                    style:
+                        GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
+                  ),
+                ],
+              ),
+            )
+          : GridView.builder(
+              padding: EdgeInsets.all(8.0),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: storeProducts.length,
+              itemBuilder: (context, index) {
+                final product = storeProducts[index];
+                return GestureDetector(
+                  onTap: () {
+                    CustomerFlowScreen.of(context)?.setNewScreen(
+                      ProductDetailsUserPage(product: product),
+                    );
+                  },
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(10)),
+                            child: _buildProductImage(product.image),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            product.prodname,
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500, fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            '\Rs ${product.prodprice.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 126, 126, 126),
+                                fontSize: 15),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }
