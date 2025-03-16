@@ -83,6 +83,7 @@ class BusinessDashboardScreen extends StatelessWidget {
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/ad_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
@@ -129,6 +130,8 @@ class BusinessDashboardScreen extends StatelessWidget {
                 context, Icons.category, "Categories", MyStoreUi()),
             _buildDashboardButton(context, Icons.category, "Recieved Inquiries",
                 ReceivedInquiriesPage()),
+            _buildDashboardButton(
+                context, Icons.inventory, "Boost sells", AddAdScreen()),
           ],
         ),
       ),
