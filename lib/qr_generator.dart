@@ -19,7 +19,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFD1C4E9), // Light purple
+        backgroundColor: const Color(0xFFD1C4E9),
         title: const Text(
           'SoleCraft',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -226,7 +226,10 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
       _reward = _rewards[rewardIndex];
 
       final spinRotations = 5 + random.nextDouble() * 3;
-      final targetPosition = spinRotations + (rewardIndex / _rewards.length);
+
+      final sectionAngle = 2 * math.pi / _rewards.length;
+      final targetPosition =
+          spinRotations - (rewardIndex * sectionAngle / (2 * math.pi));
 
       _controller.reset();
       _animation = Tween<double>(
