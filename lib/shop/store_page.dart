@@ -219,14 +219,14 @@ class StorePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Manage your products below. Tap on a product",
+                  "Manage your products below. Tap on a",
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                     color: Colors.grey[700],
                   ),
                 ),
                 Text(
-                  "to view details or update them.",
+                  "product to view details or update them.",
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                     color: Colors.grey[700],
@@ -347,7 +347,7 @@ class StorePage extends StatelessWidget {
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                '\$${product.prodprice.toStringAsFixed(2)}',
+                                                '\Rs${product.prodprice.toStringAsFixed(2)}',
                                                 style: const TextStyle(
                                                   color: Colors.green,
                                                   fontSize: 16,

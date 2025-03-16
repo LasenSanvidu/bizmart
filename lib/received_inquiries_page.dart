@@ -7,6 +7,7 @@ import 'package:myapp/chat/chat_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
+import 'package:myapp/receipt_generator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
@@ -271,22 +272,55 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
               _buildDetailRow('Date', _formatDate(inquiry.createdAt)),
               SizedBox(height: 24),
               Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    goToChat(inquiry.inquirerUserId);
-                  },
-                  icon: Icon(Icons.chat, color: Colors.white),
-                  label: Text(
-                    'Start Chat',
-                    style: GoogleFonts.poppins(color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        goToChat(inquiry.inquirerUserId);
+                      },
+                      icon: Icon(Icons.chat, color: Colors.white),
+                      label: Text(
+                        'Start Chat',
+                        style: GoogleFonts.poppins(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(width: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        // Navigate to ReceiptGenerator
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReceiptGenerator(
+                              customerId: inquiry.inquirerUserId,
+                              productId: product.id,
+                              inquiryId: inquiry.id,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.receipt_long, color: Colors.white),
+                      label: Text(
+                        'Generate Receipt',
+                        style: GoogleFonts.poppins(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 16),
