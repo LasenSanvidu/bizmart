@@ -10,6 +10,7 @@ import 'package:myapp/contact_us.dart';
 import 'package:myapp/faqs.dart';
 import 'package:myapp/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MainSettings extends StatelessWidget {
   MainSettings({super.key});
@@ -131,9 +132,49 @@ class MainSettings extends StatelessWidget {
 }
 
 // Drawer Menu
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   CustomDrawer({super.key});
+
+  @override
+  _CustomDrawerState createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
   final AuthService _authService = AuthService();
+  String userName = "Loading..."; // Default text until data is fetched
+  String userEmail = "Loading..."; // Default text until data is fetched
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  // Load user data from Firebase and update UI
+  Future<void> _loadUserData() async {
+    // Get the current user from Firebase Authentication
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      String? username = await AuthService().getUsername();
+      // Fetch user data from Firebase
+      setState(() {
+        userName = username ?? "Guest User"; // Default to "Guest User" if null
+        userEmail = user.email ?? "No Email"; // Default to "No Email" if null
+      });
+
+      // Optionally save user data to SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('userName', user.displayName ?? "Guest User");
+      prefs.setString('userEmail', user.email ?? "No Email");
+    } else {
+      // Handle case if no user is logged in
+      setState(() {
+        userName = "Guest User";
+        userEmail = "No Email";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,14 +186,14 @@ class CustomDrawer extends StatelessWidget {
           SizedBox(height: 20),
           UserAccountsDrawerHeader(
             accountName: Text(
-              "Austin Miller",
+              userName, // Display the fetched user name
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
             ),
-            accountEmail: Text("austinM@gmail.com",
-                style: TextStyle(color: Colors.black)),
+            accountEmail:
+                Text(userEmail, style: TextStyle(color: Colors.black)),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Color.fromARGB(255, 207, 207, 207),
               child: Icon(Icons.person,
@@ -160,6 +201,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             decoration: BoxDecoration(color: Colors.white),
           ),
+          // Other Drawer Menu Items
           DrawerMenuItem(icon: Icons.person, title: "My Profile", route: "/"),
           DrawerMenuItem(
             icon: Icons.shopping_bag,
@@ -167,7 +209,7 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               CustomerFlowScreen.of(context)
                   ?.setNewScreen(BusinessDashboardScreen());
-              Navigator.pop(context); // Close the drawer
+              Navigator.pop(context);
             },
           ),
           DrawerMenuItem(
@@ -183,7 +225,7 @@ class CustomDrawer extends StatelessWidget {
             title: "Contact Us",
             onTap: () {
               CustomerFlowScreen.of(context)?.setNewScreen(ContactUsPage());
-              Navigator.pop(context); // Close the drawer
+              Navigator.pop(context);
             },
           ),
           DrawerMenuItem(
@@ -191,7 +233,7 @@ class CustomDrawer extends StatelessWidget {
             title: "FAQs",
             onTap: () {
               CustomerFlowScreen.of(context)?.setNewScreen(FAQPage());
-              Navigator.pop(context); // Close the drawer
+              Navigator.pop(context);
             },
           ),
           Spacer(),
@@ -200,12 +242,10 @@ class CustomDrawer extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                // Check if "rememberPassword" is true
                 bool rememberPassword =
                     prefs.getBool('rememberPassword') ?? false;
 
                 if (!rememberPassword) {
-                  // Only clear credentials if "Remember Password" was not selected
                   prefs.remove('email');
                   prefs.remove('password');
                   prefs.remove('rememberPassword');
@@ -225,7 +265,6 @@ class CustomDrawer extends StatelessWidget {
                     fontSize: 20, fontWeight: FontWeight.w600),
               ),
               style: ElevatedButton.styleFrom(
-                //backgroundColor: Color.fromARGB(255, 186, 163, 251),
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
                 minimumSize: Size(double.infinity, 50),

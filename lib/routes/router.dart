@@ -303,6 +303,7 @@ import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/user_type_selection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myapp/ad_screen.dart';
 
 class RouterClass {
   // Define a constant key for the onboarding flag
@@ -436,6 +437,10 @@ class RouterClass {
         GoRoute(
           path: "/onboard",
           builder: (context, state) => OnboardingScreen(),
+        ),
+         GoRoute(
+          path: "/ad_screen",
+          builder: (context, state) => AddAdScreen(),
         ),
       ],
     );
