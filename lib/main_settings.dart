@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
@@ -12,22 +16,66 @@ import 'package:myapp/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class MainSettings extends StatelessWidget {
-  MainSettings({super.key});
+class MainSettings extends StatefulWidget {
+  const MainSettings({super.key});
 
-  final List<String> adImages = [
-    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1547949003-9792a18a2601?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1526947425960-945c6e72858f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1610395219791-21b0353e43cb?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  ];
+  @override
+  _MainSettingsState createState() => _MainSettingsState();
+}
 
+class _MainSettingsState extends State<MainSettings> {
+  List<String> adImages = [];
   final List<String> trendingImages = [
     "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg",
     "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://dmc.dilmahtea.com/web-space/dmc/heritage-centre/54ceb91256e8190e474aa752a6e0650a2df5ba37/500_500.154080881152699.jpg"
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAdImages();
+  }
+
+  /// Fetch latest ad images from Firestore and update expired URLs
+  Future<void> fetchAdImages() async {
+    try {
+      DateTime sevenDaysAgo = DateTime.now().subtract(Duration(days: 7));
+
+      // Query to fetch the latest 5 images updated within the last 7 days
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('stores')
+          .where('bannerImageUpdatedAt', isGreaterThanOrEqualTo: sevenDaysAgo)
+          .orderBy('bannerImageUpdatedAt',
+              descending: true) // Sort by update date (latest first)
+          .limit(5) // Limit to 5 images
+          .get();
+
+      List<String> images = [];
+
+      for (var doc in snapshot.docs) {
+        String imageUrl = doc['bannerImage'];
+
+        // Add the image URL to the list
+        if (imageUrl.isNotEmpty) {
+          images.add(imageUrl);
+        }
+      }
+
+      // Update the state to trigger UI refresh
+      setState(() {
+        adImages = images;
+      });
+    } catch (e) {
+      print("Error fetching images: $e");
+    }
+  }
+
+  /// Refresh expired Firebase Storage URL
+  Future<String> refreshImageUrl(String path) async {
+    return await FirebaseStorage.instance.ref(path).getDownloadURL();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,22 +88,18 @@ class MainSettings extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.question_answer_rounded, color: Colors.black),
             onPressed: () {
-              /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InquiryPage()),
-              );*/
-              CustomerFlowScreen.of(context)?.setNewScreen(InquiryPage());
+              // Implement navigation
             },
           ),
         ],
         backgroundColor: Colors.white,
       ),
-      drawer: CustomDrawer(),
+      drawer: Drawer(), // Use your custom drawer
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Carousel
+            // Image Carousel with Loading Indicator
             CarouselSlider(
               options: CarouselOptions(
                 height: 180.0,
@@ -64,29 +108,62 @@ class MainSettings extends StatelessWidget {
                 aspectRatio: 16 / 9,
                 enableInfiniteScroll: true,
               ),
-              items: adImages.map((imageUrl) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        width: double.infinity,
-                        child: Icon(Icons.broken_image,
-                            size: 50, color: Colors.grey),
+              items: adImages.isNotEmpty
+                  ? adImages.map((imageUrl) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: imageUrl.startsWith(
+                                'http') // Check if the image is a normal URL
+                            ? Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Colors.grey[300],
+                                    width: double.infinity,
+                                    child: Icon(Icons.broken_image,
+                                        size: 50, color: Colors.grey),
+                                  );
+                                },
+                              )
+                            : Image.memory(
+                                base64Decode(imageUrl.split(',')[1]),
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Colors.grey[300],
+                                    width: double.infinity,
+                                    child: Icon(Icons.broken_image,
+                                        size: 50, color: Colors.grey),
+                                  );
+                                },
+                              ),
                       );
-                    },
-                  ),
-                );
-              }).toList(),
+                    }).toList()
+                  : [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          'https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg', // Hardcoded fallback image URL
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              width: double.infinity,
+                              child: Icon(Icons.broken_image,
+                                  size: 50, color: Colors.grey),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
             ),
 
             SizedBox(height: 20),
 
-            // Trending Section
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -113,6 +190,10 @@ class MainSettings extends StatelessWidget {
                   child: Image.network(
                     trendingImages[index],
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(child: CircularProgressIndicator());
+                    },
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: Colors.grey[300],
