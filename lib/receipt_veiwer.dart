@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 
 class ReceiptViewer extends StatelessWidget {
   final String receiptId;
@@ -18,11 +19,21 @@ class ReceiptViewer extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Receipt Details",
-            style: GoogleFonts.poppins(
-                color: Colors.white, fontWeight: FontWeight.w600)),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          "Receipt Details",
+          style: GoogleFonts.poppins(
+              color: Colors.white, fontWeight: FontWeight.w600),
+        ),
         centerTitle: true,
         backgroundColor: Colors.black,
+        /*leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            CustomerFlowScreen.of(context)
+                ?.updateIndex(3); // Go back to buy receipt list page
+          },
+        ),*/
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
@@ -337,9 +348,10 @@ class ReceiptViewer extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 5),
-                        if (isPaid)
+                        SizedBox(height: 6),
+                        if (isPaid || !isPaid)
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Payment Method: ',
                                   style: GoogleFonts.poppins()),

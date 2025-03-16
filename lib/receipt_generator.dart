@@ -36,7 +36,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
   final _discountController = TextEditingController(text: '0');
   final _additionalNotesController = TextEditingController();
   bool _isPaid = false;
-  String _paymentMethod = 'Cash';
+  String _paymentMethod = 'Card';
 
   // Receipt details
   final String _receiptNumber =
@@ -104,6 +104,17 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
   Future<void> _generateAndSendReceipt() async {
     if (!_formKey.currentState!.validate()) return;
 
+    if (!_isPaid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please mark pay method before generating an invoice.',
+              style: GoogleFonts.poppins()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     setState(() {
       _isGenerating = true;
     });
@@ -151,7 +162,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
       'discount': discount,
       'subtotal': subtotal,
       'total': total,
-      'isPaid': _isPaid,
+      'isPaid': !_isPaid,
       'paymentMethod': _paymentMethod,
       'notes': _additionalNotesController.text,
     };
@@ -222,10 +233,11 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title:
-            Text("Generate Receipt", style: GoogleFonts.poppins(fontSize: 20)),
+        title: Text("Generate Invoice",
+            style: GoogleFonts.poppins(fontSize: 22, color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -238,6 +250,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
                   children: [
                     // Product information card
                     Card(
+                      color: const Color.fromARGB(255, 248, 248, 248),
                       elevation: 2,
                       margin: EdgeInsets.only(bottom: 16),
                       shape: RoundedRectangleBorder(
@@ -286,6 +299,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
 
                     // Receipt details card
                     Card(
+                      color: const Color.fromARGB(255, 248, 248, 248),
                       elevation: 2,
                       margin: EdgeInsets.only(bottom: 16),
                       shape: RoundedRectangleBorder(
@@ -334,6 +348,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
 
                     // Quantity and discount inputs
                     Card(
+                      color: const Color.fromARGB(255, 248, 248, 248),
                       elevation: 2,
                       margin: EdgeInsets.only(bottom: 16),
                       shape: RoundedRectangleBorder(
@@ -398,6 +413,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
 
                     // Payment details
                     Card(
+                      color: const Color.fromARGB(255, 248, 248, 248),
                       elevation: 2,
                       margin: EdgeInsets.only(bottom: 16),
                       shape: RoundedRectangleBorder(
@@ -417,38 +433,53 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
                             ),
                             SizedBox(height: 10),
                             SwitchListTile(
-                              title: Text('Paid', style: GoogleFonts.poppins()),
+                              title: Text('Pay method',
+                                  style: GoogleFonts.poppins()),
                               value: _isPaid,
                               onChanged: (value) {
                                 setState(() {
                                   _isPaid = value;
                                 });
                               },
+                              activeColor: Colors
+                                  .black, // Change the active color when switch is ON
+                              inactiveTrackColor: Colors
+                                  .white, // Change the track color when switch is OFF
+                              inactiveThumbColor: Colors.black,
                             ),
                             if (_isPaid)
-                              DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  labelText: 'Payment Method',
-                                  border: OutlineInputBorder(),
+                              Container(
+                                constraints: BoxConstraints(maxWidth: 200),
+                                child: DropdownButtonFormField<String>(
+                                  elevation: 0,
+                                  decoration: InputDecoration(
+                                    labelText: 'Payment Method',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  dropdownColor: Colors.grey,
+                                  value: _paymentMethod,
+                                  items: [
+                                    'Card',
+                                    'Bank Transfer',
+                                  ]
+                                      .map((method) => DropdownMenuItem(
+                                            value: method,
+                                            child: Text(
+                                              method,
+                                              style: GoogleFonts.poppins(
+                                                color: Colors
+                                                    .black, // Text in dropdown is white
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _paymentMethod = value!;
+                                    });
+                                  },
                                 ),
-                                value: _paymentMethod,
-                                items: [
-                                  'Cash',
-                                  'Card',
-                                  'UPI',
-                                  'Bank Transfer',
-                                  'Other'
-                                ]
-                                    .map((method) => DropdownMenuItem(
-                                          value: method,
-                                          child: Text(method),
-                                        ))
-                                    .toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _paymentMethod = value!;
-                                  });
-                                },
                               ),
                           ],
                         ),
@@ -457,6 +488,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
 
                     // Additional notes
                     Card(
+                      color: const Color.fromARGB(255, 248, 248, 248),
                       elevation: 2,
                       margin: EdgeInsets.only(bottom: 16),
                       shape: RoundedRectangleBorder(
@@ -492,12 +524,12 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
                     // Generate Receipt Button
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: 70,
                       child: ElevatedButton(
                         onPressed:
                             _isGenerating ? null : _generateAndSendReceipt,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -505,11 +537,11 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
                         child: _isGenerating
                             ? CircularProgressIndicator(color: Colors.white)
                             : Text(
-                                'Generate & Share Receipt',
+                                'Generate Invoice',
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                       ),

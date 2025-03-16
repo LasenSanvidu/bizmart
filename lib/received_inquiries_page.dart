@@ -235,6 +235,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
     }
 
     showModalBottomSheet(
+      backgroundColor: Colors.white,
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -257,7 +258,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 18),
               Text(
                 'Inquiry Details',
                 style: GoogleFonts.poppins(
@@ -273,27 +274,28 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
               _buildDetailRow('Date', _formatDate(inquiry.createdAt)),
               SizedBox(height: 24),
               Center(
-                child: Row(
+                child: Column(
                   children: [
                     ElevatedButton.icon(
                       onPressed: () {
                         goToChat(inquiry.inquirerUserId);
                       },
-                      icon: Icon(Icons.chat, color: Colors.white),
+                      icon: Icon(Icons.chat, color: Colors.white, size: 20),
                       label: Text(
                         'Start Chat',
-                        style: GoogleFonts.poppins(color: Colors.white),
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontSize: 18),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                            EdgeInsets.symmetric(horizontal: 36, vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
-                    SizedBox(width: 16),
+                    SizedBox(height: 14),
                     ElevatedButton.icon(
                       onPressed: () async {
                         // Navigate to ReceiptGenerator
@@ -324,14 +326,20 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
                           );
                         }
                       },
-                      icon: Icon(Icons.receipt_long, color: Colors.white),
+                      icon: Icon(
+                        Icons.receipt_long,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                       label: Text(
-                        'Generate Receipt',
-                        style: GoogleFonts.poppins(color: Colors.white),
+                        'Gen E-Receipt',
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontSize: 18),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(vertical: 12),
+                        backgroundColor: Colors.black,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -340,7 +348,6 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
             ],
           ),
         );
