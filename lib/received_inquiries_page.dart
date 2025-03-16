@@ -8,6 +8,7 @@ import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
 import 'package:myapp/receipt_generator.dart';
+import 'package:myapp/receipt_veiwer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
@@ -294,9 +295,9 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
                     ),
                     SizedBox(width: 16),
                     ElevatedButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
                         // Navigate to ReceiptGenerator
-                        Navigator.push(
+                        final receiptNumber = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => ReceiptGenerator(
@@ -306,6 +307,22 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
                             ),
                           ),
                         );
+                        // If receipt was successfully generated (receiptNumber is not null)
+                        if (receiptNumber != null) {
+                          // Close the bottom sheet
+                          Navigator.pop(context);
+
+                          // Navigate to ReceiptViewer with the generated receipt
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReceiptViewer(
+                                receiptId: receiptNumber,
+                                isBuyer: false, // This is the seller viewing it
+                              ),
+                            ),
+                          );
+                        }
                       },
                       icon: Icon(Icons.receipt_long, color: Colors.white),
                       label: Text(

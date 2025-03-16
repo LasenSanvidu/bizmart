@@ -160,6 +160,8 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
   Future<void> _saveReceiptToFirestore(Map<String, dynamic> receiptData) async {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
+    print("Saving receipt with storeName: $_storeName");
+
     await FirebaseFirestore.instance
         .collection('receipts')
         .doc(_receiptNumber)
@@ -170,6 +172,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
       'customerId': receiptData['customerId'],
       'productId': receiptData['productId'],
       'inquiryId': receiptData['inquiryId'],
+      'storeName': _storeName ?? 'Your StoreBITCOin',
       'productName': _product!.prodname,
       'quantity': receiptData['quantity'],
       'price': _product!.prodprice,
