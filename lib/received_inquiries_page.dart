@@ -7,6 +7,8 @@ import 'package:myapp/chat/chat_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
+import 'package:myapp/receipt_generator.dart';
+import 'package:myapp/receipt_veiwer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
@@ -233,6 +235,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
     }
 
     showModalBottomSheet(
+      backgroundColor: Colors.white,
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -255,7 +258,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 18),
               Text(
                 'Inquiry Details',
                 style: GoogleFonts.poppins(
@@ -271,25 +274,80 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
               _buildDetailRow('Date', _formatDate(inquiry.createdAt)),
               SizedBox(height: 24),
               Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    goToChat(inquiry.inquirerUserId);
-                  },
-                  icon: Icon(Icons.chat, color: Colors.white),
-                  label: Text(
-                    'Start Chat',
-                    style: GoogleFonts.poppins(color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        goToChat(inquiry.inquirerUserId);
+                      },
+                      icon: Icon(Icons.chat, color: Colors.white, size: 20),
+                      label: Text(
+                        'Start Chat',
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontSize: 18),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 36, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 14),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        // Navigate to ReceiptGenerator
+                        final receiptNumber = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReceiptGenerator(
+                              customerId: inquiry.inquirerUserId,
+                              productId: product.id,
+                              inquiryId: inquiry.id,
+                            ),
+                          ),
+                        );
+                        // If receipt was successfully generated (receiptNumber is not null)
+                        if (receiptNumber != null) {
+                          // Close the bottom sheet
+                          Navigator.pop(context);
+
+                          // Navigate to ReceiptViewer with the generated receipt
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReceiptViewer(
+                                receiptId: receiptNumber,
+                                isBuyer: false, // This is the seller viewing it
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      icon: Icon(
+                        Icons.receipt_long,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      label: Text(
+                        'Gen E-Receipt',
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontSize: 18),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
             ],
           ),
         );

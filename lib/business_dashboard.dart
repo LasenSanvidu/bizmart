@@ -85,6 +85,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/ad_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
+import 'package:myapp/receipt_list_page.dart';
 import 'package:myapp/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/summary_page.dart';
@@ -110,29 +111,33 @@ class BusinessDashboardScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
 
-            // Buttons for different sections
-            _buildDashboardButton(
-                context, Icons.pie_chart, "Summary", SummaryPage()),
-            _buildDashboardButton(
-                context, Icons.bar_chart, "Transactions", MyStoreUi()),
-            _buildDashboardButton(
-                context, Icons.insert_chart, "Statistics", MyStoreUi()),
-            _buildDashboardButton(
-                context, Icons.inventory, "Store & Products", MyStoreUi()),
-            _buildDashboardButton(
-                context, Icons.category, "Categories", MyStoreUi()),
-            _buildDashboardButton(context, Icons.category, "Recieved Inquiries",
-                ReceivedInquiriesPage()),
-            _buildDashboardButton(
+              // Buttons for different sections
+              _buildDashboardButton(
+                  context, Icons.pie_chart, "Summary", SummaryPage()),
+              _buildDashboardButton(
+                  context, Icons.bar_chart, "Transactions", MyStoreUi()),
+              _buildDashboardButton(
+                  context, Icons.insert_chart, "Statistics", MyStoreUi()),
+              _buildDashboardButton(
+                  context, Icons.inventory, "Store & Products", MyStoreUi()),
+              _buildDashboardButton(
+                  context, Icons.category, "Categories", MyStoreUi()),
+              _buildDashboardButton(context, Icons.question_answer_rounded,
+                  "Recieved Inquiries", ReceivedInquiriesPage()),
+              _buildDashboardButton(context, Icons.receipt_rounded, "Invoices",
+                  ReceiptsListPage()),
+              _buildDashboardButton(
                 context, Icons.inventory, "Boost sells", AddAdScreen()),
-          ],
+            ],
+          ),
         ),
       ),
     );
