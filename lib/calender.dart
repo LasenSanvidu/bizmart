@@ -25,6 +25,7 @@ class _CalendarPageState extends State<CalendarPage> {
         await FirebaseFirestore.instance.collection('events').get();
     final List<Map<String, dynamic>> loadedEvents = snapshot.docs.map((doc) {
       return {
+        'id': doc.id, // Store the document ID for reference
         'title': doc['title'],
         'date': doc['date'],
         'duration': doc['duration'],
@@ -40,6 +41,27 @@ class _CalendarPageState extends State<CalendarPage> {
     setState(() {
       events.add(event); // Add the new event to the list
     });
+  }
+
+  // Delete the event from Firestore and UI
+  void _deleteEvent(String eventId) async {
+    try {
+      // Delete the event from Firestore
+      await FirebaseFirestore.instance
+          .collection('events')
+          .doc(eventId)
+          .delete();
+
+      // Remove the event from the list in the UI
+      setState(() {
+        events.removeWhere((event) => event['id'] == eventId);
+      });
+    } catch (e) {
+      // Handle any errors that may occur
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete event: $e')),
+      );
+    }
   }
 
   @override
@@ -114,6 +136,41 @@ class _CalendarPageState extends State<CalendarPage> {
                           Icons.event,
                           color: Colors.deepPurpleAccent,
                         ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            // Confirm before deleting the event
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Delete Event?"),
+                                content: Text(
+                                    "Are you sure you want to delete this event?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                      _deleteEvent(event['id']);
+                                    },
+                                    child: Text('Delete'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        onTap: () {
+                          // Navigate to chat page of the shop using the shopId
+                          context.push("/chat/${event['id']}");
+                        },
                       ),
                     );
                   },
