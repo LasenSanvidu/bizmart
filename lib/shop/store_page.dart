@@ -211,28 +211,29 @@ class StorePage extends StatelessWidget {
             ),
           ),
 
-// After the "Add Product" button
           SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Manage your products below. Tap on a",
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: Colors.grey[700],
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                children: [
+                  Text(
+                    "Manage your products below. Tap on a",
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                Text(
-                  "product to view details or update them.",
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: Colors.grey[700],
+                  Text(
+                    "product to view details or update them.",
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 

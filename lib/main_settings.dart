@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -45,9 +44,9 @@ class _MainSettingsState extends State<MainSettings> {
 
       // Query to fetch the latest 5 images updated within the last 7 days
       QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('stores')
-          .where('bannerImageUpdatedAt', isGreaterThanOrEqualTo: sevenDaysAgo)
-          .orderBy('bannerImageUpdatedAt',
+          .collection('ads')
+          .where('updatedAt', isGreaterThanOrEqualTo: sevenDaysAgo)
+          .orderBy('updatedAt',
               descending: true) // Sort by update date (latest first)
           .limit(5) // Limit to 5 images
           .get();
@@ -55,7 +54,7 @@ class _MainSettingsState extends State<MainSettings> {
       List<String> images = [];
 
       for (var doc in snapshot.docs) {
-        String imageUrl = doc['bannerImage'];
+        String imageUrl = doc['imageUrl'] ?? '';
 
         // Add the image URL to the list
         if (imageUrl.isNotEmpty) {
@@ -89,12 +88,13 @@ class _MainSettingsState extends State<MainSettings> {
             icon: Icon(Icons.question_answer_rounded, color: Colors.black),
             onPressed: () {
               // Implement navigation
+              CustomerFlowScreen.of(context)?.setNewScreen(InquiryPage());
             },
           ),
         ],
         backgroundColor: Colors.white,
       ),
-      drawer: Drawer(), // Use your custom drawer
+      drawer: CustomDrawer(), // Use your custom drawer
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,6 +238,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     if (user != null) {
       String? username = await AuthService().getUsername();
+      // Checking if widget is still mounted before calling setState
+      if (!mounted) return;
       // Fetch user data from Firebase
       setState(() {
         userName = username ?? "Guest User"; // Default to "Guest User" if null
@@ -249,6 +251,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
       prefs.setString('userName', user.displayName ?? "Guest User");
       prefs.setString('userEmail', user.email ?? "No Email");
     } else {
+      // Checking if widget is still mounted before calling setState
+      if (!mounted) return;
       // Handle case if no user is logged in
       setState(() {
         userName = "Guest User";
@@ -265,10 +269,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 20),
-          UserAccountsDrawerHeader(
+          /*UserAccountsDrawerHeader(
             accountName: Text(
               userName, // Display the fetched user name
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
@@ -276,14 +280,54 @@ class _CustomDrawerState extends State<CustomDrawer> {
             accountEmail:
                 Text(userEmail, style: TextStyle(color: Colors.black)),
             currentAccountPicture: CircleAvatar(
-              backgroundColor: Color.fromARGB(255, 207, 207, 207),
-              child: Icon(Icons.person,
-                  size: 50, color: Color.fromARGB(255, 159, 159, 159)),
+              backgroundColor: Colors.black,
+              child: Icon(Icons.person, size: 75, color: Colors.white),
             ),
+            currentAccountPictureSize: Size(100, 100),
             decoration: BoxDecoration(color: Colors.white),
+            margin: EdgeInsets.only(bottom: 40),
+          ),*/
+          Container(
+            padding: EdgeInsets.only(top: 50, left: 16, right: 16, bottom: 20),
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black,
+                    radius: 50,
+                    child: Icon(Icons.person, size: 75, color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: 20), // Add space between avatar and username
+                Center(
+                  child: Text(
+                    userName,
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    userEmail,
+                    style: GoogleFonts.poppins(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20), // Add additional space after email
+              ],
+            ),
           ),
           // Other Drawer Menu Items
-          DrawerMenuItem(icon: Icons.person, title: "My Profile", route: "/"),
+          DrawerMenuItem(
+              icon: Icons.person, title: "My Profile" /*, route: "/"*/),
+          SizedBox(height: 5),
           DrawerMenuItem(
             icon: Icons.shopping_bag,
             title: "My Business",
@@ -293,6 +337,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               Navigator.pop(context);
             },
           ),
+          SizedBox(height: 5),
           DrawerMenuItem(
             icon: Icons.chat,
             title: "Chats",
@@ -301,6 +346,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               Navigator.pop(context); // Close the drawer
             },
           ),
+          SizedBox(height: 5),
           DrawerMenuItem(
             icon: Icons.mail,
             title: "Contact Us",
@@ -309,6 +355,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               Navigator.pop(context);
             },
           ),
+          SizedBox(height: 5),
           DrawerMenuItem(
             icon: Icons.help,
             title: "FAQs",
@@ -382,7 +429,7 @@ class DrawerMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(icon, color: Colors.black),
-      title: Text(title, style: GoogleFonts.poppins(fontSize: 16)),
+      title: Text(title, style: GoogleFonts.poppins(fontSize: 18)),
       /*onTap: () {
         context.push(route);
       },*/

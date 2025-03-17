@@ -30,6 +30,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -73,9 +74,11 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
     } catch (e) {
       print("Error loading inquiries data: $e");
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

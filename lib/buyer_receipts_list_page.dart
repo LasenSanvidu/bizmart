@@ -16,6 +16,7 @@ class BuyerReceiptsListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text("My Purchases",
             style: GoogleFonts.poppins(
                 fontSize: 23,
