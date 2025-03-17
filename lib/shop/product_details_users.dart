@@ -72,7 +72,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
     final reviewProvider = Provider.of<ReviewProvider>(context);
     final productReviews =
         reviewProvider.getReviewsForProduct(widget.product.id);
-    final MessageService _messageService = MessageService();
+    final MessageService messageService = MessageService();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -98,7 +98,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: Container(
+                child: SizedBox(
                   height: 220,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14),
@@ -155,7 +155,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                         await inquiryProvider.addToInquiry(
                             widget.product, ownerId);
 
-                        await _messageService.sendMessage(
+                        await messageService.sendMessage(
                             productDoc['ownerId'], productDoc['prodname']);
 
                         ScaffoldMessenger.of(context).showSnackBar(

@@ -87,19 +87,13 @@ import 'package:flutter/material.dart';
 import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/buyer_receipts_list_page.dart';
 import 'package:myapp/calender.dart';
-import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/contact_us.dart';
 import 'package:myapp/main_settings.dart';
-import 'package:myapp/notification_page.dart';
-import 'package:myapp/profile.dart';
 import 'package:myapp/profile_2.0.dart';
 import 'package:myapp/receipt_list_page.dart';
-import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
-import 'package:myapp/shop/store_products.dart';
 import 'package:myapp/shop/shop.dart';
 import 'package:myapp/summary_page.dart';
-import 'package:myapp/stripe/payment.dart';
 
 class CustomerFlowScreen extends StatefulWidget {
   const CustomerFlowScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:myapp/cal_event_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -13,9 +13,32 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   List<Map<String, dynamic>> events = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadEvents(); // Load events when the page is first created
+  }
+
+  void _loadEvents() async {
+    // Fetch events from Firestore
+    final snapshot =
+        await FirebaseFirestore.instance.collection('events').get();
+    final List<Map<String, dynamic>> loadedEvents = snapshot.docs.map((doc) {
+      return {
+        'title': doc['title'],
+        'date': doc['date'],
+        'duration': doc['duration'],
+      };
+    }).toList();
+
+    setState(() {
+      events = loadedEvents; // Update the state with the events from Firestore
+    });
+  }
+
   void addEvent(Map<String, dynamic> event) {
     setState(() {
-      events.add(event);
+      events.add(event); // Add the new event to the list
     });
   }
 
@@ -24,51 +47,95 @@ class _CalendarPageState extends State<CalendarPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text(
-          " Calendar",
+          "Calendar",
           style: GoogleFonts.poppins(
-            color: Colors.black,
-            fontSize: 24.0,
+            color: Colors.black87,
+            fontSize: 26.0,
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () async {
-                final event = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EventFormPage()),
-                );
-                if (event != null) {
-                  addEvent(event);
-                }
-              },
-            ),
-          ),
-        ],
       ),
       body: Container(
-        /*color: const Color.fromARGB(
-            255, 248, 246, 255), */ // Set the background color to a light purple
-        child: ListView.builder(
-          itemCount: events.length,
-          itemBuilder: (context, index) {
-            final event = events[index];
-            return Card(
-              color: const Color.fromARGB(255, 245, 221, 249),
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: ListTile(
-                title: Text("${event['title']}"),
-                subtitle: Text(
-                    " ${event['date']}  |  Duration: ${event['duration']} day(s)"),
-              ),
-            );
-          },
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFF8F6FF), Color(0xFFE5D3FA)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+          child: events.isEmpty
+              ? Center(
+                  child: Text(
+                    "No Events Yet",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    final event = events[index];
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      elevation: 6,
+                      shadowColor: Colors.purpleAccent.withOpacity(0.2),
+                      color: const Color(0xFFF5DDF9),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 15),
+                        title: Text(
+                          event['title'],
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        subtitle: Text(
+                          "${event['date']}  |  Duration: ${event['duration']} day(s)",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        leading: const Icon(
+                          Icons.event,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          // Navigate to EventFormPage and wait for the result
+          final event = await context.push("/cal_eve");
+          if (event != null) {
+            addEvent(
+                event as Map<String, dynamic>); // Add the event to the list
+            _loadEvents(); // Reload events from Firestore
+          }
+        },
+        backgroundColor: Colors.deepPurpleAccent,
+        label: Text(
+          "Add Event",
+          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        icon: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

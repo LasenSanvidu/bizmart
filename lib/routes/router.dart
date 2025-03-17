@@ -285,6 +285,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/cal_event_page.dart';
+import 'package:myapp/calender.dart';
 import 'package:myapp/chat/chat_list_screen.dart';
 import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/component/business_flow_screens.dart';
@@ -357,7 +359,7 @@ class RouterClass {
         if (user == null /*&& !isLoggingIn*/) {
           return "/login"; // Redirect to login if not authenticated
         }
-        if (user != null && /*isLoggingIn*/ state.matchedLocation == "/login") {
+        if (state.matchedLocation == "/login") {
           return "/main"; // Redirect to home if already logged in
         }
         return null; // Allow normal navigation
@@ -438,9 +440,17 @@ class RouterClass {
           path: "/onboard",
           builder: (context, state) => OnboardingScreen(),
         ),
-         GoRoute(
+        GoRoute(
           path: "/ad_screen",
           builder: (context, state) => AddAdScreen(),
+        ),
+        GoRoute(
+          path: "/cal_eve",
+          builder: (context, state) => EventFormPage(),
+        ),
+        GoRoute(
+          path: "/calender",
+          builder: (context, state) => CalendarPage(),
         ),
       ],
     );

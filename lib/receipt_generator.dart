@@ -12,11 +12,11 @@ class ReceiptGenerator extends StatefulWidget {
   final String inquiryId;
 
   const ReceiptGenerator({
-    Key? key,
+    super.key,
     required this.customerId,
     required this.productId,
     required this.inquiryId,
-  }) : super(key: key);
+  });
 
   @override
   _ReceiptGeneratorState createState() => _ReceiptGeneratorState();
@@ -288,7 +288,7 @@ class _ReceiptGeneratorState extends State<ReceiptGenerator> {
                                         fontWeight: FontWeight.w500)),
                                 SizedBox(width: 5),
                                 Text(
-                                    '\Rs ${_product!.prodprice.toStringAsFixed(2)}',
+                                    'Rs ${_product!.prodprice.toStringAsFixed(2)}',
                                     style: GoogleFonts.poppins()),
                               ],
                             ),

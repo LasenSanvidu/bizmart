@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 class StorePage extends StatelessWidget {
   final String storeId;
 
-  StorePage({required this.storeId});
+  const StorePage({super.key, required this.storeId});
 
   Widget _buildProductImage(String imagePath) {
     if (imagePath.startsWith('data:image')) {
@@ -348,7 +348,7 @@ class StorePage extends StatelessWidget {
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                '\Rs${product.prodprice.toStringAsFixed(2)}',
+                                                'Rs${product.prodprice.toStringAsFixed(2)}',
                                                 style: const TextStyle(
                                                   color: Colors.green,
                                                   fontSize: 16,

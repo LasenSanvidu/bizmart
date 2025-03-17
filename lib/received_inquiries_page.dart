@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class ReceivedInquiriesPage extends StatefulWidget {
-  const ReceivedInquiriesPage({Key? key}) : super(key: key);
+  const ReceivedInquiriesPage({super.key});
 
   @override
   _ReceivedInquiriesPageState createState() => _ReceivedInquiriesPageState();
@@ -21,7 +21,7 @@ class ReceivedInquiriesPage extends StatefulWidget {
 
 class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
   bool _isLoading = true;
-  Map<String, Product> _products = {};
+  final Map<String, Product> _products = {};
 
   @override
   void initState() {
@@ -367,7 +367,7 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
           SizedBox(
             width: 100,
             child: Text(
-              label + ':',
+              '$label:',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.grey.shade700,

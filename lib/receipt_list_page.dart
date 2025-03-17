@@ -7,7 +7,7 @@ import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/receipt_veiwer.dart';
 
 class ReceiptsListPage extends StatelessWidget {
-  const ReceiptsListPage({Key? key}) : super(key: key);
+  const ReceiptsListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +135,7 @@ class ReceiptsListPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        '\Rs ${total.toStringAsFixed(2)}',
+                        'Rs ${total.toStringAsFixed(2)}',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,

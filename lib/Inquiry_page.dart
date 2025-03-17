@@ -113,7 +113,7 @@ class _InquiryPageState extends State<InquiryPage> {
                         vertical: 8.0, horizontal: 16.0),
                     child: Row(
                       children: [
-                        Container(
+                        SizedBox(
                             width: 100,
                             height:
                                 100, // You can make this taller without being cut off

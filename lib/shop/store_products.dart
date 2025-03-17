@@ -231,7 +231,7 @@ import 'package:myapp/shop/product_details_users.dart';
 class StoreProductsPage extends StatefulWidget {
   final Store store;
 
-  const StoreProductsPage({Key? key, required this.store}) : super(key: key);
+  const StoreProductsPage({super.key, required this.store});
 
   @override
   State<StoreProductsPage> createState() => _StoreProductsPageState();
@@ -242,8 +242,8 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
   List<Product> filteredProducts = [];
   TextEditingController searchController = TextEditingController();
   bool isSearching = false;
-  double _minPrice = 0;
-  double _maxPrice = 5000;
+  final double _minPrice = 0;
+  final double _maxPrice = 5000;
   RangeValues _currentRangeValues = RangeValues(0, 5000);
 
   late Widget _bannerWidget;
@@ -273,7 +273,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
 
   Widget _buildBannerWidget() {
     return widget.store.bannerImage.isNotEmpty
-        ? Container(
+        ? SizedBox(
             width: double.infinity,
             height: 180,
             child: Stack(
@@ -515,7 +515,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  '\Rs ${product.prodprice.toStringAsFixed(2)}',
+                                  'Rs ${product.prodprice.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                       color: Color.fromARGB(255, 126, 126, 126),
                                       fontSize: 15),
