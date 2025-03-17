@@ -220,7 +220,11 @@ class _ShopPageState extends State<ShopPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false, // This removes the back button
-        title: Text("Shop", style: GoogleFonts.poppins(fontSize: 24)),
+        title: Text("Shop",
+            style: GoogleFonts.poppins(
+                fontSize: 24,
+                color: Colors.black,
+                fontWeight: FontWeight.w400)),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
