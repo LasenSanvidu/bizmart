@@ -19,16 +19,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFD1C4E9),
-        title: const Text(
-          'SoleCraft',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        backgroundColor: Colors.white, // White background
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert, color: Colors.black),
@@ -60,6 +51,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 10),
@@ -110,13 +102,11 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF9575CD), Color(0xFF7E57C2)],
-                  ),
+                  color: Colors.black, // Black background
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: const Text(
-                  'Test Reward Screen',
+                  'Claim your Reward',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -137,6 +127,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                 style: const TextStyle(
                   fontFamily: 'Courier',
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -146,8 +137,8 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 2,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.black, // Black selected item
+        unselectedItemColor: Colors.grey, // Grey unselected items
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: ""),
@@ -226,10 +217,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
       _reward = _rewards[rewardIndex];
 
       final spinRotations = 5 + random.nextDouble() * 3;
-
-      final sectionAngle = 2 * math.pi / _rewards.length;
-      final targetPosition =
-          spinRotations - (rewardIndex * sectionAngle / (2 * math.pi));
+      final targetPosition = spinRotations + (rewardIndex / _rewards.length);
 
       _controller.reset();
       _animation = Tween<double>(
@@ -253,7 +241,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFD1C4E9),
+        backgroundColor: Colors.white, // White background
         title: const Text(
           'Congratulations!',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -266,11 +254,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE1BEE7), Color(0xFFF3E5F5)],
-          ),
+          color: Colors.white, // White background
         ),
         child: Column(
           children: [
@@ -283,7 +267,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.purple.withOpacity(0.2),
+                    color: Colors.grey.withOpacity(0.2),
                     spreadRadius: 2,
                     blurRadius: 8,
                     offset: const Offset(0, 3),
@@ -296,15 +280,15 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                   const Icon(
                     Icons.celebration,
                     size: 50,
-                    color: Colors.purple,
+                    color: Colors.black,
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Welcome to SoleCraft!',
+                    'Welcome!',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.purple[800],
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -367,7 +351,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                           ),
                           child: const Icon(
                             Icons.touch_app,
-                            color: Colors.purple,
+                            color: Colors.black,
                           ),
                         ),
                         Positioned(
@@ -376,7 +360,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                             width: 20,
                             height: 40,
                             decoration: const BoxDecoration(
-                              color: Colors.red,
+                              color: Colors.black,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
                                 topRight: Radius.circular(10),
@@ -396,9 +380,9 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 margin: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.purple[100],
+                  color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.purple, width: 2),
+                  border: Border.all(color: Colors.black, width: 2),
                 ),
                 child: Column(
                   children: [
@@ -407,6 +391,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -415,7 +400,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                       style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: Colors.purple,
+                        color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -435,7 +420,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
                 child: ElevatedButton(
                   onPressed: _isSpinning ? null : _spinWheel,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: Colors.black, // Black background
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 15),
                     textStyle: const TextStyle(
@@ -472,14 +457,14 @@ class WheelPainter extends CustomPainter {
     final sectionAngle = 2 * math.pi / rewards.length;
 
     final colors = [
-      Colors.purple[300]!,
-      Colors.purple[400]!,
-      Colors.purple[500]!,
-      Colors.purple[600]!,
-      Colors.purple[300]!,
-      Colors.purple[400]!,
-      Colors.purple[500]!,
-      Colors.purple[600]!,
+      Colors.grey[300]!,
+      Colors.grey[400]!,
+      Colors.grey[500]!,
+      Colors.grey[600]!,
+      Colors.grey[300]!,
+      Colors.grey[400]!,
+      Colors.grey[500]!,
+      Colors.grey[600]!,
     ];
 
     for (int i = 0; i < rewards.length; i++) {
@@ -515,7 +500,7 @@ class WheelPainter extends CustomPainter {
         text: TextSpan(
           text: rewards[i],
           style: const TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
