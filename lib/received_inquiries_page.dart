@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/chat/chat_page.dart';
 import 'package:myapp/chat/chat_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
-import 'package:myapp/receipt_generator.dart';
-import 'package:myapp/receipt_veiwer.dart';
+import 'package:myapp/invoices/receipt_generator.dart';
+import 'package:myapp/invoices/receipt_veiwer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
@@ -98,8 +99,10 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
+            /*CustomerFlowScreen.of(context)
+                ?.updateIndex(6); // Go back to Business Dashboard*/
             CustomerFlowScreen.of(context)
-                ?.updateIndex(6); // Go back to Business Dashboard
+                ?.setNewScreen(BusinessDashboardScreen());
           },
         ),
         actions: [
@@ -117,11 +120,11 @@ class _ReceivedInquiriesPageState extends State<ReceivedInquiriesPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/Inquiry_0.jpg', // Use appropriate image
+                        'assets/recieved no inquiry.jpg', // Use appropriate image
                         width: 300,
                         fit: BoxFit.fitWidth,
                       ),
-                      SizedBox(height: 40),
+                      SizedBox(height: 20),
                       Text(
                         'No Inquiries Received',
                         style: GoogleFonts.poppins(

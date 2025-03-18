@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
-import 'package:myapp/receipt_veiwer.dart';
+import 'package:myapp/invoices/receipt_veiwer.dart';
 
-class ReceiptsListPage extends StatelessWidget {
-  const ReceiptsListPage({Key? key}) : super(key: key);
+class BuyerReceiptsListPage extends StatelessWidget {
+  const BuyerReceiptsListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,25 +16,19 @@ class ReceiptsListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Generated Invoices",
+        automaticallyImplyLeading: false,
+        title: Text("My Purchases",
             style: GoogleFonts.poppins(
                 fontSize: 23,
                 color: Colors.black,
                 fontWeight: FontWeight.w400)),
         centerTitle: true,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            CustomerFlowScreen.of(context)
-                ?.updateIndex(6); // Go back to Business Dashboard screen
-          },
-        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('receipts')
-            .where('businessId', isEqualTo: currentUserId)
+            .where('customerId', isEqualTo: currentUserId)
             //.orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -45,7 +39,7 @@ class ReceiptsListPage extends StatelessWidget {
           if (snapshot.hasError) {
             return Center(
               child:
-                  Text('Error loading receipts', style: GoogleFonts.poppins()),
+                  Text('Error loading purchases', style: GoogleFonts.poppins()),
             );
           }
 
@@ -57,13 +51,13 @@ class ReceiptsListPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   /*Image.asset(
-                    'assets/no_receipts.jpg', // Replace with appropriate image
+                    'assets/no_purchases.jpg', // Replace with appropriate image
                     width: 200,
                     height: 200,
                   ),*/
                   SizedBox(height: 20),
                   Text(
-                    'No receipts yet',
+                    'No purchases yet',
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       color: Colors.grey[600],
@@ -86,6 +80,7 @@ class ReceiptsListPage extends StatelessWidget {
               final timestamp = receipt['createdAt'] as Timestamp?;
               final date = timestamp?.toDate() ?? DateTime.now();
               final formattedDate = DateFormat('MMM d, yyyy').format(date);
+              final storeName = receipt['storeName'] ?? 'Store';
 
               return Card(
                 color: const Color.fromARGB(255, 248, 248, 248),
@@ -101,10 +96,16 @@ class ReceiptsListPage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => ReceiptViewer(
                           receiptId: receiptNumber,
-                          isBuyer: false,
+                          isBuyer: true,
                         ),
                       ),
                     );
+                    /*CustomerFlowScreen.of(context)?.setNewScreen(
+                      ReceiptViewer(
+                        receiptId: receiptNumber,
+                        isBuyer: true,
+                      ),
+                    );*/
                   },
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -120,7 +121,7 @@ class ReceiptsListPage extends StatelessWidget {
                     children: [
                       SizedBox(height: 4),
                       Text(
-                        'Receipt #: $receiptNumber',
+                        'From: $storeName',
                         style: GoogleFonts.poppins(fontSize: 13),
                       ),
                       SizedBox(height: 2),
@@ -146,11 +147,11 @@ class ReceiptsListPage extends StatelessWidget {
                         padding:
                             EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: isPaid ? Colors.green : Colors.red,
+                          color: isPaid ? Colors.green : Colors.orange,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          isPaid ? 'PAID' : 'UNPAID',
+                          isPaid ? 'PAID' : 'PAY NOW',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 12,
