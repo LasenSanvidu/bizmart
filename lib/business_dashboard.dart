@@ -85,10 +85,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/ad_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
-import 'package:myapp/receipt_list_page.dart';
+import 'package:myapp/invoices/receipt_list_page.dart';
 import 'package:myapp/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/summary_page.dart';
+import 'package:myapp/transaction.dart';
 
 class BusinessDashboardScreen extends StatelessWidget {
   const BusinessDashboardScreen({super.key});
@@ -122,10 +123,8 @@ class BusinessDashboardScreen extends StatelessWidget {
               // Buttons for different sections
               _buildDashboardButton(
                   context, Icons.pie_chart, "Summary", SummaryPage()),
-              _buildDashboardButton(
-                  context, Icons.bar_chart, "Transactions", MyStoreUi()),
-              _buildDashboardButton(
-                  context, Icons.insert_chart, "Statistics", MyStoreUi()),
+              _buildDashboardButton(context, Icons.bar_chart, "Transactions",
+                  TransactionTrackerPage()),
               _buildDashboardButton(
                   context, Icons.inventory, "Store & Products", MyStoreUi()),
               _buildDashboardButton(
@@ -135,7 +134,7 @@ class BusinessDashboardScreen extends StatelessWidget {
               _buildDashboardButton(context, Icons.receipt_rounded, "Invoices",
                   ReceiptsListPage()),
               _buildDashboardButton(
-                context, Icons.inventory, "Boost sells", AddAdScreen()),
+                  context, Icons.inventory, "Boost sells", AddAdScreen()),
             ],
           ),
         ),
@@ -153,14 +152,11 @@ class BusinessDashboardScreen extends StatelessWidget {
           CustomerFlowScreen.of(context)?.setNewScreen(screen);
         },
         style: ElevatedButton.styleFrom(
-          //backgroundColor: const Color.fromARGB(255, 184, 161, 249),
           backgroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18),
-              side: BorderSide(color: Colors.black)
-              //borderRadius: Border.all(color: Colors.black),
-              ),
+              side: BorderSide(color: Colors.black)),
           elevation: 0,
         ),
         child: Row(

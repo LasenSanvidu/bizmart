@@ -3,11 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
-import 'package:myapp/receipt_veiwer.dart';
+import 'package:myapp/invoices/receipt_veiwer.dart';
 
-class BuyerReceiptsListPage extends StatelessWidget {
-  const BuyerReceiptsListPage({Key? key}) : super(key: key);
+class ReceiptsListPage extends StatelessWidget {
+  const ReceiptsListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,19 +17,27 @@ class BuyerReceiptsListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text("My Purchases",
+        title: Text("Generated Invoices",
             style: GoogleFonts.poppins(
                 fontSize: 23,
                 color: Colors.black,
                 fontWeight: FontWeight.w400)),
         centerTitle: true,
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            /*CustomerFlowScreen.of(context)
+                ?.updateIndex(6); // Go back to Business Dashboard screen*/
+            CustomerFlowScreen.of(context)
+                ?.setNewScreen(BusinessDashboardScreen());
+          },
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('receipts')
-            .where('customerId', isEqualTo: currentUserId)
+            .where('businessId', isEqualTo: currentUserId)
             //.orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -39,7 +48,7 @@ class BuyerReceiptsListPage extends StatelessWidget {
           if (snapshot.hasError) {
             return Center(
               child:
-                  Text('Error loading purchases', style: GoogleFonts.poppins()),
+                  Text('Error loading receipts', style: GoogleFonts.poppins()),
             );
           }
 
@@ -51,13 +60,13 @@ class BuyerReceiptsListPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   /*Image.asset(
-                    'assets/no_purchases.jpg', // Replace with appropriate image
+                    'assets/no_receipts.jpg', // Replace with appropriate image
                     width: 200,
                     height: 200,
                   ),*/
                   SizedBox(height: 20),
                   Text(
-                    'No purchases yet',
+                    'No receipts yet',
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       color: Colors.grey[600],
@@ -80,7 +89,6 @@ class BuyerReceiptsListPage extends StatelessWidget {
               final timestamp = receipt['createdAt'] as Timestamp?;
               final date = timestamp?.toDate() ?? DateTime.now();
               final formattedDate = DateFormat('MMM d, yyyy').format(date);
-              final storeName = receipt['storeName'] ?? 'Store';
 
               return Card(
                 color: const Color.fromARGB(255, 248, 248, 248),
@@ -96,16 +104,10 @@ class BuyerReceiptsListPage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => ReceiptViewer(
                           receiptId: receiptNumber,
-                          isBuyer: true,
+                          isBuyer: false,
                         ),
                       ),
                     );
-                    /*CustomerFlowScreen.of(context)?.setNewScreen(
-                      ReceiptViewer(
-                        receiptId: receiptNumber,
-                        isBuyer: true,
-                      ),
-                    );*/
                   },
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -121,7 +123,7 @@ class BuyerReceiptsListPage extends StatelessWidget {
                     children: [
                       SizedBox(height: 4),
                       Text(
-                        'From: $storeName',
+                        'Receipt #: $receiptNumber',
                         style: GoogleFonts.poppins(fontSize: 13),
                       ),
                       SizedBox(height: 2),
@@ -147,11 +149,11 @@ class BuyerReceiptsListPage extends StatelessWidget {
                         padding:
                             EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: isPaid ? Colors.green : Colors.orange,
+                          color: isPaid ? Colors.green : Colors.red,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          isPaid ? 'PAID' : 'PAY NOW',
+                          isPaid ? 'PAID' : 'UNPAID',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 12,
