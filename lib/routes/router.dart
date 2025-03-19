@@ -17,6 +17,7 @@ import 'package:myapp/review.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/user_type_selection.dart';
+import 'package:myapp/stats_page.dart';
 
 class RouterClass {
   Future<String> _getInitialRoute() async {
@@ -111,6 +112,10 @@ class RouterClass {
         GoRoute(
           path: "/contact_us",
           builder: (context, state) => ContactUsPage(),
+        ),
+        GoRoute(
+          path: '/stats',
+          builder: (context, state) => const SoleCraftDashboard(),
         ),
       ],
     );
