@@ -295,7 +295,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               children: [
                 Center(
                   child: CircleAvatar(
-                    backgroundColor: Colors.black,
+                    backgroundColor: const Color.fromARGB(255, 90, 90, 90),
                     radius: 50,
                     child: Icon(Icons.person, size: 75, color: Colors.white),
                   ),
@@ -305,8 +305,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   child: Text(
                     userName,
                     style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
@@ -316,7 +316,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     userEmail,
                     style: GoogleFonts.poppins(
                       color: Colors.black,
-                      fontSize: 18,
+                      fontSize: 16,
                     ),
                   ),
                 ),

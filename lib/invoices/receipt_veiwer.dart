@@ -27,13 +27,6 @@ class ReceiptViewer extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Colors.black,
-        /*leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            CustomerFlowScreen.of(context)
-                ?.updateIndex(3); // Go back to buy receipt list page
-          },
-        ),*/
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance

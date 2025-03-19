@@ -984,6 +984,7 @@ class _StatsPageState extends State<StatsPage> {
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/provider/summary_provider.dart';
 import 'package:provider/provider.dart';
@@ -1039,8 +1040,10 @@ class _SummaryPageState extends State<SummaryPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
+            /*CustomerFlowScreen.of(context)
+                ?.updateIndex(6); // Go back to Business Dashboard screen*/
             CustomerFlowScreen.of(context)
-                ?.updateIndex(6); // Go back to Business Dashboard screen
+                ?.setNewScreen(BusinessDashboardScreen());
           },
         ),
         centerTitle: true,
@@ -1123,6 +1126,26 @@ class _SummaryPageState extends State<SummaryPage> {
           newColor,
           stats.totalInquiries > 0
               ? stats.newInquiries / stats.totalInquiries
+              : 0.0,
+        ),
+        _buildSummaryCard(
+          'Awaiting Approval',
+          stats.awaitingOrders,
+          Icons.pending_actions,
+          Colors.teal,
+          stats.awaitingOrders + stats.completedOrders > 0
+              ? stats.awaitingOrders /
+                  (stats.awaitingOrders + stats.completedOrders)
+              : 0.0,
+        ),
+        _buildSummaryCard(
+          'Completed Orders',
+          stats.completedOrders,
+          Icons.check_circle,
+          Color.fromARGB(255, 186, 163, 251),
+          stats.awaitingOrders + stats.completedOrders > 0
+              ? stats.completedOrders /
+                  (stats.awaitingOrders + stats.completedOrders)
               : 0.0,
         ),
       ],
@@ -1276,6 +1299,34 @@ class _SummaryPageState extends State<SummaryPage> {
                                       color: Colors.white,
                                     ),
                                   ),
+                                  PieChartSectionData(
+                                    value: stats.awaitingOrders.toDouble(),
+                                    color: Colors.teal,
+                                    radius: 40,
+                                    title: stats.awaitingOrders > 0
+                                        ? stats.awaitingOrders
+                                            .toStringAsFixed(0)
+                                        : '',
+                                    titleStyle: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  PieChartSectionData(
+                                    value: stats.completedOrders.toDouble(),
+                                    color: Color.fromARGB(255, 186, 163, 251),
+                                    radius: 40,
+                                    title: stats.completedOrders > 0
+                                        ? stats.completedOrders
+                                            .toStringAsFixed(0)
+                                        : '',
+                                    titleStyle: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ],
                               ),
                             )
@@ -1317,16 +1368,26 @@ class _SummaryPageState extends State<SummaryPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
-                _buildLegendItem('Viewed', viewedColor),
-                const SizedBox(width: 24),
-                _buildLegendItem('New', newColor),
-                const SizedBox(width: 24),
-                _buildLegendItem('Order', Colors.blueAccent),
-                const SizedBox(width: 24),
-                _buildLegendItem('Inquiry', Colors.orangeAccent),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildLegendItem('Viewed', viewedColor),
+                    _buildLegendItem('New', newColor),
+                    _buildLegendItem('Products', Colors.blueAccent),
+                    _buildLegendItem('Inquiries', Colors.orangeAccent),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildLegendItem('Awaiting', Colors.tealAccent),
+                    _buildLegendItem(
+                        'Completed', Color.fromARGB(255, 186, 163, 251)),
+                  ],
+                ),
               ],
             ),
           ],

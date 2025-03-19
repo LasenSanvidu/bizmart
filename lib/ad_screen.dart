@@ -185,6 +185,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert'; // For base64 encoding/decoding
 import 'package:go_router/go_router.dart';
+import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 
 class AddAdScreen extends StatefulWidget {
@@ -326,8 +327,10 @@ class _AddAdScreenState extends State<AddAdScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            /*CustomerFlowScreen.of(context)
+                ?.updateIndex(6); // Go back to dashboard*/
             CustomerFlowScreen.of(context)
-                ?.updateIndex(6); // Go back to dashboard
+                ?.setNewScreen(BusinessDashboardScreen());
           },
         ),
         centerTitle: true,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/component/business_flow_screens.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
@@ -68,14 +69,17 @@ class _MyStoreUiState extends State<MyStoreUi> {
       appBar: AppBar(
         title: Text(
           "My Store",
-          style: GoogleFonts.poppins(fontSize: 28),
+          style: GoogleFonts.poppins(fontSize: 24),
         ),
+        centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
+            /*CustomerFlowScreen.of(context)
+                ?.updateIndex(6); // Go back to Business Dashboard screen*/
             CustomerFlowScreen.of(context)
-                ?.updateIndex(6); // Go back to Business Dashboard screen
+                ?.setNewScreen(BusinessDashboardScreen());
           },
         ),
       ),

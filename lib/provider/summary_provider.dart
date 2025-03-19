@@ -10,6 +10,8 @@ class SummaryProvider with ChangeNotifier {
   int totalInquiries = 0;
   int viewedInquiries = 0;
   int newInquiries = 0;
+  int awaitingOrders = 0;
+  int completedOrders = 0;
 
   // get current user ID
   String? get currentUserId => _auth.currentUser?.uid;
@@ -21,6 +23,7 @@ class SummaryProvider with ChangeNotifier {
     await Future.wait([
       _fetchProductStats(),
       _fetchInquiryStats(),
+      _fetchOrderStats(),
     ]);
 
     notifyListeners();
@@ -65,6 +68,26 @@ class SummaryProvider with ChangeNotifier {
       newInquiries = totalInquiries - viewedInquiries;
     } catch (e) {
       print("Error fetching inquiry stats: $e");
+    }
+  }
+
+  //fetch Order Statistics
+  Future<void> _fetchOrderStats() async {
+    try {
+      final receiptsQuery = await _firestore
+          .collection('receipts')
+          .where('businessId', isEqualTo: currentUserId)
+          .get();
+
+      awaitingOrders = receiptsQuery.docs
+          .where((doc) => doc.data()['isPaid'] == false)
+          .length;
+
+      completedOrders = receiptsQuery.docs
+          .where((doc) => doc.data()['isPaid'] == true)
+          .length;
+    } catch (e) {
+      print("Error fetching order stats: $e");
     }
   }
 
