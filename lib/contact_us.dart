@@ -16,10 +16,6 @@ class ContactUsPage extends StatelessWidget {
     }
   }
 
-  void _makePhoneCall() {
-    _launchURL('tel:+94759923449'); // Replace with actual phone number
-  }
-
   void _sendEmail() {
     _launchURL('mailto:bizmart49@gmail.com'); // Replace with actual email
   }
@@ -59,70 +55,67 @@ class ContactUsPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            Text(
-              "We’re here to help! Whether you have a question, a suggestion, or need assistance, don’t hesitate to reach out. Our team is always available for you. also connect with us on social media for updates and quick support. Your feedback is valuable to us, and we’re always happy to hear from you!",
-              style: GoogleFonts.poppins(fontSize: 16),
-            ),
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildButton(
-                  Icons.call,
-                  "Call us",
-                  _makePhoneCall,
-                ),
-                _buildButton(Icons.email, "Email us", _sendEmail),
-              ],
-            ),
-            SizedBox(height: 20),
-            _buildSocialButton(Icons.camera_alt, "Instagram", "4.6K Followers",
-                _openInstagram),
-            _buildSocialButton(
-                Icons.message, "Telegram", "1.3K Followers", _openTelegram),
-            _buildSocialButton(
-                Icons.facebook, "Facebook", "3.8K Followers", _openFacebook),
-            _buildSocialButton(FontAwesomeIcons.whatsapp, "WhatsApp",
-                "Available 9-17", _openWhatsApp),
-          ],
+      body: SingleChildScrollView(
+        // Wrap the content inside a SingleChildScrollView
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              Text(
+                "We’re here to help! Whether you have a question, a suggestion, or need assistance, don’t hesitate to reach out. Our team is always available for you. Connect with us on social media for updates and quick support. Your feedback is valuable to us, and we’re always happy to hear from you!",
+                style: GoogleFonts.poppins(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 30),
+              _buildSocialButton(
+                  Icons.email, "Email us", "Reach us anytime", _sendEmail),
+              SizedBox(height: 20),
+              _buildSocialButton(
+                  Icons.camera_alt, "Instagram", "", _openInstagram),
+              _buildSocialButton(Icons.message, "Telegram", "", _openTelegram),
+              _buildSocialButton(Icons.facebook, "Facebook", "", _openFacebook),
+              _buildSocialButton(FontAwesomeIcons.whatsapp, "WhatsApp",
+                  "Available 9-17", _openWhatsApp),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildButton(IconData icon, String label, VoidCallback onPressed) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-      onPressed: onPressed,
-      icon: Icon(
-        icon,
-        size: 24,
-        color: Colors.white,
-      ),
-      label: Text(
-        label,
-        style: GoogleFonts.poppins(
-            color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),
-      ),
-    );
-  }
-
+  // Modern social button with card-like appearance
   Widget _buildSocialButton(IconData icon, String platform, String followers,
       VoidCallback onPressed) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        size: 30,
-        color: Colors.black,
-      ),
-      title: Text(platform),
-      subtitle: Text(followers),
+    return GestureDetector(
       onTap: onPressed,
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: ListTile(
+          leading: Icon(
+            icon,
+            size: 35,
+            color: Colors.deepPurpleAccent,
+          ),
+          title: Text(
+            platform,
+            style: GoogleFonts.poppins(
+                fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+          ),
+          subtitle: Text(
+            followers,
+            style: GoogleFonts.poppins(fontSize: 14, color: Colors.black54),
+          ),
+          trailing: Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.deepPurpleAccent,
+          ),
+        ),
+      ),
     );
   }
 }
