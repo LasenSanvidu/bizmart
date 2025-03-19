@@ -29,21 +29,26 @@ class _CalendarPageState extends State<CalendarPage> {
         'title': doc['title'],
         'date': doc['date'],
         'duration': doc['duration'],
+        'description': doc['description'], // Ensure description is fetched
       };
     }).toList();
 
-    setState(() {
-      events = loadedEvents; // Update the state with the events from Firestore
-    });
+    if (mounted) {
+      setState(() {
+        events =
+            loadedEvents; // Update the state with the events from Firestore
+      });
+    }
   }
 
   void addEvent(Map<String, dynamic> event) {
+    if (!mounted) return; // Ensure the widget is still active
+
     setState(() {
       events.add(event); // Add the new event to the list
     });
   }
 
-  // Delete the event from Firestore and UI
   void _deleteEvent(String eventId) async {
     try {
       // Delete the event from Firestore
@@ -52,12 +57,13 @@ class _CalendarPageState extends State<CalendarPage> {
           .doc(eventId)
           .delete();
 
-      // Remove the event from the list in the UI
-      setState(() {
-        events.removeWhere((event) => event['id'] == eventId);
-      });
+      if (mounted) {
+        // Remove the event from the list in the UI
+        setState(() {
+          events.removeWhere((event) => event['id'] == eventId);
+        });
+      }
     } catch (e) {
-      // Handle any errors that may occur
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to delete event: $e')),
       );
@@ -139,7 +145,6 @@ class _CalendarPageState extends State<CalendarPage> {
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
-                            // Confirm before deleting the event
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -168,8 +173,62 @@ class _CalendarPageState extends State<CalendarPage> {
                           },
                         ),
                         onTap: () {
-                          // Navigate to chat page of the shop using the shopId
-                          context.push("/chat/${event['id']}");
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                  event['title'],
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Date: ${event['date']}",
+                                        style:
+                                            GoogleFonts.poppins(fontSize: 16),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "Duration: ${event['duration']} day(s)",
+                                        style:
+                                            GoogleFonts.poppins(fontSize: 16),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "Description:",
+                                        style:
+                                            GoogleFonts.poppins(fontSize: 16),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        event['description'] ??
+                                            "No description available",
+                                        style:
+                                            GoogleFonts.poppins(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                    },
+                                    child: Text("Close",
+                                        style: GoogleFonts.poppins()),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                       ),
                     );
@@ -179,12 +238,10 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          // Navigate to EventFormPage and wait for the result
           final event = await context.push("/cal_eve");
           if (event != null) {
-            addEvent(
-                event as Map<String, dynamic>); // Add the event to the list
-            _loadEvents(); // Reload events from Firestore
+            addEvent(event as Map<String, dynamic>);
+            _loadEvents();
           }
         },
         backgroundColor: Colors.deepPurpleAccent,
