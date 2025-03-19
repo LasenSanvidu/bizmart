@@ -28,6 +28,8 @@ class InquiryProvider with ChangeNotifier {
 //
 //
 ///
+library;
+
 //
 //
 //

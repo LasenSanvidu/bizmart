@@ -214,7 +214,7 @@ class _MainSettingsState extends State<MainSettings> {
 
 // Drawer Menu
 class CustomDrawer extends StatefulWidget {
-  CustomDrawer({super.key});
+  const CustomDrawer({super.key});
 
   @override
   _CustomDrawerState createState() => _CustomDrawerState();

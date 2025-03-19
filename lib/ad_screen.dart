@@ -189,6 +189,8 @@ import 'package:myapp/business_dashboard.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 
 class AddAdScreen extends StatefulWidget {
+  const AddAdScreen({super.key});
+
   @override
   _AddAdScreenState createState() => _AddAdScreenState();
 }

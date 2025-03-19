@@ -8,6 +8,8 @@ import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/shop/store_products.dart';
 
 class ShopPage extends StatefulWidget {
+  const ShopPage({super.key});
+
   @override
   State<ShopPage> createState() => _ShopPageState();
 }
@@ -16,7 +18,7 @@ class _ShopPageState extends State<ShopPage> {
   bool isLoading = true;
   List<Store> allStores = [];
   List<Store> filteredStores = [];
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -95,8 +97,9 @@ class _ShopPageState extends State<ShopPage> {
         }
       }
       filteredStores = stores;
-      if (!mounted)
+      if (!mounted) {
         return; // Avoid calling `setState` if the widget is disposed
+      }
       setState(() {
         allStores = stores;
         isLoading = false;
@@ -104,8 +107,9 @@ class _ShopPageState extends State<ShopPage> {
       print("Total stores loaded: ${allStores.length}");
     } catch (e) {
       print("Error fetching all stores: $e");
-      if (!mounted)
+      if (!mounted) {
         return; // Avoid calling `setState` if the widget is disposed
+      }
       setState(() {
         isLoading = false;
       });
@@ -380,12 +384,12 @@ class _ShopPageState extends State<ShopPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: fetchAllStores,
+        backgroundColor: Colors.black,
         child: Icon(
           Icons.refresh,
           color: Colors.white,
           size: 26,
         ),
-        backgroundColor: Colors.black,
       ),
     );
   }

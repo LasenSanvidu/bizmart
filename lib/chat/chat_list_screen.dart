@@ -112,6 +112,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ChatListScreen extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  ChatListScreen({super.key});
+
 // Method to check if a chat exists with the user
   Future<bool> _hasChatWithUser(String userId) async {
     final currentUserId = _auth.currentUser!.uid;

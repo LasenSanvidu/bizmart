@@ -9,10 +9,10 @@ class ReceiptViewer extends StatelessWidget {
   final bool isBuyer;
 
   const ReceiptViewer({
-    Key? key,
+    super.key,
     required this.receiptId,
     this.isBuyer = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +209,7 @@ class ReceiptViewer extends StatelessWidget {
                                 Padding(
                                   padding: EdgeInsets.all(8),
                                   child: Text(
-                                    '\Rs ${price.toStringAsFixed(2)}',
+                                    'Rs ${price.toStringAsFixed(2)}',
                                     style: GoogleFonts.poppins(),
                                     textAlign: TextAlign.center,
                                   ),
@@ -217,7 +217,7 @@ class ReceiptViewer extends StatelessWidget {
                                 Padding(
                                   padding: EdgeInsets.all(8),
                                   child: Text(
-                                    '\Rs ${subtotal.toStringAsFixed(2)}',
+                                    'Rs ${subtotal.toStringAsFixed(2)}',
                                     style: GoogleFonts.poppins(),
                                     textAlign: TextAlign.center,
                                   ),
@@ -257,7 +257,7 @@ class ReceiptViewer extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Subtotal:', style: GoogleFonts.poppins()),
-                            Text('\Rs ${subtotal.toStringAsFixed(2)}',
+                            Text('Rs ${subtotal.toStringAsFixed(2)}',
                                 style: GoogleFonts.poppins()),
                           ],
                         ),
@@ -268,7 +268,7 @@ class ReceiptViewer extends StatelessWidget {
                             Text('Discount ($discount%):',
                                 style: GoogleFonts.poppins()),
                             Text(
-                                '\Rs ${(subtotal * discount / 100).toStringAsFixed(2)}',
+                                'Rs ${(subtotal * discount / 100).toStringAsFixed(2)}',
                                 style: GoogleFonts.poppins()),
                           ],
                         ),
@@ -284,7 +284,7 @@ class ReceiptViewer extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '\Rs ${total.toStringAsFixed(2)}',
+                              'Rs ${total.toStringAsFixed(2)}',
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,

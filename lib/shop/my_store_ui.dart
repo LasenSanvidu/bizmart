@@ -9,7 +9,7 @@ import 'package:myapp/shop/store_page.dart';
 import 'package:provider/provider.dart';
 
 class MyStoreUi extends StatefulWidget {
-  MyStoreUi({super.key});
+  const MyStoreUi({super.key});
 
   @override
   State<MyStoreUi> createState() => _MyStoreUiState();
@@ -28,7 +28,7 @@ class _MyStoreUiState extends State<MyStoreUi> {
 
   void _showRenameDialog(
       BuildContext context, StoreProvider storeProvider, Store store) {
-    TextEditingController _renameController =
+    TextEditingController renameController =
         TextEditingController(text: store.storeName);
 
     showDialog(
@@ -37,7 +37,7 @@ class _MyStoreUiState extends State<MyStoreUi> {
         return AlertDialog(
           title: Text("Rename Store"),
           content: TextField(
-            controller: _renameController,
+            controller: renameController,
             decoration: InputDecoration(labelText: "New Store Name"),
           ),
           actions: [
@@ -47,8 +47,8 @@ class _MyStoreUiState extends State<MyStoreUi> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_renameController.text.isNotEmpty) {
-                  storeProvider.renameStore(store.id, _renameController.text);
+                if (renameController.text.isNotEmpty) {
+                  storeProvider.renameStore(store.id, renameController.text);
                   Navigator.pop(context);
                 }
               },
