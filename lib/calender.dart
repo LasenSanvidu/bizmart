@@ -32,12 +32,17 @@ class _CalendarPageState extends State<CalendarPage> {
       };
     }).toList();
 
-    setState(() {
-      events = loadedEvents; // Update the state with the events from Firestore
-    });
+    if (mounted) {
+      setState(() {
+        events =
+            loadedEvents; // Update the state with the events from Firestore
+      });
+    }
   }
 
   void addEvent(Map<String, dynamic> event) {
+    if (!mounted) return; // Ensure the widget is still active
+
     setState(() {
       events.add(event); // Add the new event to the list
     });
@@ -52,10 +57,12 @@ class _CalendarPageState extends State<CalendarPage> {
           .doc(eventId)
           .delete();
 
-      // Remove the event from the list in the UI
-      setState(() {
-        events.removeWhere((event) => event['id'] == eventId);
-      });
+      if (mounted) {
+        // Remove the event from the list in the UI
+        setState(() {
+          events.removeWhere((event) => event['id'] == eventId);
+        });
+      }
     } catch (e) {
       // Handle any errors that may occur
       ScaffoldMessenger.of(context).showSnackBar(

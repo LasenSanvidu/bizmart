@@ -58,7 +58,7 @@ class _EventFormPageState extends State<EventFormPage> {
 
     await FirebaseFirestore.instance.collection('events').add(newEvent);
     await _sendNotification(newEvent['title'] as String); // Send notification
-    Navigator.pop(context, newEvent); // Pass the event back to the CalendarPage
+    context.push("/calender"); // Pass the event back to the CalendarPage
   }
 
   @override
