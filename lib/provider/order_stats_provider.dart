@@ -96,5 +96,16 @@ class OrderStatsProvider extends ChangeNotifier {
       throw e;
     }
   }
+  Future<void> updateOrderStatus(String orderId, String newStatus) async {
+    try {
+      await _firestore.collection('orders').doc(orderId).update({
+        'status': newStatus,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      await loadOrderStats(); // Refresh stats after updating
+    } catch (e) {
+      print('Error updating order status: $e');
+      throw e;
+    }
   }
 }
