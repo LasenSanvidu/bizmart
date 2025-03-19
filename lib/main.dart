@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/provider/inquiry_provider.dart';
+import 'package:myapp/provider/order_stats_provider.dart';
 import 'package:myapp/provider/review_provider.dart';
 import 'package:myapp/provider/store_provider.dart';
 import 'package:myapp/routes/router.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:myapp/stripe/consts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'stats_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +32,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => ReviewProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => OrderStatsProvider(), // Add the new provider
         ),
       ],
       child: MyApp(),
