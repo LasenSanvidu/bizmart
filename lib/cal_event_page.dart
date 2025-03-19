@@ -34,8 +34,7 @@ class _EventFormPageState extends State<EventFormPage> {
   Future<void> _sendNotification(String title) async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    await messaging
-        .subscribeToTopic("events"); // Subscribe all users to "events" topic
+    await messaging.subscribeToTopic("events");
 
     await FirebaseFirestore.instance.collection('notifications').add({
       'title': "New Event Added",
@@ -57,8 +56,8 @@ class _EventFormPageState extends State<EventFormPage> {
     };
 
     await FirebaseFirestore.instance.collection('events').add(newEvent);
-    await _sendNotification(newEvent['title'] as String); // Send notification
-    Navigator.pop(context, newEvent); // Pass the event back to the CalendarPage
+    await _sendNotification(newEvent['title'] as String);
+    context.push("/calender");
   }
 
   @override
