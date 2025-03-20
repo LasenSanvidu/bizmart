@@ -285,16 +285,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/cal_event_page.dart';
+import 'package:myapp/calender.dart';
 import 'package:myapp/chat/chat_list_screen.dart';
 import 'package:myapp/chat_homeScreen.dart';
+import 'package:myapp/component/business_flow_screens.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/contact_us.dart';
+import 'package:myapp/contact_us_page.dart';
 import 'package:myapp/faqs.dart';
+import 'package:myapp/main_settings.dart';
 import 'package:myapp/login_and_register/Register.dart';
 import 'package:myapp/login_and_register/login.dart';
 import 'package:myapp/onboarding.dart';
 import 'package:myapp/otp/otp_code.dart';
 import 'package:myapp/otp/otp_confirmation.dart';
+import 'package:myapp/review.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/user_type_selection.dart';
@@ -437,6 +443,14 @@ class RouterClass {
         GoRoute(
           path: "/ad_screen",
           builder: (context, state) => AddAdScreen(),
+        ),
+        GoRoute(
+          path: "/cal_eve",
+          builder: (context, state) => EventFormPage(),
+        ),
+        GoRoute(
+          path: "/calender",
+          builder: (context, state) => CalendarPage(),
         ),
       ],
     );
