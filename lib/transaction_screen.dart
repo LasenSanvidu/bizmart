@@ -189,8 +189,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SoleCraft',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.purple[100],
         elevation: 0,
         leading: IconButton(
@@ -1148,7 +1146,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                     icon: const Icon(Icons.add),
                     label: const Text('Add Item'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: const Color(0xFF1E1D1E),
                     ),
                   ),
                 ],
@@ -1194,7 +1192,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 child: ElevatedButton(
                   onPressed: _updateTransaction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: const Color(0xFF1E1D1E),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
