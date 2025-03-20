@@ -9,7 +9,7 @@ import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/invoices/receipt_veiwer.dart';
 import 'dart:async';
 
-import 'package:myapp/transaction_heat_map.dart';
+import 'package:myapp/transaction/transaction_heat_map.dart';
 
 class TransactionTrackerPage extends StatefulWidget {
   const TransactionTrackerPage({Key? key}) : super(key: key);

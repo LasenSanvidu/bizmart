@@ -24,6 +24,7 @@ class MainSettings extends StatefulWidget {
 
 class _MainSettingsState extends State<MainSettings> {
   List<String> adImages = [];
+  String _userName = "User";
   final List<String> trendingImages = [
     "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg",
     "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -35,6 +36,7 @@ class _MainSettingsState extends State<MainSettings> {
   void initState() {
     super.initState();
     fetchAdImages();
+    _loadUserName();
   }
 
   /// Fetch latest ad images from Firestore and update expired URLs
@@ -71,6 +73,15 @@ class _MainSettingsState extends State<MainSettings> {
     }
   }
 
+  Future<void> _loadUserName() async {
+    String? username = await AuthService().getUsername();
+    if (mounted) {
+      setState(() {
+        _userName = username ?? "User";
+      });
+    }
+  }
+
   /// Refresh expired Firebase Storage URL
   Future<String> refreshImageUrl(String path) async {
     return await FirebaseStorage.instance.ref(path).getDownloadURL();
@@ -99,6 +110,45 @@ class _MainSettingsState extends State<MainSettings> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 0, right: 0),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  //borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Hi $_userName",
+                          style: GoogleFonts.caveat(
+                            fontSize: 44,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "Welcome back",
+                          style: GoogleFonts.poppins(
+                            fontSize: 26,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
             // Image Carousel with Loading Indicator
             CarouselSlider(
               options: CarouselOptions(
@@ -205,6 +255,7 @@ class _MainSettingsState extends State<MainSettings> {
                 );
               },
             ),
+            SizedBox(height: 20),
           ],
         ),
       ),
@@ -269,24 +320,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 20),
-          /*UserAccountsDrawerHeader(
-            accountName: Text(
-              userName, // Display the fetched user name
-              style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            accountEmail:
-                Text(userEmail, style: TextStyle(color: Colors.black)),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.black,
-              child: Icon(Icons.person, size: 75, color: Colors.white),
-            ),
-            currentAccountPictureSize: Size(100, 100),
-            decoration: BoxDecoration(color: Colors.white),
-            margin: EdgeInsets.only(bottom: 40),
-          ),*/
           Container(
             padding: EdgeInsets.only(top: 50, left: 16, right: 16, bottom: 20),
             color: Colors.white,
