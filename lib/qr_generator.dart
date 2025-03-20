@@ -178,6 +178,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
   String _reward = '';
   bool _isSpinning = false;
   bool _showReward = false;
+  int _selectedRewardIndex = 0;
 
   final List<String> _rewards = [
     '10% OFF',
@@ -208,6 +209,7 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
         setState(() {
           _isSpinning = false;
           _showReward = true;
+          _reward = _rewards[_selectedRewardIndex]; // Use the selected index
         });
       }
     });
@@ -222,11 +224,11 @@ class _CongratulationsScreenState extends State<CongratulationsScreen>
   void _spinWheel() {
     if (!_isSpinning) {
       final random = math.Random();
-      final rewardIndex = random.nextInt(_rewards.length);
-      _reward = _rewards[rewardIndex];
+      _selectedRewardIndex = random.nextInt(_rewards.length); // Store the index
 
       final spinRotations = 5 + random.nextDouble() * 3;
-      final targetPosition = spinRotations + (rewardIndex / _rewards.length);
+      final targetPosition =
+          spinRotations + (_selectedRewardIndex / _rewards.length);
 
       _controller.reset();
       _animation = Tween<double>(
