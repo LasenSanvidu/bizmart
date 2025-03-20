@@ -100,7 +100,7 @@ import 'package:myapp/shop/store_products.dart';
 import 'package:myapp/shop/shop.dart';
 import 'package:myapp/summary_page.dart';
 import 'package:myapp/stripe/payment.dart';
-import 'package:myapp/transaction.dart';
+import 'package:myapp/transaction/transaction.dart';
 
 class CustomerFlowScreen extends StatefulWidget {
   const CustomerFlowScreen({super.key});

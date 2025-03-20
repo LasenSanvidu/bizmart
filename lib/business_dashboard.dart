@@ -89,7 +89,7 @@ import 'package:myapp/invoices/receipt_list_page.dart';
 import 'package:myapp/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/summary_page.dart';
-import 'package:myapp/transaction.dart';
+import 'package:myapp/transaction/transaction.dart';
 
 class BusinessDashboardScreen extends StatelessWidget {
   const BusinessDashboardScreen({super.key});
