@@ -88,13 +88,85 @@ class TransactionItem {
   }
 }
 
+// Define app theme
+final ThemeData appTheme = ThemeData(
+  primaryColor: Colors.black,
+  scaffoldBackgroundColor: Colors.white,
+  colorScheme: const ColorScheme.light(
+    primary: Colors.black,
+    secondary: Colors.grey,
+    surface: Colors.white,
+    background: Colors.white,
+    onPrimary: Colors.white,
+    onSecondary: Colors.black,
+    onSurface: Colors.black,
+    onBackground: Colors.black,
+  ),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Colors.black,
+    foregroundColor: Colors.white,
+    elevation: 0,
+  ),
+  buttonTheme: const ButtonThemeData(
+    buttonColor: Colors.black,
+    textTheme: ButtonTextTheme.primary,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.black,
+      foregroundColor: Colors.white,
+    ),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: Colors.black,
+    ),
+  ),
+  switchTheme: SwitchThemeData(
+    thumbColor: MaterialStateProperty.resolveWith((states) {
+      if (states.contains(MaterialState.selected)) {
+        return Colors.white;
+      }
+      return Colors.grey;
+    }),
+    trackColor: MaterialStateProperty.resolveWith((states) {
+      if (states.contains(MaterialState.selected)) {
+        return Colors.black;
+      }
+      return Colors.grey.withOpacity(0.5);
+    }),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: Colors.grey),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: Colors.black, width: 2),
+    ),
+    labelStyle: const TextStyle(color: Colors.grey),
+  ),
+  dividerTheme: const DividerThemeData(
+    color: Colors.grey,
+    thickness: 1,
+  ),
+  cardTheme: CardTheme(
+    elevation: 2,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+);
+
 // Initialize Firebase
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: TransactionsScreen(),
+    theme: appTheme,
+    home: const TransactionsScreen(),
   ));
 }
 
@@ -189,7 +261,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple[100],
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -205,7 +276,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Icon(Icons.account_balance_wallet, color: Colors.purple),
+                const Icon(Icons.account_balance_wallet, color: Colors.black),
                 const SizedBox(width: 9),
                 const Text(
                   'Transactions',
@@ -223,7 +294,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               builder: (context, snapshot) {
                 // Show loading indicator while data is loading
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  );
                 }
 
                 // Handle errors
@@ -330,12 +405,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
           );
         },
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.black,
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: 2, // Transactions tab
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: ''),
@@ -361,8 +438,6 @@ class TransactionDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Transaction Details',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.purple[100],
-        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
@@ -446,8 +521,8 @@ class TransactionDetailScreen extends StatelessWidget {
                                 horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
                               color: transaction.isActive
-                                  ? Colors.green[50]
-                                  : Colors.red[50],
+                                  ? Colors.green.withOpacity(0.1)
+                                  : Colors.red.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -580,11 +655,11 @@ class TransactionDetailScreen extends StatelessWidget {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: Colors.purple[50],
+                            color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Icon(Icons.shopping_bag_outlined,
-                              color: Colors.purple[300]),
+                          child: const Icon(Icons.shopping_bag_outlined,
+                              color: Colors.black),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -638,7 +713,7 @@ class TransactionDetailScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.purple,
+                      color: Colors.black,
                     ),
                   ),
                 ],
@@ -778,8 +853,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Transaction'),
-        backgroundColor: Colors.purple[100],
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -793,7 +866,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 controller: _customerNameController,
                 decoration: const InputDecoration(
                   labelText: 'Customer Name',
-                  border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -807,7 +879,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 controller: _paymentMethodController,
                 decoration: const InputDecoration(
                   labelText: 'Payment Method',
-                  border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -821,7 +892,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 controller: _descriptionController,
                 decoration: const InputDecoration(
                   labelText: 'Description',
-                  border: OutlineInputBorder(),
                 ),
                 maxLines: 2,
               ),
@@ -855,9 +925,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     onPressed: _addItem,
                     icon: const Icon(Icons.add),
                     label: const Text('Add Item'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
-                    ),
                   ),
                 ],
               ),
@@ -902,7 +969,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 child: ElevatedButton(
                   onPressed: _saveTransaction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -1020,6 +1086,66 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     );
   }
 
+  void _editItem(int index) {
+    final item = _items[index];
+    showDialog(
+      context: context,
+      builder: (context) {
+        final nameController = TextEditingController(text: item.name);
+        final priceController =
+            TextEditingController(text: item.price.toString());
+        final quantityController =
+            TextEditingController(text: item.quantity.toString());
+
+        return AlertDialog(
+          title: const Text('Edit Item'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Item Name'),
+              ),
+              TextField(
+                controller: priceController,
+                decoration: const InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: quantityController,
+                decoration: const InputDecoration(labelText: 'Quantity'),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (nameController.text.isNotEmpty &&
+                    priceController.text.isNotEmpty &&
+                    quantityController.text.isNotEmpty) {
+                  setState(() {
+                    _items[index] = TransactionItem(
+                      name: nameController.text,
+                      price: double.parse(priceController.text),
+                      quantity: int.parse(quantityController.text),
+                    );
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _updateTransaction() async {
     if (_formKey.currentState!.validate() && _items.isNotEmpty) {
       // Calculate total amount
@@ -1028,27 +1154,26 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         totalAmount += item.price * item.quantity;
       }
 
-      // Create updated transaction data
-      final updatedData = {
-        'customerName': _customerNameController.text,
-        'paymentMethod': _paymentMethodController.text,
-        'amount': totalAmount,
-        'isActive': _isActive,
-        'description': _descriptionController.text,
-        'items': _items.map((item) => item.toMap()).toList(),
-        // Keep the original timestamp
-        'timestamp': Timestamp.fromDate(widget.transaction.timestamp),
-      };
+      // Create updated transaction object
+      final updatedTransaction = Transaction(
+        id: widget.transaction.id,
+        customerName: _customerNameController.text,
+        paymentMethod: _paymentMethodController.text,
+        amount: totalAmount,
+        isActive: _isActive,
+        description: _descriptionController.text,
+        items: _items,
+        timestamp: widget.transaction.timestamp, // Keep original timestamp
+      );
 
-      // Update Firestore
-      // Update Firestore
+      // Update in Firestore
       try {
         await FirebaseFirestore.instance
             .collection('transactions')
             .doc(widget.transaction.id)
-            .update(updatedData);
+            .update(updatedTransaction.toFirestore());
 
-        // Navigate back to transaction details screen
+        // Return to transaction details screen
         Navigator.pop(context);
       } catch (e) {
         // Show error message
@@ -1068,8 +1193,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Transaction'),
-        backgroundColor: Colors.purple[100],
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -1083,7 +1206,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 controller: _customerNameController,
                 decoration: const InputDecoration(
                   labelText: 'Customer Name',
-                  border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -1097,7 +1219,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 controller: _paymentMethodController,
                 decoration: const InputDecoration(
                   labelText: 'Payment Method',
-                  border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -1111,7 +1232,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 controller: _descriptionController,
                 decoration: const InputDecoration(
                   labelText: 'Description',
-                  border: OutlineInputBorder(),
                 ),
                 maxLines: 2,
               ),
@@ -1145,9 +1265,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                     onPressed: _addItem,
                     icon: const Icon(Icons.add),
                     label: const Text('Add Item'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E1D1E),
-                    ),
                   ),
                 ],
               ),
@@ -1170,13 +1287,24 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                             title: Text(item.name),
                             subtitle:
                                 Text('${item.quantity} x \$${item.price}'),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                setState(() {
-                                  _items.removeAt(index);
-                                });
-                              },
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit,
+                                      color: Colors.blue),
+                                  onPressed: () => _editItem(index),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    setState(() {
+                                      _items.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         );
@@ -1192,7 +1320,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 child: ElevatedButton(
                   onPressed: _updateTransaction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1E1D1E),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -1206,6 +1333,218 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// Adding a statistics dashboard screen for better functionality
+class StatisticsDashboardScreen extends StatelessWidget {
+  const StatisticsDashboardScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Transaction Statistics'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream:
+            FirebaseFirestore.instance.collection('transactions').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.black),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No transaction data available'));
+          }
+
+          // Process transaction data
+          final transactions = snapshot.data!.docs
+              .map((doc) => Transaction.fromFirestore(doc))
+              .toList();
+
+          // Calculate statistics
+          double totalRevenue = 0;
+          int activeTransactions = 0;
+          Map<String, double> paymentMethodStats = {};
+
+          for (var transaction in transactions) {
+            totalRevenue += transaction.amount;
+            if (transaction.isActive) activeTransactions++;
+
+            if (paymentMethodStats.containsKey(transaction.paymentMethod)) {
+              paymentMethodStats[transaction.paymentMethod] =
+                  paymentMethodStats[transaction.paymentMethod]! +
+                      transaction.amount;
+            } else {
+              paymentMethodStats[transaction.paymentMethod] =
+                  transaction.amount;
+            }
+          }
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Summary cards
+                Row(
+                  children: [
+                    Expanded(
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total Revenue',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '\$${totalRevenue.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Active Transactions',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '$activeTransactions / ${transactions.length}',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // Payment method distribution
+                const Text(
+                  'Payment Methods',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: paymentMethodStats.entries.map((entry) {
+                        final percentage = (entry.value / totalRevenue * 100)
+                            .toStringAsFixed(1);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(entry.key),
+                                  Text('$percentage%'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              LinearProgressIndicator(
+                                value: entry.value / totalRevenue,
+                                backgroundColor: Colors.grey[200],
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Recent transactions
+                const Text(
+                  'Recent Transactions',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount:
+                        transactions.length > 5 ? 5 : transactions.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final transaction = transactions[index];
+                      return ListTile(
+                        title: Text(transaction.customerName),
+                        subtitle: Text(
+                          '${transaction.timestamp.day}/${transaction.timestamp.month}/${transaction.timestamp.year}',
+                        ),
+                        trailing: Text(
+                          '\$${transaction.amount.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TransactionDetailScreen(
+                                transaction: transaction,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
