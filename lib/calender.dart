@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -20,8 +21,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   void _loadEvents() async {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('events').get();
+    final snapshot = await FirebaseFirestore.instance.collection('events').get();
     final List<Map<String, dynamic>> loadedEvents = snapshot.docs.map((doc) {
       return {
         'id': doc.id,
@@ -29,6 +29,7 @@ class _CalendarPageState extends State<CalendarPage> {
         'date': doc['date'],
         'duration': doc['duration'],
         'description': doc['description'],
+        'creatorId': doc['creatorId'], // Ensure creatorId is retrieved
       };
     }).toList();
 
@@ -48,10 +49,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   void _deleteEvent(String eventId) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('events')
-          .doc(eventId)
-          .delete();
+      await FirebaseFirestore.instance.collection('events').doc(eventId).delete();
 
       if (mounted) {
         setState(() {
@@ -68,14 +66,48 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
+  void _confirmDelete(BuildContext context, String eventId, String creatorId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black,
+        title: Text(
+          "Delete Event?",
+          style: GoogleFonts.poppins(color: Colors.white),
+        ),
+        content: Text(
+          "Are you sure you want to delete this event?",
+          style: GoogleFonts.poppins(color: Colors.grey[300]),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.poppins(color: Colors.grey[300]),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteEvent(eventId);
+            },
+            child: Text(
+              'Delete',
+              style: GoogleFonts.poppins(color: Colors.redAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color.fromARGB(255, 253, 253, 253), // Black Theme Background
+      backgroundColor: const Color.fromARGB(255, 253, 253, 253), // Black Theme Background
       appBar: AppBar(
-        backgroundColor:
-            const Color.from(alpha: 1, red: 1, green: 0.996, blue: 0.996),
+        backgroundColor: const Color.fromARGB(255, 1, 254, 254),
         elevation: 0,
         title: Text(
           "Calendar",
@@ -103,82 +135,46 @@ class _CalendarPageState extends State<CalendarPage> {
             : ListView.builder(
                 itemCount: events.length,
                 itemBuilder: (context, index) {
-                  final event = events[index];
+                  var event = events[index];
+                  String eventId = event['id'];
+                  String eventTitle = event['title'];
+                  String creatorId = event['creatorId'];
+
                   return Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     elevation: 6,
-                    shadowColor: const Color.fromARGB(255, 244, 224, 248)
-                        .withOpacity(0.2),
+                    shadowColor: const Color.fromARGB(255, 244, 224, 248).withOpacity(0.2),
                     color: const Color(0xFF1E1E1E), // Dark card color
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 15),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                       title: Text(
-                        event['title'],
+                        eventTitle,
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white, // White text for contrast
+                          color: Colors.white,
                         ),
                       ),
                       subtitle: Text(
                         "${event['date']}  |  Duration: ${event['duration']} day(s)",
                         style: GoogleFonts.poppins(
                           fontSize: 14,
-                          color: Colors.grey[300], // Lighter grey for contrast
+                          color: Colors.grey[300],
                         ),
                       ),
                       leading: const Icon(
                         Icons.event,
                         color: Color.fromARGB(255, 250, 231, 250),
                       ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete,
-                            color: Color.fromARGB(255, 254, 171, 165)),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              backgroundColor: Colors.black,
-                              title: Text(
-                                "Delete Event?",
-                                style: GoogleFonts.poppins(color: Colors.white),
-                              ),
-                              content: Text(
-                                "Are you sure you want to delete this event?",
-                                style: GoogleFonts.poppins(
-                                    color: Colors.grey[300]),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    'Cancel',
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.grey[300]),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _deleteEvent(event['id']);
-                                  },
-                                  child: Text(
-                                    'Delete',
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.redAccent),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                      trailing: creatorId == FirebaseAuth.instance.currentUser?.uid
+                          ? IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _confirmDelete(context, eventId, creatorId),
+                            )
+                          : null, // Hide delete button if not the creator
                       onTap: () {
                         showDialog(
                           context: context,
@@ -199,40 +195,33 @@ class _CalendarPageState extends State<CalendarPage> {
                                   children: [
                                     Text(
                                       "Date: ${event['date']}",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 16, color: Colors.white),
+                                      style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text(
                                       "Duration: ${event['duration']} day(s)",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 16, color: Colors.white),
+                                      style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text(
                                       "Description:",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 16, color: Colors.white),
+                                      style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
                                     ),
-                                    SizedBox(height: 5),
+                                    const SizedBox(height: 5),
                                     Text(
-                                      event['description'] ??
-                                          "No description available",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 16,
-                                          color: Colors.grey[300]),
+                                      event['description'] ?? "No description available",
+                                      style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey[300]),
                                     ),
                                   ],
                                 ),
                               ),
                               actions: [
                                 TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Close",
-                                      style: GoogleFonts.poppins(
-                                          color: Colors.grey[300])),
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(
+                                    "Close",
+                                    style: GoogleFonts.poppins(color: Colors.grey[300]),
+                                  ),
                                 ),
                               ],
                             );
@@ -256,9 +245,10 @@ class _CalendarPageState extends State<CalendarPage> {
         label: Text(
           "Add Event",
           style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: const Color.fromARGB(255, 255, 254, 254)),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: const Color.fromARGB(255, 255, 254, 254),
+          ),
         ),
         icon: const Icon(Icons.add, color: Color.fromARGB(255, 255, 254, 254)),
       ),

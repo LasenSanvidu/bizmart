@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -37,19 +38,20 @@ class _EventFormPageState extends State<EventFormPage> {
   }
 
   void _saveEvent() async {
-    if (titleController.text.isEmpty || selectedDate == null) return;
+    User? user = FirebaseAuth.instance.currentUser; // Get current user
+    if (user == null || titleController.text.isEmpty || selectedDate == null) return;
 
     final newEvent = {
       'title': titleController.text,
       'description': descriptionController.text,
-      'date':
-          "${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}",
+      'date': "${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}",
       'duration': int.tryParse(durationController.text) ?? 1,
+      'creatorId': user.uid, // Store the creator's UID
       'timestamp': FieldValue.serverTimestamp(),
     };
 
     await FirebaseFirestore.instance.collection('events').add(newEvent);
-    context.push("/calendar");
+    context.push("/calender");
   }
 
   @override
@@ -71,7 +73,7 @@ class _EventFormPageState extends State<EventFormPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            context.push("/calendar");
+            context.push("/calender");
           },
         ),
       ),
