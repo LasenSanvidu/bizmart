@@ -63,9 +63,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
     } catch (e) {
       print("Error fetching user data: $e");
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -105,7 +107,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       // Return to profile page
       if (context.mounted) {
-        CustomerFlowScreen.of(context)?.updateIndex(10);
+        CustomerFlowScreen.of(context)?.updateIndex(4);
       }
     } catch (e) {
       print("Error updating user data: $e");

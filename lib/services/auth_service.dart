@@ -51,7 +51,12 @@ class AuthService {
 
   // Logout
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      print('Error during sign out: $e');
+      // Handle error appropriately
+    }
   }
 
   // Get current user

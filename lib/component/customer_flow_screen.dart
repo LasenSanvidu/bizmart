@@ -90,17 +90,14 @@ import 'package:myapp/calender.dart';
 import 'package:myapp/chat_homeScreen.dart';
 import 'package:myapp/contact_us.dart';
 import 'package:myapp/main_settings.dart';
-import 'package:myapp/notification_page.dart';
-import 'package:myapp/profile.dart';
 import 'package:myapp/profile/edit_profile.dart';
-import 'package:myapp/profile_2.0.dart';
+import 'package:myapp/profile/profile_2.0.dart';
 import 'package:myapp/invoices/receipt_list_page.dart';
 import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/shop/store_products.dart';
 import 'package:myapp/shop/shop.dart';
 import 'package:myapp/summary_page.dart';
-import 'package:myapp/stripe/payment.dart';
 import 'package:myapp/transaction/transaction.dart';
 
 class CustomerFlowScreen extends StatefulWidget {
@@ -121,7 +118,6 @@ class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
     MainSettings(),
     ShopPage(),
     CalendarPage(),
-    //Payment(),
     BuyerReceiptsListPage(),
     //Profile(),
     UserProfilePage(),

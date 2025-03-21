@@ -11,6 +11,7 @@ import 'package:myapp/chat/chat_list_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/contact_us.dart';
 import 'package:myapp/faqs.dart';
+import 'package:myapp/profile/profile_image_en-decoder.dart';
 import 'package:myapp/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -275,6 +276,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
   final AuthService _authService = AuthService();
   String userName = "Loading..."; // Default text until data is fetched
   String userEmail = "Loading..."; // Default text until data is fetched
+  String? profileImageBase64;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -284,23 +287,55 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   // Load user data from Firebase and update UI
   Future<void> _loadUserData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    //Try to get data from SharedPreferences first (for quick display)
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cachedName = prefs.getString('userName') ?? "";
+    String cachedEmail = prefs.getString('userEmail') ?? "";
+    String? cachedProfileImage = prefs.getString('profileImage');
+
+    if (cachedName.isNotEmpty && cachedEmail.isNotEmpty) {
+      // If we have cached data, show it immediately
+      setState(() {
+        userName = cachedName;
+        userEmail = cachedEmail;
+        profileImageBase64 = cachedProfileImage;
+        _isLoading = false;
+      });
+    }
+
     // Get the current user from Firebase Authentication
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       String? username = await AuthService().getUsername();
+      String? image = await ProfileImageHandler.getProfileImage();
       // Checking if widget is still mounted before calling setState
       if (!mounted) return;
-      // Fetch user data from Firebase
-      setState(() {
-        userName = username ?? "Guest User"; // Default to "Guest User" if null
-        userEmail = user.email ?? "No Email"; // Default to "No Email" if null
-      });
+      // Fetch user data from Firebase and only update state id new data is different from cashed data.
+      if (username != userName ||
+          user.email != userEmail ||
+          image != profileImageBase64) {
+        setState(() {
+          userName =
+              username ?? "Guest User"; // Default to "Guest User" if null
+          userEmail = user.email ?? "No Email"; // Default to "No Email" if null
+          profileImageBase64 = image;
+          _isLoading = false;
+        });
 
-      // Optionally save user data to SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('userName', user.displayName ?? "Guest User");
-      prefs.setString('userEmail', user.email ?? "No Email");
+        // Save the updated data to SharedPreferences (cashe data)
+        prefs.setString('userName', userName);
+        prefs.setString('userEmail', userEmail);
+        if (image != null) {
+          prefs.setString('profileImage', image);
+        } else {
+          prefs.remove('profileImage');
+        }
+      }
     } else {
       // Checking if widget is still mounted before calling setState
       if (!mounted) return;
@@ -308,7 +343,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
       setState(() {
         userName = "Guest User";
         userEmail = "No Email";
+        profileImageBase64 = null;
+        _isLoading = false;
       });
+
+      // Clear cached data if user is not logged in
+      prefs.remove('userName');
+      prefs.remove('userEmail');
+      prefs.remove('profileImage');
     }
   }
 
@@ -323,39 +365,43 @@ class _CustomDrawerState extends State<CustomDrawer> {
           Container(
             padding: EdgeInsets.only(top: 50, left: 16, right: 16, bottom: 20),
             color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: CircleAvatar(
-                    backgroundColor: const Color.fromARGB(255, 90, 90, 90),
-                    radius: 50,
-                    child: Icon(Icons.person, size: 75, color: Colors.white),
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                          child: ProfileImageHandler.profileImageWidget(
+                        base64Image: profileImageBase64,
+                        firstName: userName,
+                        lastName: userName.split(' ').length > 1
+                            ? userName.split(' ').last
+                            : "",
+                        radius: 50,
+                      )),
+                      SizedBox(height: 20),
+                      Center(
+                        child: Text(
+                          userName,
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          userEmail,
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                    ],
                   ),
-                ),
-                SizedBox(height: 20), // Add space between avatar and username
-                Center(
-                  child: Text(
-                    userName,
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    userEmail,
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20), // Add additional space after email
-              ],
-            ),
           ),
           // Other Drawer Menu Items
           DrawerMenuItem(
@@ -412,6 +458,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   prefs.remove('rememberPassword');
                 }
 
+                prefs.remove('profileImage');
                 await _authService.signOut();
                 context.push("/login");
               },
