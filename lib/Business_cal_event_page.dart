@@ -5,7 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class EventFormPage extends StatefulWidget {
-  const EventFormPage({super.key});
+  final String? eventId;
+  const EventFormPage({super.key, this.eventId});
 
   @override
   State<EventFormPage> createState() => _EventFormPageState();
@@ -122,12 +123,12 @@ class _EventFormPageState extends State<EventFormPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         title: Text(
           "Add Event",
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: const Color.fromARGB(255, 0, 0, 0),
             fontSize: 20.0,
             fontWeight: FontWeight.w600,
           ),
