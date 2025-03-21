@@ -84,12 +84,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/ad_screen.dart';
+import 'package:myapp/analytics_dashboard.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/invoices/receipt_list_page.dart';
 import 'package:myapp/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/summary_page.dart';
-import 'package:myapp/transaction/transaction.dart';
+import 'package:myapp/transaction.dart';
 
 class BusinessDashboardScreen extends StatelessWidget {
   const BusinessDashboardScreen({super.key});
@@ -120,15 +121,18 @@ class BusinessDashboardScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
-              // Buttons for different sections
+              // Added Analytics Dashboard button
+              _buildDashboardButton(context, Icons.analytics,
+                  "Analytics Dashboard", const AnalyticsDashboard()),
+              // Existing buttons
               _buildDashboardButton(
                   context, Icons.pie_chart, "Summary", SummaryPage()),
               _buildDashboardButton(context, Icons.bar_chart, "Transactions",
                   TransactionTrackerPage()),
               _buildDashboardButton(
                   context, Icons.inventory, "Store & Products", MyStoreUi()),
-              /*_buildDashboardButton(
-                  context, Icons.category, "Categories", MyStoreUi()),*/
+              _buildDashboardButton(
+                  context, Icons.category, "Categories", MyStoreUi()),
               _buildDashboardButton(context, Icons.question_answer_rounded,
                   "Recieved Inquiries", ReceivedInquiriesPage()),
               _buildDashboardButton(context, Icons.receipt_rounded, "Invoices",
