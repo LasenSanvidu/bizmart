@@ -127,8 +127,8 @@ class BusinessDashboardScreen extends StatelessWidget {
                   TransactionTrackerPage()),
               _buildDashboardButton(
                   context, Icons.inventory, "Store & Products", MyStoreUi()),
-              _buildDashboardButton(
-                  context, Icons.category, "Categories", MyStoreUi()),
+              /*_buildDashboardButton(
+                  context, Icons.category, "Categories", MyStoreUi()),*/
               _buildDashboardButton(context, Icons.question_answer_rounded,
                   "Recieved Inquiries", ReceivedInquiriesPage()),
               _buildDashboardButton(context, Icons.receipt_rounded, "Invoices",

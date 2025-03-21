@@ -161,10 +161,12 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Added to inquiry')));
 
-                        Navigator.push(
+                        /*Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => InquiryPage()));
+                                builder: (context) => InquiryPage()));*/
+
+                        CustomerFlowScreen.of(context)?.updateIndex(1);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text('Product information not found')));
@@ -251,13 +253,12 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                           final review = productReviews[index];
                           return Card(
                             color: const Color.fromARGB(255, 246, 246, 246),
-                            elevation: 1, // Adds a subtle shadow
+                            elevation: 1, // subtle shadow
                             margin: EdgeInsets.symmetric(
                                 vertical: 8.0,
-                                horizontal: 14.0), // Adds space around the card
+                                horizontal: 14.0), // space around the card
                             child: Padding(
-                              padding: const EdgeInsets.all(
-                                  16.0), // Adds inner spacing
+                              padding: const EdgeInsets.all(16.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment
                                     .start, // Aligns text to the start

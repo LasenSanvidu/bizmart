@@ -92,6 +92,7 @@ import 'package:myapp/contact_us.dart';
 import 'package:myapp/main_settings.dart';
 import 'package:myapp/notification_page.dart';
 import 'package:myapp/profile.dart';
+import 'package:myapp/profile/edit_profile.dart';
 import 'package:myapp/profile_2.0.dart';
 import 'package:myapp/invoices/receipt_list_page.dart';
 import 'package:myapp/settings_customer.dart';
@@ -130,6 +131,7 @@ class _CustomerFlowScreenState extends State<CustomerFlowScreen> {
     SummaryPage(),
     ReceiptsListPage(),
     TransactionTrackerPage(),
+    EditProfileScreen()
   ];
 
   void updateIndex(int index) {

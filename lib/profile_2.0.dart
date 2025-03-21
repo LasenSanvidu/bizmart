@@ -176,6 +176,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -385,6 +386,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       child: ElevatedButton(
                         onPressed: () {
                           // Implement Edit Profile functionality
+                          CustomerFlowScreen.of(context)?.updateIndex(11);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
