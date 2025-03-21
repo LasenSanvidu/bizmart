@@ -177,6 +177,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
+import 'package:myapp/profile/profile_image_en-decoder.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -193,6 +194,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   String mobile = "";
   String email = "";
   bool isLoading = true; // To track loading state
+  String? profileImageBase64;
 
   @override
   void initState() {
@@ -217,16 +219,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       if (userDoc.exists) {
         var userData = userDoc.data() as Map<String, dynamic>;
-        print("Fetched User Data: $userData"); // Debugging step
+        print("Fetched User Data: $userData");
+
+        // Get profile image
+        String? image = await ProfileImageHandler.getProfileImage();
 
         setState(() {
-          username = userData['username'] ?? "Unknown"; // Adjust key if needed
-          firstName =
-              userData['first_name'] ?? "Unknown"; // Adjust key if needed
-          lastName = userData['last_name'] ?? "Unknown"; // Adjust key if needed
-          mobile = userData['mobile'] ?? "Unknown"; // Adjust key if needed
-          email = userData['email'] ??
-              "Unknown"; // Email works, so it's likely correct
+          username = userData['username'] ?? "Unknown";
+          firstName = userData['first_name'] ?? "Unknown";
+          lastName = userData['last_name'] ?? "Unknown";
+          mobile = userData['mobile'] ?? "Unknown";
+          email = userData['email'] ?? "Unknown";
+          profileImageBase64 = image;
           isLoading = false;
         });
       } else {
@@ -286,7 +290,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               ),
                             ],
                           ),
-                          child: CircleAvatar(
+                          child: /*CircleAvatar(
                             radius: 50,
                             backgroundColor: Colors.grey.shade200,
                             child: Text(
@@ -297,7 +301,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 color: Colors.black87,
                               ),
                             ),
-                          ),
+                          ),*/
+                              ProfileImageHandler.profileImageWidget(
+                                  base64Image: profileImageBase64,
+                                  firstName: firstName,
+                                  lastName: lastName,
+                                  radius: 50),
                         ),
                         Container(
                           padding: const EdgeInsets.all(4),
