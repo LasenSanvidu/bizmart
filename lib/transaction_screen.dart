@@ -205,14 +205,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Icon(Icons.account_balance_wallet, color: Colors.white),
+                Icon(Icons.account_balance_wallet, color: Colors.black),
                 const SizedBox(width: 9),
                 const Text(
                   'Transactions',
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                      color: Colors.black), // Changed to black
                 ),
               ],
             ),
@@ -233,14 +233,16 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 if (snapshot.hasError) {
                   return Center(
                       child: Text('Error: ${snapshot.error}',
-                          style: TextStyle(color: Colors.white)));
+                          style: TextStyle(
+                              color: Colors.black))); // Changed to black
                 }
 
                 // Check if there are no transactions
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(
                       child: Text('No transactions found',
-                          style: TextStyle(color: Colors.white)));
+                          style: TextStyle(
+                              color: Colors.black))); // Changed to black
                 }
 
                 // Build the list of transactions
@@ -273,7 +275,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                 transaction.customerName,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                                  color: Colors.black, // Changed to black
                                 ),
                               ),
                             ),
@@ -282,7 +284,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                               child: Text(
                                 transaction.paymentMethod,
                                 style: TextStyle(
-                                  color: Colors.grey[400],
+                                  color: Colors.grey[700], // Darker grey
                                 ),
                               ),
                             ),
@@ -293,7 +295,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                 textAlign: TextAlign.right,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Colors.black, // Changed to black
                                 ),
                               ),
                             ),
@@ -361,7 +363,7 @@ class TransactionDetailScreen extends StatelessWidget {
             style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.white)),
+                color: Colors.black)), // Changed to black
         backgroundColor: Colors.black,
         elevation: 0,
         actions: [
@@ -470,6 +472,7 @@ class TransactionDetailScreen extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black, // Changed to black
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -491,6 +494,7 @@ class TransactionDetailScreen extends StatelessWidget {
                                   transaction.paymentMethod,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w500,
+                                    color: Colors.black, // Changed to black
                                   ),
                                 ),
                               ],
@@ -512,6 +516,7 @@ class TransactionDetailScreen extends StatelessWidget {
                                   '${transaction.timestamp.day}/${transaction.timestamp.month}/${transaction.timestamp.year}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w500,
+                                    color: Colors.black, // Changed to black
                                   ),
                                 ),
                               ],
@@ -532,13 +537,14 @@ class TransactionDetailScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black, // Changed to black
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 transaction.description,
                 style: TextStyle(
-                  color: Colors.grey[700],
+                  color: Colors.grey[700], // Darker grey
                 ),
               ),
 
@@ -553,12 +559,13 @@ class TransactionDetailScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black, // Changed to black
                     ),
                   ),
                   Text(
                     '${transaction.items.length} items',
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color: Colors.grey[700], // Darker grey
                     ),
                   ),
                 ],
@@ -596,13 +603,14 @@ class TransactionDetailScreen extends StatelessWidget {
                                 item.name,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
+                                  color: Colors.black, // Changed to black
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 '${item.quantity} x \$${item.price.toInt()}',
                                 style: TextStyle(
-                                  color: Colors.grey[600],
+                                  color: Colors.grey[700], // Darker grey
                                   fontSize: 13,
                                 ),
                               ),
@@ -613,6 +621,7 @@ class TransactionDetailScreen extends StatelessWidget {
                           '\$${(item.price * item.quantity).toInt()}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
+                            color: Colors.black, // Changed to black
                           ),
                         ),
                       ],
@@ -632,6 +641,7 @@ class TransactionDetailScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
+                      color: Colors.black, // Changed to black
                     ),
                   ),
                   Text(
@@ -639,7 +649,7 @@ class TransactionDetailScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.black, // Changed to black
                     ),
                   ),
                 ],
@@ -779,7 +789,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Transaction',
-            style: TextStyle(color: Colors.white)),
+            style: TextStyle(color: Colors.black)), // Changed to black
         backgroundColor: Colors.black,
         elevation: 0,
       ),
@@ -851,6 +861,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black, // Changed to black
                     ),
                   ),
                   ElevatedButton.icon(
@@ -1069,7 +1080,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Transaction',
-            style: TextStyle(color: Colors.white)),
+            style: TextStyle(color: Colors.black)), // Changed to black
         backgroundColor: Colors.black,
         elevation: 0,
       ),
@@ -1141,6 +1152,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black, // Changed to black
                     ),
                   ),
                   ElevatedButton.icon(
