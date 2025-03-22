@@ -36,7 +36,7 @@ class AuthService {
     }
   }
 
-  Future<String?> getUsername() async {
+  /*Future<String?> getUsername() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       // Get the username from Firestore using the user's UID
@@ -47,6 +47,24 @@ class AuthService {
       }
     }
     return null;
+  }*/
+
+  Future<String?> getUsername() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    try {
+      if (user != null) {
+        // Get the username from Firestore using the user's UID
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          return userDoc['username'];
+        }
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching username: $e');
+      return null;
+    }
   }
 
   // Logout

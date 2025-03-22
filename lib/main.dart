@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,19 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // previously this method was removed
+  // Added a Firebase Auth state listener here
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user == null) {
+      // User is signed out
+      print("User is currently signed out");
+      // You can set an initial route here if needed
+    } else {
+      // User is signed in
+      print("User is signed in: ${user.uid}");
+    }
+  });
   await _setup();
   /*runApp(
     const MyApp(),
@@ -55,13 +69,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: RouterClass().router,
       debugShowCheckedModeBanner: false,
-      //home: HomeScreen(),
-      // key: const HomeScreen(),
-      //home: Login(),
-      //home: WelcomeSecond(),
-      //home:OrderConfirmed(),
-      // home: Profile(),
-      //home: ChatHomeScreen(),
     );
   }
 }
