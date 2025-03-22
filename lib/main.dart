@@ -8,15 +8,21 @@ import 'package:myapp/provider/summary_provider.dart';
 import 'package:myapp/provider/store_provider.dart';
 import 'package:myapp/routes/router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:myapp/services/Firebase%20Notification%20Service.dart';
 import 'package:myapp/stripe/consts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Create the instance first and then initialize it
+  final notificationService = NotificationService();
+  await notificationService.initialize();
 
   // previously this method was removed
   // Added a Firebase Auth state listener here
@@ -31,9 +37,7 @@ void main() async {
     }
   });
   await _setup();
-  /*runApp(
-    const MyApp(),
-  );*/
+
   runApp(
     MultiProvider(
       providers: [
@@ -50,7 +54,7 @@ void main() async {
           create: (_) => SummaryProvider(),
         ),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
