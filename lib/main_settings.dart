@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +27,65 @@ class MainSettings extends StatefulWidget {
 class _MainSettingsState extends State<MainSettings> {
   List<String> adImages = [];
   String _userName = "User";
-  final List<String> trendingImages = [
-    "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg",
-    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://dmc.dilmahtea.com/web-space/dmc/heritage-centre/54ceb91256e8190e474aa752a6e0650a2df5ba37/500_500.154080881152699.jpg"
-  ];
+  List<String> trendingImages = [];
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
     fetchAdImages();
+    fetchTrendingImages();
     _loadUserName();
+  }
+
+  Future<void> fetchTrendingImages() async {
+    DateTime today = DateTime.now();
+
+    // Generate last 7 days' dates
+    List<String> last7Days = List.generate(7, (i) {
+      return today.subtract(Duration(days: i)).toIso8601String().split('T')[0];
+    });
+
+    Map<String, int> trendingCounts = {};
+
+    // Fetch inquiries for last 7 days
+    for (String date in last7Days) {
+      DocumentSnapshot doc =
+          await firestore.collection("product_inquiries").doc(date).get();
+      if (doc.exists) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        data.forEach((productId, count) {
+          trendingCounts[productId] =
+              (trendingCounts[productId] ?? 0) + (count as int);
+        });
+      }
+    }
+
+    // Sort by count (Descending order) & get top 5 product IDs
+    List<MapEntry<String, int>> sortedEntries = trendingCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    List<String> topProductIds =
+        sortedEntries.take(4).map((e) => e.key).toList();
+
+    // Fetch only image URLs
+    List<String> trendingImageUrls = [];
+
+    for (String productId in topProductIds) {
+      DocumentSnapshot productDoc =
+          await firestore.collection("products").doc(productId).get();
+      if (productDoc.exists) {
+        Map<String, dynamic> productData =
+            productDoc.data() as Map<String, dynamic>;
+        if (productData.containsKey("image")) {
+          trendingImageUrls.add(productData["image"]);
+        }
+      }
+    }
+
+    setState(() {
+      trendingImages = trendingImageUrls;
+    });
   }
 
   /// Fetch latest ad images from Firestore and update expired URLs
@@ -236,24 +284,37 @@ class _MainSettingsState extends State<MainSettings> {
                 mainAxisSpacing: 10,
               ),
               itemBuilder: (context, index) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    trendingImages[index],
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(child: CircularProgressIndicator());
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: Icon(Icons.broken_image,
-                            size: 50, color: Colors.grey),
-                      );
-                    },
-                  ),
-                );
+                try {
+                  String base64String = trendingImages[index];
+
+                  // Remove data URI prefix (e.g., "data:image/jpeg;base64,")
+                  final base64Data = base64String.split(',').last;
+
+                  // Decode base64 string
+                  Uint8List imageBytes = base64Decode(base64Data);
+
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.memory(
+                      imageBytes,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: Icon(Icons.broken_image,
+                              size: 50, color: Colors.grey),
+                        );
+                      },
+                    ),
+                  );
+                } catch (e) {
+                  // Handle invalid base64 string
+                  return Container(
+                    color: Colors.grey[300],
+                    child:
+                        Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                  );
+                }
               },
             ),
             SizedBox(height: 20),

@@ -73,6 +73,8 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
     final productReviews =
         reviewProvider.getReviewsForProduct(widget.product.id);
     final MessageService _messageService = MessageService();
+    String today = DateTime.now().toIso8601String().split('T')[0];
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -157,6 +159,24 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
 
                         await _messageService.sendMessage(
                             productDoc['ownerId'], productDoc['prodname']);
+
+                        DocumentReference inquiryRef =
+                            firestore.collection("product_inquiries").doc(today);
+
+                        await firestore.runTransaction((transaction) async {
+                          DocumentSnapshot snapshot = 
+                              await transaction.get(inquiryRef);
+
+                          if (snapshot.exists) {
+                            transaction.update(inquiryRef, {
+                              widget.product.id: FieldValue.increment(1),
+                            });
+                          } else {
+                            transaction.set(inquiryRef, {
+                              widget.product.id: 1,
+                            });
+                          }
+                        });
 
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Added to inquiry')));
