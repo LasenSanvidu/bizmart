@@ -14,6 +14,7 @@ class _CalendarPageState extends State<CalendarPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> events = [];
   bool isLoading = true;
+  bool _mounted = true;
 
   @override
   void initState() {
@@ -21,7 +22,14 @@ class _CalendarPageState extends State<CalendarPage> {
     fetchEvents();
   }
 
+  @override
+  void dispose() {
+    _mounted = false;
+    super.dispose();
+  }
+
   Future<void> fetchEvents() async {
+    if (!_mounted) return;
     setState(() {
       isLoading = true;
     });
@@ -45,6 +53,7 @@ class _CalendarPageState extends State<CalendarPage> {
         isLoading = false;
       });
     } catch (e) {
+      if (!_mounted) return;
       setState(() {
         isLoading = false;
       });
@@ -67,6 +76,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   void showEventDetailsDialog(Map<String, dynamic> event) {
+    if (!_mounted) return;
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -218,12 +218,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
           .doc(userId)
           .get();
 
+      if (!mounted) return;
+
       if (userDoc.exists) {
         var userData = userDoc.data() as Map<String, dynamic>;
         print("Fetched User Data: $userData");
 
         // Get profile image
         String? image = await ProfileImageHandler.getProfileImage();
+
+        if (!mounted) return;
 
         setState(() {
           username = userData['username'] ?? "Unknown";
