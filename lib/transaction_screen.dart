@@ -189,10 +189,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple[100],
+        backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             // Handle navigation back
           },
@@ -205,11 +205,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                Icon(Icons.account_balance_wallet, color: Colors.purple),
+                Icon(Icons.account_balance_wallet, color: Colors.white),
                 const SizedBox(width: 9),
                 const Text(
                   'Transactions',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
               ],
             ),
@@ -228,19 +231,23 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
                 // Handle errors
                 if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                      child: Text('Error: ${snapshot.error}',
+                          style: TextStyle(color: Colors.white)));
                 }
 
                 // Check if there are no transactions
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No transactions found'));
+                  return const Center(
+                      child: Text('No transactions found',
+                          style: TextStyle(color: Colors.white)));
                 }
 
                 // Build the list of transactions
                 return ListView.separated(
                   itemCount: snapshot.data!.docs.length,
                   separatorBuilder: (context, index) =>
-                      const Divider(height: 1),
+                      const Divider(height: 1, color: Colors.grey),
                   itemBuilder: (context, index) {
                     DocumentSnapshot doc = snapshot.data!.docs[index];
                     Transaction transaction = Transaction.fromFirestore(doc);
@@ -266,6 +273,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                 transaction.customerName,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -274,7 +282,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                               child: Text(
                                 transaction.paymentMethod,
                                 style: TextStyle(
-                                  color: Colors.grey[600],
+                                  color: Colors.grey[400],
                                 ),
                               ),
                             ),
@@ -285,6 +293,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                 textAlign: TextAlign.right,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -330,8 +339,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
           );
         },
-        backgroundColor: Colors.purple,
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.white,
+        child: const Icon(Icons.add, color: Colors.black),
       ),
     );
   }
@@ -349,12 +358,15 @@ class TransactionDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transaction Details',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.purple[100],
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
+        backgroundColor: Colors.black,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
+            icon: const Icon(Icons.edit, color: Colors.white),
             onPressed: () {
               // Navigate to edit transaction screen
               Navigator.push(
@@ -367,7 +379,7 @@ class TransactionDetailScreen extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.delete),
+            icon: const Icon(Icons.delete, color: Colors.white),
             onPressed: () {
               // Show confirmation dialog before deleting
               showDialog(
@@ -569,11 +581,11 @@ class TransactionDetailScreen extends StatelessWidget {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: Colors.purple[50],
+                            color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(Icons.shopping_bag_outlined,
-                              color: Colors.purple[300]),
+                              color: Colors.grey[800]),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -627,7 +639,7 @@ class TransactionDetailScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.purple,
+                      color: Colors.black,
                     ),
                   ),
                 ],
@@ -766,8 +778,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Transaction'),
-        backgroundColor: Colors.purple[100],
+        title: const Text('Add Transaction',
+            style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -845,7 +858,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     icon: const Icon(Icons.add),
                     label: const Text('Add Item'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Colors.black,
                     ),
                   ),
                 ],
@@ -891,14 +904,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 child: ElevatedButton(
                   onPressed: _saveTransaction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: const Text(
                     'Save Transaction',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),
@@ -1030,7 +1043,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
       };
 
       // Update Firestore
-      // Update Firestore
       try {
         await FirebaseFirestore.instance
             .collection('transactions')
@@ -1056,8 +1068,9 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Transaction'),
-        backgroundColor: Colors.purple[100],
+        title: const Text('Edit Transaction',
+            style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -1135,7 +1148,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                     icon: const Icon(Icons.add),
                     label: const Text('Add Item'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Colors.black,
                     ),
                   ),
                 ],
@@ -1181,14 +1194,14 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 child: ElevatedButton(
                   onPressed: _updateTransaction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: const Text(
                     'Update Transaction',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),
