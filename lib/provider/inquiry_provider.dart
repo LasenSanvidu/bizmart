@@ -104,8 +104,8 @@ class InquiryProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addToInquiry(Product product, String productOwnerId) async {
-    if (currentUserId == null) return;
+  Future<String> addToInquiry(Product product, String productOwnerId) async {
+    if (currentUserId == null) return 'error';
 
     print("Adding inquiry with product owner ID: $productOwnerId"); // Debug log
     print("Current user ID (inquirer): $currentUserId");
@@ -124,7 +124,7 @@ class InquiryProvider with ChangeNotifier {
           _inquiryList.add(product);
           notifyListeners();
         }
-        return;
+        return 'duplicate';
       }
 
       // Create new inquiry
@@ -151,8 +151,10 @@ class InquiryProvider with ChangeNotifier {
         _inquiryList.add(product);
         notifyListeners();
       }
+      return 'success';
     } catch (e) {
       print("Error adding to inquiry: $e");
+      return 'error';
     }
   }
 

@@ -299,12 +299,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     if (cachedName.isNotEmpty && cachedEmail.isNotEmpty) {
       // If we have cached data, show it immediately
-      setState(() {
-        userName = cachedName;
-        userEmail = cachedEmail;
-        profileImageBase64 = cachedProfileImage;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          userName = cachedName;
+          userEmail = cachedEmail;
+          profileImageBase64 = cachedProfileImage;
+          _isLoading = false;
+        });
+      }
     }
 
     // Get the current user from Firebase Authentication
@@ -338,14 +340,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
       }
     } else {
       // Checking if widget is still mounted before calling setState
-      if (!mounted) return;
-      // Handle case if no user is logged in
-      setState(() {
-        userName = "Guest User";
-        userEmail = "No Email";
-        profileImageBase64 = null;
-        _isLoading = false;
-      });
+      if (mounted) {
+        // Handle case if no user is logged in
+        setState(() {
+          userName = "Guest User";
+          userEmail = "No Email";
+          profileImageBase64 = null;
+          _isLoading = false;
+        });
+      }
 
       // Clear cached data if user is not logged in
       prefs.remove('userName');

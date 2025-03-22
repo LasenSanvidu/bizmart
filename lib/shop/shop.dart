@@ -606,7 +606,7 @@ class _ShopPageState extends State<ShopPage> {
             onTextRecognized: (text) {
               setState(() {
                 _searchController.text = text;
-                _searchStores(text);
+                _handleSearch(text);
               });
             },
             initialX: 320.0,

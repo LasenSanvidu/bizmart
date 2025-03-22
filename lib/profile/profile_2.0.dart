@@ -177,6 +177,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
+import 'package:myapp/profile/edit_profile.dart';
 import 'package:myapp/profile/profile_image_en-decoder.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -395,7 +396,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       child: ElevatedButton(
                         onPressed: () {
                           // Implement Edit Profile functionality
-                          CustomerFlowScreen.of(context)?.updateIndex(11);
+                          //CustomerFlowScreen.of(context)?.updateIndex(11);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const EditProfileScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
+import 'package:myapp/profile/profile_2.0.dart';
 import 'package:myapp/profile/profile_image_en-decoder.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -144,6 +145,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false, // This removes the back button
         title: Text(
           "Edit Profile",
           style: GoogleFonts.poppins(
@@ -151,6 +153,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             color: Colors.black,
             fontWeight: FontWeight.w400,
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            CustomerFlowScreen.of(context)?.setNewScreen(UserProfilePage());
+          },
         ),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black54, size: 22),
@@ -250,7 +258,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                   // Form Container
                   Container(
-                    height: 450,
+                    height: 442,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black, width: 1),
                       borderRadius: BorderRadius.circular(16),
@@ -261,15 +269,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         // Section title
                         Padding(
-                          padding: const EdgeInsets.only(left: 8, bottom: 16),
+                          padding: const EdgeInsets.only(left: 8),
                           child: Text(
                             "Edit Information",
                             style: GoogleFonts.poppins(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
+                        ),
+                        SizedBox(
+                          height: 15,
                         ),
 
                         // Form fields
