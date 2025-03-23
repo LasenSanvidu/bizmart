@@ -482,11 +482,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ],
             ),
           ),
-          Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.grey.shade400,
-            size: 16,
-          ),
         ],
       ),
     );
