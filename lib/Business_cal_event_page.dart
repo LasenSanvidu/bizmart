@@ -22,6 +22,7 @@ class _EventFormPageState extends State<EventFormPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool isLoading = false;
+  bool isEditMode = false;
 
   @override
   void initState() {
@@ -29,6 +30,58 @@ class _EventFormPageState extends State<EventFormPage> {
     // Set default values
     selectedDate = DateTime.now();
     durationController.text = "1";
+
+    // If eventId is provided, we're in edit mode
+    if (widget.eventId != null) {
+      isEditMode = true;
+      _loadEventData();
+    }
+  }
+
+  // Load event data when in edit mode
+  Future<void> _loadEventData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      DocumentSnapshot doc =
+          await _firestore.collection('events').doc(widget.eventId).get();
+
+      if (doc.exists) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+        // Populate the form fields with event data
+        titleController.text = data['title'] ?? '';
+        descriptionController.text = data['description'] ?? '';
+        durationController.text = (data['duration'] ?? 1).toString();
+
+        // Parse the date
+        if (data['date'] != null) {
+          List<String> parts = data['date'].split('-');
+          if (parts.length == 3) {
+            setState(() {
+              selectedDate = DateTime(
+                int.parse(parts[2]), // year
+                int.parse(parts[1]), // month
+                int.parse(parts[0]), // day
+              );
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print('Error loading event data: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading event data: ${e.toString()}')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   void _pickDate() async {
@@ -74,7 +127,7 @@ class _EventFormPageState extends State<EventFormPage> {
       // Get current user
       User? user = _auth.currentUser;
       if (user == null) {
-        throw Exception('You must be logged in to create events');
+        throw Exception('You must be logged in to manage events');
       }
 
       // Create the event document
@@ -85,19 +138,31 @@ class _EventFormPageState extends State<EventFormPage> {
             "${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}",
         'duration': int.tryParse(durationController.text) ?? 1,
         'createdBy': user.uid,
-        'createdAt': FieldValue.serverTimestamp(),
       };
 
-      // Save to Firestore
-      await _firestore.collection('events').add(eventData);
+      if (isEditMode) {
+        // Update existing event
+        await _firestore
+            .collection('events')
+            .doc(widget.eventId)
+            .update(eventData);
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Event updated successfully')),
+        );
+      } else {
+        // Create new event
+        eventData['createdAt'] = FieldValue.serverTimestamp();
+        await _firestore.collection('events').add(eventData);
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Event created successfully')),
+        );
+      }
 
       // Return to previous screen with success
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Event created successfully')),
-      );
-
       Navigator.pop(context, true);
     } catch (e) {
       print('Error saving event: $e');
@@ -126,7 +191,7 @@ class _EventFormPageState extends State<EventFormPage> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         title: Text(
-          "Add Event",
+          isEditMode ? "Edit Event" : "Add Event",
           style: GoogleFonts.poppins(
             color: const Color.fromARGB(255, 0, 0, 0),
             fontSize: 20.0,
@@ -139,120 +204,122 @@ class _EventFormPageState extends State<EventFormPage> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionHeader("Event Details"),
-            const SizedBox(height: 20),
+      body: isLoading && isEditMode
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionHeader("Event Details"),
+                  const SizedBox(height: 20),
 
-            // Title field
-            _buildInputField(
-              label: "Title",
-              controller: titleController,
-              hintText: "Enter event title",
-              prefixIcon: Icons.title,
-            ),
-            const SizedBox(height: 20),
-
-            // Description field
-            _buildInputField(
-              label: "Description",
-              controller: descriptionController,
-              hintText: "Enter event description",
-              prefixIcon: Icons.description,
-              maxLines: 3,
-            ),
-            const SizedBox(height: 20),
-
-            // Date picker
-            _buildSectionHeader("Date & Duration"),
-            const SizedBox(height: 16),
-            InkWell(
-              onTap: _pickDate,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: Colors.grey.shade700,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      selectedDate != null
-                          ? _formatDate(selectedDate!)
-                          : "Select Date",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const Spacer(),
-                    Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.grey.shade700,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Duration field
-            _buildInputField(
-              label: "Duration (Days)",
-              controller: durationController,
-              hintText: "Enter duration in days",
-              prefixIcon: Icons.timelapse,
-              keyboardType: TextInputType.number,
-            ),
-
-            const SizedBox(height: 40),
-
-            // Save button
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: isLoading ? null : _saveEvent,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                  // Title field
+                  _buildInputField(
+                    label: "Title",
+                    controller: titleController,
+                    hintText: "Enter event title",
+                    prefixIcon: Icons.title,
                   ),
-                  elevation: 0,
-                ),
-                child: isLoading
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        "Save Event",
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  const SizedBox(height: 20),
+
+                  // Description field
+                  _buildInputField(
+                    label: "Description",
+                    controller: descriptionController,
+                    hintText: "Enter event description",
+                    prefixIcon: Icons.description,
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Date picker
+                  _buildSectionHeader("Date & Duration"),
+                  const SizedBox(height: 16),
+                  InkWell(
+                    onTap: _pickDate,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today,
+                            color: Colors.grey.shade700,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            selectedDate != null
+                                ? _formatDate(selectedDate!)
+                                : "Select Date",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.grey.shade700,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Duration field
+                  _buildInputField(
+                    label: "Duration (Days)",
+                    controller: durationController,
+                    hintText: "Enter duration in days",
+                    prefixIcon: Icons.timelapse,
+                    keyboardType: TextInputType.number,
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // Save button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: isLoading ? null : _saveEvent,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(
+                              isEditMode ? "Update Event" : "Save Event",
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
