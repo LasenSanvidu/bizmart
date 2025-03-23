@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/services/Firebase%20Notification%20Service.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -14,29 +15,15 @@ class _CalendarPageState extends State<CalendarPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> events = [];
   bool isLoading = true;
-  bool _mounted = true;
 
   @override
   void initState() {
     super.initState();
-    fetchEvents();
+    listenForEventUpdates();
   }
 
-  @override
-  void dispose() {
-    _mounted = false;
-    super.dispose();
-  }
-
-  Future<void> fetchEvents() async {
-    if (!_mounted) return;
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      QuerySnapshot querySnapshot = await _firestore.collection('events').get();
-
+  void listenForEventUpdates() {
+    _firestore.collection('events').snapshots().listen((querySnapshot) {
       if (!mounted) return;
 
       setState(() {
@@ -52,12 +39,62 @@ class _CalendarPageState extends State<CalendarPage> {
         }).toList();
         isLoading = false;
       });
-    } catch (e) {
-      if (!_mounted) return;
-      setState(() {
-        isLoading = false;
-      });
-    }
+
+      // Check for new or updated events and send notifications
+      for (var change in querySnapshot.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          // New event added
+          sendNewEventNotification(change.doc);
+        } else if (change.type == DocumentChangeType.modified) {
+          // Event updated
+          sendEventUpdateNotification(change.doc);
+        }
+      }
+    });
+  }
+
+  Future<void> sendNewEventNotification(DocumentSnapshot eventDoc) async {
+    final Map<String, dynamic> data = eventDoc.data() as Map<String, dynamic>;
+    final String title = data['title'] ?? 'New Event!';
+    final String date = formatDate(data['date'] ?? '');
+    final String body = 'New event "$title" on $date';
+
+    // Use local notifications for immediate feedback
+    NotificationService().showLocalNotification(
+      title: 'New Event Added',
+      body: body,
+    );
+
+    // Store notification in Firestore for client-side pickup
+    await FirebaseFirestore.instance.collection('notifications').add({
+      'title': 'New Event Added',
+      'body': body,
+      'eventId': eventDoc.id,
+      'timestamp': FieldValue.serverTimestamp(),
+      'type': 'new_event',
+    });
+  }
+
+  Future<void> sendEventUpdateNotification(DocumentSnapshot eventDoc) async {
+    final Map<String, dynamic> data = eventDoc.data() as Map<String, dynamic>;
+    final String title = data['title'] ?? 'Event Updated!';
+    final String date = formatDate(data['date'] ?? '');
+    final String body = 'Event "$title" on $date has been updated';
+
+    // Use local notifications for immediate feedback
+    NotificationService().showLocalNotification(
+      title: 'Event Updated',
+      body: body,
+    );
+
+    // Store notification in Firestore for client-side pickup
+    await FirebaseFirestore.instance.collection('notifications').add({
+      'title': 'Event Updated',
+      'body': body,
+      'eventId': eventDoc.id,
+      'timestamp': FieldValue.serverTimestamp(),
+      'type': 'event_update',
+    });
   }
 
   String formatDate(String dateString) {
@@ -75,153 +112,32 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
-  void showEventDetailsDialog(Map<String, dynamic> event) {
-    if (!_mounted) return;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.grey[850],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Text(
-            event['title'],
-            style: GoogleFonts.poppins(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Date: ${formatDate(event['date'])}",
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.blue[300],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Duration: ${event['duration']} day(s)",
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.purple[300],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  event['description'] ?? "No description available",
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.white70,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Close",
-                style: GoogleFonts.poppins(
-                  color: Colors.blue[300],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 243, 243, 243),
-        elevation: 2,
-        title: Text(
-          "Calendar",
-          style: GoogleFonts.poppins(
-            color: const Color.fromARGB(255, 0, 0, 0),
-            fontSize: 26.0,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: Text("Calendar", style: GoogleFonts.poppins(fontSize: 26.0)),
         centerTitle: true,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.white))
+          ? const Center(child: CircularProgressIndicator())
           : events.isEmpty
-              ? Center(
-                  child: Text(
-                    "No events yet",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                )
+              ? Center(child: Text("No events yet", style: GoogleFonts.poppins(fontSize: 18)))
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
                   itemCount: events.length,
                   itemBuilder: (context, index) {
                     final event = events[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: GestureDetector(
-                        onTap: () => showEventDetailsDialog(event),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[850],
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color.fromARGB(137, 51, 50, 50),
-                                blurRadius: 10,
-                                offset: Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  event['title'],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  formatDate(event['date']),
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.blue[300],
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                    return ListTile(
+                      title: Text(event['title'], style: GoogleFonts.poppins(fontSize: 18)),
+                      subtitle: Text(formatDate(event['date']), style: GoogleFonts.poppins(fontSize: 14)),
+                      onTap: () {
+                        // Navigate to event details page
+                        // You can implement this based on your app's navigation
+                      },
                     );
                   },
                 ),
     );
   }
 }
+

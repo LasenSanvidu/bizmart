@@ -25,3 +25,7 @@ tasks.register("clean", Delete) {
     dependsOn "stopGradleDaemon"
     delete rootProject.buildDir
 }
+ dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'  // Ensure using a compatible version
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10'  // If using Kotlin
+    }
