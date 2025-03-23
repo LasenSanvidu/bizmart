@@ -123,21 +123,19 @@ class BusinessDashboardScreen extends StatelessWidget {
 
               // Buttons for different sections
               _buildDashboardButton(
-                  context, Icons.pie_chart, "Summary", SummaryPage()),
+                  context, "lib/Icons/pie-chart.png", "Summary", SummaryPage()),
               _buildDashboardButton(context, Icons.bar_chart, "Transactions",
                   TransactionTrackerPage()),
-              _buildDashboardButton(
-                  context, Icons.inventory, "Store & Products", MyStoreUi()),
-              /*_buildDashboardButton(
-                  context, Icons.category, "Categories", MyStoreUi()),*/
+              _buildDashboardButton(context, "lib/Icons/store.png",
+                  "Store & Products", MyStoreUi()),
               _buildDashboardButton(context, Icons.question_answer_rounded,
                   "Recieved Inquiries", ReceivedInquiriesPage()),
-              _buildDashboardButton(context, Icons.receipt_rounded, "Invoices",
-                  ReceiptsListPage()),
-              _buildDashboardButton(
-                  context, Icons.inventory, "Boost sells", AddAdScreen()),
-              _buildDashboardButton(context, Icons.inventory,
-                  "Business Calendar", BusinessCalendarPage()),
+              _buildDashboardButton(context, "lib/Icons/invoice.png",
+                  "Invoices", ReceiptsListPage()),
+              _buildDashboardButton(context, "lib/Icons/advertising.png",
+                  "Boost sells", AddAdScreen()),
+              _buildDashboardButton(context, "lib/Icons/event (1).png",
+                  "Events", BusinessCalendarPage()),
             ],
           ),
         ),
@@ -146,8 +144,8 @@ class BusinessDashboardScreen extends StatelessWidget {
   }
 
   // Helper method to create buttons
-  Widget _buildDashboardButton(
-      BuildContext context, IconData icon, String title, Widget screen) {
+  Widget _buildDashboardButton(BuildContext context, dynamic iconOrImagePath,
+      String title, Widget screen) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: ElevatedButton(
@@ -172,7 +170,7 @@ class BusinessDashboardScreen extends StatelessWidget {
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: Colors.white, size: 30),
+              child: _buildIconOrImage(iconOrImagePath),
             ),
             const SizedBox(width: 16),
             Text(
@@ -187,4 +185,21 @@ class BusinessDashboardScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildIconOrImage(dynamic iconOrImagePath) {
+  if (iconOrImagePath is IconData) {
+    return Icon(iconOrImagePath, color: Colors.white, size: 30);
+  } else if (iconOrImagePath is String) {
+    return Image.asset(
+      iconOrImagePath,
+      width: 30,
+      height: 30,
+      fit: BoxFit.contain,
+      color: Colors.white,
+      colorBlendMode: BlendMode.srcIn,
+    );
+  }
+  // Fallback
+  return const Icon(Icons.error, color: Colors.white, size: 30);
 }

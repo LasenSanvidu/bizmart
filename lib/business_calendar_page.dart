@@ -4,6 +4,8 @@ import 'package:myapp/Business_cal_event_page.dart'; // Make sure this page is p
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/business_dashboard.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
 
 class BusinessCalendarPage extends StatefulWidget {
   const BusinessCalendarPage({super.key});
@@ -265,12 +267,19 @@ class _CalendarPageState extends State<BusinessCalendarPage> {
         title: Text(
           "Calendar",
           style: GoogleFonts.poppins(
-            color: const Color.fromARGB(255, 0, 0, 0),
-            fontSize: 24.0,
-            fontWeight: FontWeight.w600,
+            color: Colors.black,
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
           ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            CustomerFlowScreen.of(context)
+                ?.setNewScreen(BusinessDashboardScreen());
+          },
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

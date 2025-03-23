@@ -481,6 +481,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       DocumentSnapshot userDoc =
           await _firestore.collection("users").doc(userId).get();
 
+      if (!mounted) return;
+
       if (userDoc.exists) {
         setState(() {
           var userData = userDoc.data() as Map<String, dynamic>;
@@ -500,14 +502,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         });
       }
 
-      // In initState or _fetchUserData, add:
-      ProfileImageHandler.getProfileImage().then((image) {
-        if (image != null) {
-          setState(() {
-            profileImageBase64 = image;
-          });
-        }
-      });
+// mount checking
+      if (mounted) {
+        // In initState or _fetchUserData, add:
+        ProfileImageHandler.getProfileImage().then((image) {
+          if (mounted && image != null) {
+            setState(() {
+              profileImageBase64 = image;
+            });
+          }
+        });
+      }
     } catch (e) {
       print("Error fetching user data: $e");
       if (mounted) {
