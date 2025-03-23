@@ -454,7 +454,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/shop/product_details_users.dart';
-import 'package:myapp/voice_command_button.dart';
+import 'package:myapp/component/voice_command_button.dart';
 
 class StoreProductsPage extends StatefulWidget {
   final Store store;

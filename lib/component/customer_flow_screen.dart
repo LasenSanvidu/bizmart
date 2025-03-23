@@ -13,7 +13,7 @@ import 'package:myapp/settings_customer.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/shop/store_products.dart';
 import 'package:myapp/shop/shop.dart';
-import 'package:myapp/summary_page.dart';
+import 'package:myapp/business%20dashboard/summary_page.dart';
 import 'package:myapp/transaction/transaction.dart';
 
 class CustomerFlowScreen extends StatefulWidget {

@@ -265,7 +265,7 @@ class _CalendarPageState extends State<BusinessCalendarPage> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         title: Text(
-          "Calendar",
+          "Event Management",
           style: GoogleFonts.poppins(
             color: Colors.black,
             fontSize: 24,

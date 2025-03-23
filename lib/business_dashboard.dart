@@ -83,13 +83,13 @@ class BusinessDashboardScreen extends StatelessWidget {
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:myapp/ad_screen.dart';
-import 'package:myapp/business_calendar_page.dart';
+import 'package:myapp/business%20dashboard/ad_screen.dart';
+import 'package:myapp/business%20dashboard/business_calendar_page.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/invoices/receipt_list_page.dart';
-import 'package:myapp/received_inquiries_page.dart';
+import 'package:myapp/business%20dashboard/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
-import 'package:myapp/summary_page.dart';
+import 'package:myapp/business%20dashboard/summary_page.dart';
 import 'package:myapp/transaction/transaction.dart';
 
 class BusinessDashboardScreen extends StatelessWidget {
