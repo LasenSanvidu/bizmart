@@ -82,3 +82,67 @@ class AuthService {
     return _auth.currentUser;
   }
 }
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+
+// class AuthService {
+//   final FirebaseAuth _auth;
+//   final FirebaseFirestore _firestore;
+
+//   AuthService({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
+//       : _auth = firebaseAuth ?? FirebaseAuth.instance,
+//         _firestore = firestore ?? FirebaseFirestore.instance;
+
+//   Future<User?> signIn(String email, String password) async {
+//     try {
+//       UserCredential userCredential =
+//           await _auth.signInWithEmailAndPassword(email: email, password: password);
+//       return userCredential.user;
+//     } catch (e) {
+//       print('Error : $e');
+//       return null;
+//     }
+//   }
+
+//   Future<void> registerUser(String email, String password, String username) async {
+//     try {
+//       UserCredential userCredential =
+//           await _auth.createUserWithEmailAndPassword(email: email, password: password);
+//       User? user = userCredential.user;
+
+//       if (user != null) {
+//         await _firestore.collection('users').doc(user.uid).set({
+//           'username': username,
+//           'email': email,
+//         });
+//       }
+//     } catch (e) {
+//       print('Error: $e');
+//     }
+//   }
+
+//   Future<String?> getUsername() async {
+//     User? user = _auth.currentUser; // 🔴 This needs to be mocked in tests
+//     try {
+//       if (user != null) {
+//         DocumentSnapshot userDoc =
+//             await _firestore.collection('users').doc(user.uid).get();
+//         if (userDoc.exists) {
+//           return userDoc['username'];
+//         }
+//       }
+//       return null;
+//     } catch (e) {
+//       print('Error fetching username: $e');
+//       return null;
+//     }
+//   }
+
+//   Future<void> signOut() async {
+//     try {
+//       await _auth.signOut();
+//     } catch (e) {
+//       print('Error during sign out: $e');
+//     }
+//   }
+// }
