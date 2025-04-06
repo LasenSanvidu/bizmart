@@ -80,7 +80,7 @@ class BusinessDashboardScreen extends StatelessWidget {
   }
 }*/
 
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/business%20dashboard/ad_screen.dart';
@@ -202,4 +202,212 @@ Widget _buildIconOrImage(dynamic iconOrImagePath) {
   }
   // Fallback
   return const Icon(Icons.error, color: Colors.white, size: 30);
+}*/
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/business%20dashboard/ad_screen.dart';
+import 'package:myapp/business%20dashboard/business_calendar_page.dart';
+import 'package:myapp/component/customer_flow_screen.dart';
+import 'package:myapp/invoices/receipt_list_page.dart';
+import 'package:myapp/business%20dashboard/received_inquiries_page.dart';
+import 'package:myapp/shop/my_store_ui.dart';
+import 'package:myapp/business%20dashboard/summary_page.dart';
+import 'package:myapp/transaction/transaction.dart';
+
+class BusinessDashboardScreen extends StatelessWidget {
+  const BusinessDashboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF9F9F9),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            CustomerFlowScreen.of(context)?.updateIndex(0); // Go back to Home
+          },
+        ),
+        title: Text(
+          "Business Dashboard",
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              // Header text
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, bottom: 20.0),
+                child: Text(
+                  "Manage Your Business",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+
+              // Grid layout for dashboard items
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                childAspectRatio: 0.85,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildDashboardCard(
+                    context,
+                    "lib/Icons/pie-chart.png",
+                    "Summary",
+                    SummaryPage(),
+                    const Color(0xFF000000),
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    Icons.bar_chart,
+                    "Transactions",
+                    TransactionTrackerPage(),
+                    const Color(0xFF000000),
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    "lib/Icons/store.png",
+                    "Store & Products",
+                    MyStoreUi(),
+                    const Color(0xFF000000),
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    Icons.question_answer_rounded,
+                    "Inquiries",
+                    ReceivedInquiriesPage(),
+                    const Color(0xFF000000),
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    "lib/Icons/invoice.png",
+                    "Invoices",
+                    ReceiptsListPage(),
+                    const Color(0xFF000000),
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    "lib/Icons/advertising.png",
+                    "Boost Sales",
+                    AddAdScreen(),
+                    const Color(0xFF000000),
+                  ),
+                  _buildDashboardCard(
+                    context,
+                    "lib/Icons/event (1).png",
+                    "Events",
+                    BusinessCalendarPage(),
+                    const Color(0xFF000000),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Helper method to create dashboard cards
+  Widget _buildDashboardCard(
+    BuildContext context,
+    dynamic iconOrImagePath,
+    String title,
+    Widget screen,
+    Color iconBackgroundColor,
+  ) {
+    return InkWell(
+      onTap: () {
+        CustomerFlowScreen.of(context)?.setNewScreen(screen);
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: iconBackgroundColor,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: iconBackgroundColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: _buildIconOrImage(iconOrImagePath),
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _buildIconOrImage(dynamic iconOrImagePath) {
+  if (iconOrImagePath is IconData) {
+    return Icon(iconOrImagePath, color: Colors.white, size: 32);
+  } else if (iconOrImagePath is String) {
+    return Image.asset(
+      iconOrImagePath,
+      width: 32,
+      height: 32,
+      fit: BoxFit.contain,
+      color: Colors.white,
+      colorBlendMode: BlendMode.srcIn,
+    );
+  }
+  // Fallback
+  return const Icon(Icons.error, color: Colors.white, size: 32);
 }

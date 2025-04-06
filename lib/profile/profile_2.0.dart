@@ -249,184 +249,242 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
-          "Profile",
+          "My Profile",
           style: GoogleFonts.poppins(
-            fontSize: 25,
-            color: Colors.black,
-            fontWeight: FontWeight.w400,
+            fontSize: 22,
+            color: Colors.black87,
+            fontWeight: FontWeight.w600,
           ),
         ),
         backgroundColor: Colors.white,
+        elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black54, size: 22),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              // Implement settings action
+            },
+          ),
+        ],
       ),
       body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: Colors.black54,
-                strokeWidth: 2.5,
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(
+                    color: Color(0xFF3E64FF),
+                    strokeWidth: 3,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Loading profile...",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.black54,
+                    ),
+                  )
+                ],
               ),
             )
-          : Container(
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 20),
-                    // Profile Avatar with initials
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                spreadRadius: 2,
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: /*CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.grey.shade200,
-                            child: Text(
-                              getInitials(firstName, lastName),
-                              style: GoogleFonts.poppins(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),*/
-                              ProfileImageHandler.profileImageWidget(
-                                  base64Image: profileImageBase64,
-                                  firstName: firstName,
-                                  lastName: lastName,
-                                  radius: 50),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt_outlined,
-                            size: 14,
-                            color: Colors.white,
-                          ),
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Profile Header with Gradient Background
+                  Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x0D000000),
+                          blurRadius: 10,
+                          offset: Offset(0, 5),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-
-                    // User name
-                    Text(
-                      "$firstName $lastName",
-                      style: GoogleFonts.poppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    Text(
-                      "@$username",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Profile Info Section
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(221, 64, 64, 64),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: ListView(
-                          padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        // Profile Avatar with better shadows
+                        Stack(
+                          alignment: Alignment.bottomRight,
                           children: [
-                            // Section title
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 8, bottom: 16),
-                              child: Text(
-                                "Personal Information",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 2,
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ProfileImageHandler.profileImageWidget(
+                                  base64Image: profileImageBase64,
+                                  firstName: firstName,
+                                  lastName: lastName,
+                                  radius: 60),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(color: Colors.white, width: 2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF3E64FF)
+                                        .withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                size: 16,
+                                color: Colors.white,
                               ),
                             ),
-                            // Info items
-                            profileInfoItem(
-                                Icons.email_outlined, "Email", email),
-                            const Divider(
-                                height: 1, thickness: 0.5, color: Colors.black),
-                            profileInfoItem(
-                                Icons.phone_outlined, "Mobile", mobile),
-                            const Divider(
-                                height: 1, thickness: 0.5, color: Colors.black),
-                            profileInfoItem(
-                                Icons.person_outline, "Username", username),
                           ],
                         ),
-                      ),
-                    ),
+                        const SizedBox(height: 16),
 
-// Space between container and button
-                    const SizedBox(height: 82),
-
-// Profile Button
-                    Container(
-                      width: double.infinity,
-                      height: 60,
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 58,
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Implement Edit Profile functionality
-                          //CustomerFlowScreen.of(context)?.updateIndex(11);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const EditProfileScreen(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                        // User name with better typography
+                        Text(
+                          "$firstName $lastName",
+                          style: GoogleFonts.poppins(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
                           ),
                         ),
-                        child: Text(
-                          "Edit Profile",
+                        Text(
+                          "@$username",
                           style: GoogleFonts.poppins(
-                            fontSize: 20,
+                            fontSize: 16,
+                            color: const Color(0xFF3E64FF),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Personal Information Section
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, top: 20, bottom: 8),
+                          child: Text(
+                            "Personal Information",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        profileInfoItem(
+                          Icons.email_rounded,
+                          "Email",
+                          email,
+                          Colors.orange.shade400,
+                        ),
+                        const Divider(
+                            height: 1,
+                            thickness: 0.5,
+                            color: Color(0xFFEEEEEE)),
+                        profileInfoItem(
+                          Icons.phone_rounded,
+                          "Mobile",
+                          mobile,
+                          Colors.green.shade400,
+                        ),
+                        const Divider(
+                            height: 1,
+                            thickness: 0.5,
+                            color: Color(0xFFEEEEEE)),
+                        profileInfoItem(
+                          Icons.person_rounded,
+                          "Username",
+                          username,
+                          Colors.purple.shade400,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 42),
+
+                  // Edit Profile Button
+                  Container(
+                    width: double.infinity,
+                    height: 56,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditProfileScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        "Edit Profile",
+                        style: GoogleFonts.poppins(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  const SizedBox(height: 24),
+                ],
               ),
             ),
     );
@@ -439,22 +497,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return "$firstInitial$lastInitial".toUpperCase();
   }
 
-  // Profile Info Item
-  Widget profileInfoItem(IconData icon, String title, String value) {
+  // Profile Info Item with colored icon background
+  Widget profileInfoItem(
+      IconData icon, String title, String value, Color iconColor) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       child: Row(
         children: [
           Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: iconColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               icon,
-              color: Colors.black54,
+              color: iconColor,
               size: 20,
             ),
           ),
@@ -465,18 +524,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: Colors.white,
+                    color: Colors.black54,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: Colors.black87,
                   ),
                 ),
               ],

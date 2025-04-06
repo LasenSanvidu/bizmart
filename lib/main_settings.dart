@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,10 @@ import 'package:myapp/chat/chat_list_screen.dart';
 import 'package:myapp/component/customer_flow_screen.dart';
 import 'package:myapp/contact_us.dart';
 import 'package:myapp/faqs.dart';
+import 'package:myapp/models/product_and_store_model.dart';
 import 'package:myapp/profile/profile_image_en-decoder.dart';
 import 'package:myapp/services/auth_service.dart';
+import 'package:myapp/shop/product_details_users.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -26,18 +29,15 @@ class MainSettings extends StatefulWidget {
 class _MainSettingsState extends State<MainSettings> {
   List<String> adImages = [];
   String _userName = "User";
-  final List<String> trendingImages = [
-    "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg",
-    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://dmc.dilmahtea.com/web-space/dmc/heritage-centre/54ceb91256e8190e474aa752a6e0650a2df5ba37/500_500.154080881152699.jpg"
-  ];
+  List<Product> _trendingProducts = [];
+  bool _isRefreshingProducts = false;
 
   @override
   void initState() {
     super.initState();
     fetchAdImages();
     _loadUserName();
+    fetchTrendingProducts();
   }
 
   /// Fetch latest ad images from Firestore and update expired URLs
@@ -74,6 +74,66 @@ class _MainSettingsState extends State<MainSettings> {
     }
   }
 
+  Future<void> fetchTrendingProducts() async {
+    try {
+      // Query to fetch latest 4 products ordered by creation date
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .limit(50) // Limit to 50 products for better performance
+          .get();
+
+      int totalDocs = snapshot.docs.length;
+
+      if (totalDocs > 4) {
+        List<Product> products = [];
+
+        Random random = Random();
+
+        Set<int> selectedIndices = {};
+
+        while (
+            selectedIndices.length < 4 && selectedIndices.length < totalDocs) {
+          int randomIndex = random.nextInt(totalDocs);
+          if (!selectedIndices.contains(randomIndex)) {
+            selectedIndices.add(randomIndex);
+
+            DocumentSnapshot doc = snapshot.docs[randomIndex];
+
+            products.add(Product(
+              id: doc['id'],
+              prodname: doc['prodname'],
+              image: doc['image'],
+              prodprice: doc['prodprice'].toDouble(),
+              description: doc['description'],
+            ));
+          }
+        }
+
+        // Update the state to trigger UI refresh
+        setState(() {
+          _trendingProducts = products;
+        });
+      } else {
+        // If there are less than 4 products, fetch all of them
+        List<Product> products = snapshot.docs.map((doc) {
+          return Product(
+            id: doc['id'],
+            prodname: doc['prodname'],
+            image: doc['image'],
+            prodprice: doc['prodprice'].toDouble(),
+            description: doc['description'],
+          );
+        }).toList();
+
+        setState(() {
+          _trendingProducts = products;
+        });
+      }
+    } catch (e) {
+      print("Error fetching trending products: $e");
+    }
+  }
+
   Future<void> _loadUserName() async {
     String? username = await AuthService().getUsername();
     if (mounted) {
@@ -99,29 +159,38 @@ class _MainSettingsState extends State<MainSettings> {
           IconButton(
             icon: Icon(Icons.question_answer_rounded, color: Colors.black),
             onPressed: () {
-              // Implement navigation
               CustomerFlowScreen.of(context)?.setNewScreen(InquiryPage());
             },
           ),
         ],
         backgroundColor: Colors.white,
       ),
-      drawer: CustomDrawer(), // Use your custom drawer
+      drawer: CustomDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
+            // Welcome banner with gradient background
             Container(
               padding: const EdgeInsets.only(left: 0, right: 0),
               child: Container(
                 padding: EdgeInsets.all(16),
                 margin: EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  //borderRadius: BorderRadius.circular(15),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.black, Color(0xFF303030)],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
@@ -140,8 +209,8 @@ class _MainSettingsState extends State<MainSettings> {
                         Text(
                           "Welcome back",
                           style: GoogleFonts.poppins(
-                            fontSize: 26,
-                            color: Colors.grey.shade500,
+                            fontSize: 23,
+                            color: Colors.grey.shade300,
                           ),
                         ),
                       ],
@@ -150,36 +219,60 @@ class _MainSettingsState extends State<MainSettings> {
                 ),
               ),
             ),
-            // Image Carousel with Loading Indicator
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 180.0,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                aspectRatio: 16 / 9,
-                enableInfiniteScroll: true,
-              ),
-              items: adImages.isNotEmpty
-                  ? adImages.map((imageUrl) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: imageUrl.startsWith(
-                                'http') // Check if the image is a normal URL
-                            ? Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    color: Colors.grey[300],
-                                    width: double.infinity,
-                                    child: Icon(Icons.broken_image,
-                                        size: 50, color: Colors.grey),
-                                  );
-                                },
-                              )
-                            : Image.memory(
-                                base64Decode(imageUrl.split(',')[1]),
+
+            // Enhanced Carousel with indicators
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Column(
+                children: [
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 180.0,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      aspectRatio: 16 / 9,
+                      enableInfiniteScroll: true,
+                      viewportFraction: 0.85,
+                      autoPlayAnimationDuration: Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                    ),
+                    items: adImages.isNotEmpty
+                        ? adImages.map((imageUrl) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.memory(
+                                  base64Decode(imageUrl.split(',')[1]),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey[300],
+                                      width: double.infinity,
+                                      child: Icon(Icons.broken_image,
+                                          size: 50, color: Colors.grey),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          }).toList()
+                        : [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                'https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg',
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 errorBuilder: (context, error, stackTrace) {
@@ -191,71 +284,291 @@ class _MainSettingsState extends State<MainSettings> {
                                   );
                                 },
                               ),
-                      );
-                    }).toList()
-                  : [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          'https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg', // Hardcoded fallback image URL
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[300],
-                              width: double.infinity,
-                              child: Icon(Icons.broken_image,
-                                  size: 50, color: Colors.grey),
-                            );
-                          },
+                            ),
+                          ],
+                  ),
+                ],
+              ),
+            ),
+
+            // section between carousel and trending
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.blue.shade50, Colors.blue.shade100],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.shade100.withOpacity(0.6),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.lightbulb_outline,
+                          color: Colors.amber.shade700),
+                      SizedBox(width: 8),
+                      Text(
+                        "Today's Highlights",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue.shade800,
                         ),
                       ),
                     ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Discover our newest collection and exclusive deals tailored just for you. Check out our trending products below!",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.blue.shade800,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
-            SizedBox(height: 20),
-
+            // Improved Trending section header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                "TRENDING",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      "TRENDING",
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      setState(() {
+                        _isRefreshingProducts = true;
+                      });
+
+                      // Refresh only the trending products
+                      await fetchTrendingProducts();
+
+                      // Update only the products refresh state
+                      setState(() {
+                        _isRefreshingProducts = false;
+                      });
+
+                      await fetchTrendingProducts();
+                    },
+                    child: Text(
+                      "Refresh All",
+                      style: TextStyle(
+                        color: Colors.blue.shade700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
             SizedBox(height: 10),
 
-            GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              itemCount: trendingImages.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    trendingImages[index],
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(child: CircularProgressIndicator());
-                    },
-                    errorBuilder: (context, error, stackTrace) {
+            _isRefreshingProducts
+                ? Center(
+                    child: Container(
+                      height: 200,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text(
+                            "Refreshing products...",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: _trendingProducts.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                      childAspectRatio: 0.8, // Make items slightly taller
+                    ),
+                    itemBuilder: (context, index) {
                       return Container(
-                        color: Colors.grey[300],
-                        child: Icon(Icons.broken_image,
-                            size: 50, color: Colors.grey),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                // TODO: Navigate to product detail page
+                                CustomerFlowScreen.of(context)?.setNewScreen(
+                                  ProductDetailsUserPage(
+                                      product: _trendingProducts[index]),
+                                );
+                              },
+                              splashColor: Colors.black.withOpacity(0.1),
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  // Product Image
+                                  _trendingProducts[index]
+                                          .image
+                                          .startsWith('data:')
+                                      ? Hero(
+                                          tag:
+                                              'product-${_trendingProducts[index].id}',
+                                          child: Image.memory(
+                                            base64Decode(
+                                                _trendingProducts[index]
+                                                    .image
+                                                    .split(',')[1]),
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Container(
+                                                color: Colors.grey[100],
+                                                child: Icon(
+                                                    Icons
+                                                        .image_not_supported_outlined,
+                                                    size: 50,
+                                                    color: Colors.grey[400]),
+                                              );
+                                            },
+                                          ),
+                                        )
+                                      : Container(
+                                          color: Colors.grey[100],
+                                          child: Icon(
+                                              Icons
+                                                  .image_not_supported_outlined,
+                                              size: 50,
+                                              color: Colors.grey[400]),
+                                        ),
+
+                                  // Gradient overlay for better text readability
+                                  Positioned.fill(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.transparent,
+                                            Colors.black.withOpacity(0.7),
+                                          ],
+                                          stops: [0.0, 0.7, 1.0],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Product name and price
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            _trendingProducts[index].prodname,
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 3),
+                                          Text(
+                                            '\$${_trendingProducts[index].prodprice.toStringAsFixed(2)}',
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Sale badge (for items with higher prices)
+                                  if (_trendingProducts[index].prodprice > 6000)
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: Text(
+                                          'Top Pick',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),
-                );
-              },
-            ),
             SizedBox(height: 20),
           ],
         ),

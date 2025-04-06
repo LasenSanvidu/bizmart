@@ -1102,14 +1102,30 @@ class _AddAdScreenState extends State<AddAdScreen>
       return;
     }
 
-    final pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 85,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+    if (_isLoading) return; // Don't allow picking if already loading
+
+    setState(() {
+      _isLoading = true; // Set loading state before picking
+    });
+
+    try {
+      final pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false; // Reset loading state after picking
+        });
+      }
     }
   }
 
@@ -1133,6 +1149,8 @@ class _AddAdScreenState extends State<AddAdScreen>
   }
 
   void _submitAd() async {
+    if (_isLoading) return; // Don't allow submission if already loading
+
     if (!_hasStore) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

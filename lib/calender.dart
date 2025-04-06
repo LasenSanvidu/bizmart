@@ -147,14 +147,15 @@ class _CalendarPageState extends State<CalendarPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 243, 243, 243),
-        elevation: 2,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        elevation: 0,
         title: Text(
           "Calendar",
           style: GoogleFonts.poppins(
             color: const Color.fromARGB(255, 0, 0, 0),
-            fontSize: 26.0,
-            fontWeight: FontWeight.w600,
+            fontSize: 24.0,
+            fontWeight: FontWeight.w400,
           ),
         ),
         centerTitle: true,

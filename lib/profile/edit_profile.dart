@@ -593,6 +593,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (!_validateInputs()) {
       return;
     }
+    if (!mounted) return;
     setState(() {
       isLoading = true;
     });
@@ -647,9 +648,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       );
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -715,7 +718,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           onTap: () async {
                             bool success = await ProfileImageHandler
                                 .pickAndUpdateProfileImage();
-                            if (success) {
+                            if (success && mounted) {
                               // Refresh the image
                               String? newImage =
                                   await ProfileImageHandler.getProfileImage();
