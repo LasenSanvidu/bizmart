@@ -91,6 +91,7 @@ import 'package:myapp/business%20dashboard/received_inquiries_page.dart';
 import 'package:myapp/shop/my_store_ui.dart';
 import 'package:myapp/business%20dashboard/summary_page.dart';
 import 'package:myapp/transaction/transaction.dart';
+import 'package:myapp/analytics_dashboard.dart';
 
 class BusinessDashboardScreen extends StatelessWidget {
   const BusinessDashboardScreen({super.key});
@@ -122,6 +123,8 @@ class BusinessDashboardScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Buttons for different sections
+              _buildDashboardButton(context, Icons.analytics,
+                  "Analytics Dashboard", const AnalyticsDashboard()),
               _buildDashboardButton(
                   context, "lib/Icons/pie-chart.png", "Summary", SummaryPage()),
               _buildDashboardButton(context, Icons.bar_chart, "Transactions",
