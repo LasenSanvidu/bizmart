@@ -546,7 +546,7 @@ class _MainSettingsState extends State<MainSettings> {
                                           ),
                                           SizedBox(height: 3),
                                           Text(
-                                            '\$${_trendingProducts[index].prodprice.toStringAsFixed(2)}',
+                                            '\RS ${_trendingProducts[index].prodprice.toStringAsFixed(2)}',
                                             style: GoogleFonts.poppins(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w500,

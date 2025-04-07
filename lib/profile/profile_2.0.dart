@@ -257,7 +257,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           style: GoogleFonts.poppins(
             fontSize: 22,
             color: Colors.black87,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w400,
           ),
         ),
         backgroundColor: Colors.white,

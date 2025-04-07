@@ -94,14 +94,18 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       if (pickedFile != null) {
         // Convert image to base64 immediately after picking
         final String base64Image = await _imageToBase64(File(pickedFile.path));
-        setState(() {
-          _imagePath = base64Image;
-        });
+        if (mounted) {
+          setState(() {
+            _imagePath = base64Image;
+          });
+        }
       }
     } catch (e) {
       print("Error picking image: $e");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error picking image: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error picking image: $e')));
+      }
     }
   }
 
@@ -112,8 +116,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Future<void> _updateProduct() async {
     if (_nameController.text.isEmpty || _priceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please fill all required fields')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please fill all required fields')));
+      }
       return;
     }
 
@@ -139,17 +145,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         _descriptionController.text,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Product Updated!')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Product Updated!')),
+        );
+      }
     } catch (e) {
       print("Error updating product: $e");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error updating product: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating product: $e')));
+      }
     } finally {
-      setState(() {
-        _isProcessing = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
 

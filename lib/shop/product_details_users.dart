@@ -171,7 +171,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                         style: GoogleFonts.poppins(
                             fontSize: 28, fontWeight: FontWeight.w400)),
                     const SizedBox(height: 0),
-                    Text('\$${widget.product.prodprice}',
+                    Text('\RS ${widget.product.prodprice}',
                         style:
                             const TextStyle(fontSize: 20, color: Colors.grey)),
                     const SizedBox(height: 16),
@@ -366,16 +366,16 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                           onPressed: isInquirySending
                               ? null
                               : () {
-                                  /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              AddReviewScreen(productId: widget.product.id),
-                        ),
-                      );*/
-                                  CustomerFlowScreen.of(context)?.setNewScreen(
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddReviewScreen(
+                                          productId: widget.product.id),
+                                    ),
+                                  );
+                                  /*CustomerFlowScreen.of(context)?.setNewScreen(
                                       AddReviewScreen(
-                                          productId: widget.product.id));
+                                          productId: widget.product.id));*/
                                 },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,

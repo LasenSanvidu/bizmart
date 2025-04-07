@@ -31,7 +31,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
         SnackBar(content: Text('Review submitted successfully!')),
       );
 
-      //Navigator.pop(context);
+      Navigator.pop(context); // comment this
     }
   }
 
@@ -51,7 +51,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
           ),
         ),
         centerTitle: true,
-        leading: Container(
+        /*leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: const Color(0xFFF5F5F8),
@@ -61,7 +61,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {},
           ),
-        ),
+        ),*/
       ),
       body: SingleChildScrollView(
         child: Padding(

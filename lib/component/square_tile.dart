@@ -11,10 +11,10 @@ class SquareTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      /*onTap: () {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const Login()));
-      },
+      },*/
       child: Image.asset(imagePath, width: 60, height: 60),
     );
   }
