@@ -66,9 +66,11 @@ class _MainSettingsState extends State<MainSettings> {
       }
 
       // Update the state to trigger UI refresh
-      setState(() {
-        adImages = images;
-      });
+      if (mounted) {
+        setState(() {
+          adImages = images;
+        });
+      }
     } catch (e) {
       print("Error fetching images: $e");
     }
@@ -110,9 +112,11 @@ class _MainSettingsState extends State<MainSettings> {
         }
 
         // Update the state to trigger UI refresh
-        setState(() {
-          _trendingProducts = products;
-        });
+        if (mounted) {
+          setState(() {
+            _trendingProducts = products;
+          });
+        }
       } else {
         // If there are less than 4 products, fetch all of them
         List<Product> products = snapshot.docs.map((doc) {
@@ -216,6 +220,18 @@ class _MainSettingsState extends State<MainSettings> {
                       ],
                     ),
                   ],
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              child: Text(
+                "Featured for you",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
               ),
             ),
@@ -364,17 +380,21 @@ class _MainSettingsState extends State<MainSettings> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      setState(() {
-                        _isRefreshingProducts = true;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          _isRefreshingProducts = true;
+                        });
+                      }
 
                       // Refresh only the trending products
                       await fetchTrendingProducts();
 
                       // Update only the products refresh state
-                      setState(() {
-                        _isRefreshingProducts = false;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          _isRefreshingProducts = false;
+                        });
+                      }
 
                       await fetchTrendingProducts();
                     },

@@ -57,6 +57,8 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   Future<void> _addProduct() async {
+    if (!mounted) return; // Check if the widget is still mounted
+
     if (_productNameController.text.isEmpty ||
         _productPriceController.text.isEmpty ||
         _selectedImage == null) {
@@ -87,16 +89,22 @@ class _AddProductPageState extends State<AddProductPage> {
       await Provider.of<StoreProvider>(context, listen: false)
           .addProductToStore(widget.storeId, product);
 
+      if (!mounted) return; // Check if the widget is still mounted
+
       CustomerFlowScreen.of(context)
           ?.setNewScreen(StorePage(storeId: widget.storeId));
     } catch (e) {
       print("Error adding product: $e");
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Error adding product: $e')));
     } finally {
-      setState(() {
-        _isProcessing = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
 

@@ -25,6 +25,8 @@ class ProductDetailsUserPage extends StatefulWidget {
 class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
   bool isOwner = false;
   bool isLoading = true;
+  bool isInquirySending = false;
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +59,8 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
           .collection('products')
           .doc(widget.product.id)
           .get();
+
+      if (!mounted) return;
 
       if (productDoc.exists) {
         final ownerId = productDoc.data()?['ownerId'];
@@ -131,10 +135,12 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            CustomerFlowScreen.of(context)
-                ?.updateIndex(1); // Go back to ShopPage
-          },
+          onPressed: isInquirySending
+              ? null
+              : () {
+                  CustomerFlowScreen.of(context)
+                      ?.updateIndex(1); // Go back to ShopPage
+                },
         ),
         title: Text(
           widget.product.prodname,
@@ -195,66 +201,7 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                                 ),
                               ),
                             )
-                          : /*SizedBox(
-                              width: 200,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  //backgroundColor: const Color.fromARGB(255, 172, 144, 251),
-                                  backgroundColor: Colors.black,
-                                  padding: EdgeInsets.symmetric(vertical: 12),
-                                  textStyle: GoogleFonts.poppins(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                onPressed: () async {
-                                  final inquiryProvider =
-                                      Provider.of<InquiryProvider>(context,
-                                          listen: false);
-
-                                  // Fetch product owner ID from Firestore
-                                  final productDoc = await FirebaseFirestore
-                                      .instance
-                                      .collection('products')
-                                      .doc(widget.product.id)
-                                      .get();
-
-                                  if (productDoc.exists) {
-                                    final ownerId =
-                                        productDoc.data()?['ownerId'];
-                                    await inquiryProvider.addToInquiry(
-                                        widget.product, ownerId);
-
-                                    await _messageService.sendMessage(
-                                        productDoc['ownerId'],
-                                        productDoc['prodname']);
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text('Added to inquiry')));
-
-                                    /*Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => InquiryPage()));*/
-
-                                    CustomerFlowScreen.of(context)
-                                        ?.updateIndex(1);
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Product information not found')));
-                                  }
-                                },
-                                child: Text(
-                                  "Add to Inquiry",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 20, color: Colors.white),
-                                ),
-                              ),
-                            ),*/
-                          AnimatedContainer(
+                          : AnimatedContainer(
                               duration: Duration(milliseconds: 300),
                               width: 220,
                               height: 56,
@@ -271,92 +218,118 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                                   ),
                                   padding: EdgeInsets.symmetric(vertical: 12),
                                 ),
-                                onPressed: isOwner
+                                onPressed: isOwner || isInquirySending
                                     ? null
                                     : () async {
-                                        final inquiryProvider =
-                                            Provider.of<InquiryProvider>(
-                                                context,
-                                                listen: false);
+                                        setState(() {
+                                          isInquirySending = true;
+                                        });
+                                        try {
+                                          final inquiryProvider =
+                                              Provider.of<InquiryProvider>(
+                                                  context,
+                                                  listen: false);
 
-                                        // Fetch product owner ID from Firestore
-                                        final productDoc =
-                                            await FirebaseFirestore.instance
-                                                .collection('products')
-                                                .doc(widget.product.id)
-                                                .get();
+                                          // Fetch product owner ID from Firestore
+                                          final productDoc =
+                                              await FirebaseFirestore.instance
+                                                  .collection('products')
+                                                  .doc(widget.product.id)
+                                                  .get();
 
-                                        if (productDoc.exists) {
-                                          final ownerId =
-                                              productDoc.data()?['ownerId'];
-                                          await inquiryProvider
-                                              .addToInquiry(
-                                                  widget.product, ownerId)
-                                              .then((result) {
-                                            if (result == 'duplicate') {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      'You have already inquired about this product'),
-                                                  backgroundColor:
-                                                      Colors.orange,
-                                                ),
-                                              );
-                                            } else if (result == 'success') {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Row(
-                                                    children: [
-                                                      Icon(Icons.check_circle,
-                                                          color: Colors.white),
-                                                      SizedBox(width: 10),
-                                                      Text(
-                                                          'Inquiry sent successfully'),
-                                                    ],
+                                          if (productDoc.exists) {
+                                            final ownerId =
+                                                productDoc.data()?['ownerId'];
+                                            await inquiryProvider
+                                                .addToInquiry(
+                                                    widget.product, ownerId)
+                                                .then((result) {
+                                              if (result == 'duplicate') {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'You have already inquired about this product'),
+                                                    backgroundColor:
+                                                        Colors.orange,
                                                   ),
-                                                  behavior:
-                                                      SnackBarBehavior.floating,
-                                                  backgroundColor: Colors.green,
-                                                ),
-                                              );
-                                            }
-                                          });
-                                          await _messageService.sendMessage(
-                                              productDoc['ownerId'],
-                                              productDoc['prodname']);
+                                                );
+                                              } else if (result == 'success') {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Row(
+                                                      children: [
+                                                        Icon(Icons.check_circle,
+                                                            color:
+                                                                Colors.white),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                            'Inquiry sent successfully'),
+                                                      ],
+                                                    ),
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  ),
+                                                );
+                                              }
+                                            });
+                                            await _messageService.sendMessage(
+                                                productDoc['ownerId'],
+                                                productDoc['prodname']);
 
-                                          CustomerFlowScreen.of(context)
-                                              ?.updateIndex(1);
-                                        } else {
+                                            CustomerFlowScreen.of(context)
+                                                ?.updateIndex(1);
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Product information not found'),
+                                              ),
+                                            );
+                                          }
+                                        } catch (e) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
                                               content: Text(
-                                                  'Product information not found'),
+                                                  'Error sending inquiry: ${e.toString()}'),
+                                              backgroundColor: Colors.red,
                                             ),
                                           );
+                                        } finally {
+                                          if (mounted) {
+                                            setState(() {
+                                              isInquirySending = false;
+                                            });
+                                          }
                                         }
                                       },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.handshake_outlined,
-                                      size: 25,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      "Add to Inquiry",
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
+                                child: isInquirySending
+                                    ? CircularProgressIndicator(
+                                        color: Colors.black)
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.handshake_outlined,
+                                            size: 25,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "Add to Inquiry",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
                               ),
                             ),
                     ),
@@ -390,17 +363,20 @@ class _ProductDetailsUserPageState extends State<ProductDetailsUserPage> {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () {
-                            /*Navigator.push(
+                          onPressed: isInquirySending
+                              ? null
+                              : () {
+                                  /*Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
                               AddReviewScreen(productId: widget.product.id),
                         ),
                       );*/
-                            CustomerFlowScreen.of(context)?.setNewScreen(
-                                AddReviewScreen(productId: widget.product.id));
-                          },
+                                  CustomerFlowScreen.of(context)?.setNewScreen(
+                                      AddReviewScreen(
+                                          productId: widget.product.id));
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             elevation: 0,
