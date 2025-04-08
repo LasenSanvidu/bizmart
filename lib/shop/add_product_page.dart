@@ -141,7 +141,7 @@ class _AddProductPageState extends State<AddProductPage> {
               _buildTextField(_productPriceController, "Price", isNumber: true),
               _buildImagePicker(),
               _buildTextField(_productDescripController, "Description",
-                  lines: 3),
+                  lines: 6),
               SizedBox(height: 60),
               _buildAddProductButton(),
             ],

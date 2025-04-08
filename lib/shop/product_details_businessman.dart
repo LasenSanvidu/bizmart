@@ -181,83 +181,87 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: GestureDetector(
-                onTap: _pickImage,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: _buildProductImage(_imagePath),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: _buildProductImage(_imagePath),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-            // Editable Product Name
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                  labelText: "Product Name",
-                  labelStyle: GoogleFonts.poppins(fontSize: 20)),
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // Editable Product Price
-            TextField(
-              controller: _priceController,
-              decoration: InputDecoration(
-                labelText: "Price",
-                labelStyle: GoogleFonts.poppins(fontSize: 20),
-              ),
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 8),
-
-            // Editable Product Description
-            TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                labelText: "Description",
-                labelStyle: GoogleFonts.poppins(fontSize: 20),
-              ),
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  textStyle: GoogleFonts.poppins(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600),
+                // Editable Product Name
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                      labelText: "Product Name",
+                      labelStyle: GoogleFonts.poppins(fontSize: 20)),
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                  ),
                 ),
-                onPressed: _isProcessing ? null : _updateProduct,
-                child: _isProcessing
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Update",
-                        style: GoogleFonts.poppins(
-                            fontSize: 20, color: Colors.white)),
-              ),
+                const SizedBox(height: 8),
+
+                // Editable Product Price
+                TextField(
+                  controller: _priceController,
+                  decoration: InputDecoration(
+                    labelText: "Price",
+                    labelStyle: GoogleFonts.poppins(fontSize: 20),
+                  ),
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 8),
+
+                // Editable Product Description
+                TextField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(
+                    labelText: "Description",
+                    labelStyle: GoogleFonts.poppins(fontSize: 20),
+                  ),
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 16),
+
+                //const Spacer(),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      textStyle: GoogleFonts.poppins(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    onPressed: _isProcessing ? null : _updateProduct,
+                    child: _isProcessing
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text("Update",
+                            style: GoogleFonts.poppins(
+                                fontSize: 20, color: Colors.white)),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
