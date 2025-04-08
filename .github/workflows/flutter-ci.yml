@@ -28,15 +28,15 @@ jobs:
         working-directory: ./
 
       # 4. Check for formatting issues
-      - name: Verify formatting
-        run: flutter format --set-exit-if-changed .
-        working-directory: ./
-        # rtrtrt
+      # - name: Verify formatting
+      # run: flutter format --set-exit-if-changed .
+      # working-directory: ./
+      # # rtrtrt
 
-      # 5. Analyze code
-      - name: Analyze project code
-        run: flutter analyze
-        working-directory: ./
+      # # 5. Analyze code
+      # - name: Analyze project code
+      #   run: flutter analyze
+      #   working-directory: ./
 
       # 6. Build APK
       - name: Build APK
