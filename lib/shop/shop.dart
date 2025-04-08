@@ -241,7 +241,7 @@ class _ShopPageState extends State<ShopPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             child: Text(
-              '\$${product.prodprice.toStringAsFixed(2)}',
+              '\RS ${product.prodprice.toStringAsFixed(2)}',
               style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
