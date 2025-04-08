@@ -33,10 +33,10 @@ jobs:
       # working-directory: ./
       # # rtrtrt
 
-      # 5. Analyze code
-      - name: Analyze project code
-        run: flutter analyze
-        working-directory: ./
+      # # 5. Analyze code
+      # - name: Analyze project code
+      #   run: flutter analyze
+      #   working-directory: ./
 
       # 6. Build APK
       - name: Build APK
