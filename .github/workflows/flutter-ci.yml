@@ -1,0 +1,50 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: ["dev_7"]
+  pull_request:
+    branches: ["dev_7"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Setup Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.x"
+          channel: "stable"
+          cache: true
+
+      # 3. Get dependencies
+      - name: Get Flutter dependencies
+        run: flutter pub get
+        working-directory: ./
+
+      # 4. Check for formatting issues
+      - name: Verify formatting
+        run: flutter format --set-exit-if-changed .
+        working-directory: ./
+
+      # 5. Analyze code
+      - name: Analyze project code
+        run: flutter analyze
+        working-directory: ./
+
+      # 6. Build APK
+      - name: Build APK
+        run: flutter build apk --release
+        working-directory: ./
+
+      # 7. Upload APK as artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
