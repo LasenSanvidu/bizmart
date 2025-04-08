@@ -31,6 +31,7 @@ jobs:
       - name: Verify formatting
         run: flutter format --set-exit-if-changed .
         working-directory: ./
+        # rtrtrt
 
       # 5. Analyze code
       - name: Analyze project code
